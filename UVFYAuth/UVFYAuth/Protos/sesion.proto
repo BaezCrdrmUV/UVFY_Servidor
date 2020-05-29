@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "UVFYSesion";
+
+package sesion;
+
+// The greeting service definition.
+service AdministradorDeSesiones {
+  // Sends a greeting
+  rpc  NuevaSesion (UsuarioDeSesion) returns (SesionCreada);
+}
+
+// The request message containing the user's name.
+message UsuarioDeSesion {
+  int32 idUsuario = 1;
+}
+
+// The response message containing the greetings.
+message SesionCreada {
+  string idSesion = 1;
+}
