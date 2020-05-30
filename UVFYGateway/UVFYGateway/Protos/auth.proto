@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option csharp_namespace = "UVFYAuth";
+
+package auth;
+
+service Authenticator {
+  rpc Authenticate (AuthRequest) returns (Authreply);
+  rpc RegisterUser (RegistrationRequest) returns (ResgitrationResponse);
+}
+
+message AuthRequest {
+  string name = 1;
+  string password = 2;
+}
+
+message RegistrationRequest {
+  string name = 1;
+  string password = 2;
+  string email = 3;
+  string userType = 4;
+  string nombreDeArtista = 5;
+  string descripcionDeArtista = 6;
+}
+
+message ResgitrationResponse{
+  bool response = 1;
+}
+
+message Authreply {
+  bool response = 1;
+  string token = 2;
+  int32 idUsuario = 3;
+}

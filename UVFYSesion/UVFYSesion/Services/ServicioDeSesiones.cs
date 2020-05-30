@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace UVFYSesion
 {
@@ -16,12 +14,23 @@ namespace UVFYSesion
 			_logger = logger;
 		}
 
-		public override Task<SesionCreada> NuevaSesion(UsuarioDeSesion request, ServerCallContext context)
+		public override Task<SesionPeticion> NuevaSesion(UsuarioDeSesion request, ServerCallContext context)
 		{
-			SesionCreada respuesta = new SesionCreada();
+			SesionPeticion respuesta = new SesionPeticion();
 			respuesta.IdSesion = new Guid().ToString();
 			respuesta.IdSesion = ControladorDeSesiones.AñadirSesion(request.IdUsuario);
 			return Task.FromResult(respuesta);
+		}
+
+		public override Task<ExistenciaDeSesion> ExisteSesion(SesionPeticion request, ServerCallContext context)
+		{
+
+			ExistenciaDeSesion existenciaDeSesion = new ExistenciaDeSesion()
+			{
+				ExistenciaDeSesion_ = ControladorDeSesiones.SesionExiste(request.IdSesion)
+			};
+
+			return Task.FromResult(existenciaDeSesion);
 		}
 	}
 }

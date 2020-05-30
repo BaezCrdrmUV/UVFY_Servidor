@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option csharp_namespace = "UVFYMetadatos";
+
+package metadata;
+
+// The greeting service definition.
+service Metadata {
+  // Sends a greeting
+  rpc CargarCancionesTodas (Token) returns (RespuestaDeCanciones);
+}
+
+// The request message containing the user's name.
+message Token {
+  string tokenDeAcceso = 1;
+}
+
+message RespuestaDeCanciones {
+  bool valida = 1;
+  repeated Cancion canciones = 2;
+}
+
+// The response message containing the greetings.
+message Cancion {
+  int32 id = 1;
+  string nombre = 2;
+  string duracion = 3; 
+  string fechaDeLanzamiento = 4;
+  int32 idArtista = 5;
+  int32 idAlbum = 6;
+  bytes imagen = 7;
+}
