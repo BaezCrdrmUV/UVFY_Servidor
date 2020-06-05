@@ -9,6 +9,9 @@
 *.user
 *.userosscache
 *.sln.docstates
+
+UVFYTestClient/
+Knn/
 8Reinas/
 AppDePrueba/
 CAIM/

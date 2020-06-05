@@ -2,19 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>5e1ffba8-148d-4d83-9b7f-3abac263e436</UserSecretsId>
+    <UserSecretsId>74548daa-2e23-451d-a192-798c68244b1f</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Protos\archivos.proto" />
-    <None Remove="Protos\sesion.proto" />
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\archivos.proto" GrpcServices="Client" />
-    <Protobuf Include="Protos\metadata.proto" GrpcServices="Server" />
-    <Protobuf Include="Protos\sesion.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\archivos.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>

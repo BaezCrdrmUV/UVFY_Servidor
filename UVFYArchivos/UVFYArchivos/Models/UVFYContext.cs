@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace UVFYMetadatos.Models
+namespace UVFYArchivos.Models
 {
     public partial class UVFYContext : DbContext
     {
@@ -30,7 +30,7 @@ namespace UVFYMetadatos.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=172.17.0.3;Initial Catalog=UVFY;Persist Security Info=True;User ID=SA;Password=Qwerasdfzxcv1!");
+                optionsBuilder.UseSqlServer("Data Source=127.0.0.1;Initial Catalog=UVFY;Persist Security Info=True;User ID=SA;Password=Qwerasdfzxcv1!");
             }
         }
 

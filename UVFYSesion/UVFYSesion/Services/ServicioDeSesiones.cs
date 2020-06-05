@@ -30,7 +30,17 @@ namespace UVFYSesion
 				ExistenciaDeSesion_ = ControladorDeSesiones.SesionExiste(request.IdSesion)
 			};
 
+			if (existenciaDeSesion.ExistenciaDeSesion_)
+			{
+				existenciaDeSesion.IdUsuario = ControladorDeSesiones.ObtenerIdUsuarioPorIdSesion(request.IdSesion);
+			}
+			else
+			{
+				existenciaDeSesion.IdUsuario = 0;
+			}
+
 			return Task.FromResult(existenciaDeSesion);
 		}
+
 	}
 }

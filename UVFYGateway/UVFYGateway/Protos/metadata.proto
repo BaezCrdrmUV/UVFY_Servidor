@@ -4,29 +4,155 @@ option csharp_namespace = "UVFYMetadatos";
 
 package metadata;
 
-// The greeting service definition.
 service Metadata {
-  // Sends a greeting
   rpc CargarCancionesTodas (Token) returns (RespuestaDeCanciones);
+  rpc CargarCancionPorId (PeticionId) returns (RespuestaDeCanciones);
+  rpc CargarCancionesPorIdArtista (PeticionId) returns (RespuestaDeCanciones);
+  rpc CargarCancionesPorIdAlbum (PeticionId) returns (RespuestaDeCanciones);
+  rpc CargarCancionesPorIdPlaylist (PeticionId) returns (RespuestaDeCanciones);
+  rpc CargarCancionesPorIdGenero (PeticionId) returns (RespuestaDeCanciones);
+
+  rpc CargarArtistasTodos (Token) returns (RespuestaDeArtista);
+  rpc CargarArtistaPorId (PeticionId) returns (RespuestaDeArtista);
+  rpc CargarArtistaPorIdCancion (PeticionId) returns (RespuestaDeArtista);
+  rpc CargarArtistaPorIdAlbum (PeticionId) returns (RespuestaDeArtista);
+
+  rpc CargarAlbumPorId (PeticionId) returns (RespuestaDeAlbum);
+  rpc CargarAlbumPorIdCancion (PeticionId) returns (RespuestaDeAlbum);
+  rpc CargarAlbumPorIdArtista (PeticionId) returns (RespuestaDeAlbum);
+  rpc CargarAlbumesPorIdGenero (PeticionId) returns (RespuestaDeAlbum);
+
+  rpc CargarPlaylistPorId (PeticionId) returns (RespuestaDeCanciones);
+  rpc CargarPlaylistsPorIdUsuario (PeticionId) returns (RespuestaDePlaylist);
+
+  rpc RegistrarPlaylist (SolicitudDeAgregarPlaylist) returns (RespuestaDePlaylist);
+  rpc AgregarCancionAPlaylist (SolicitudDeAgregarCancionAPlaylist) returns (Respuesta);
+  rpc EliminarCancionDePlaylist (SolicitudDeEliminarCancionDePlaylist) returns (Respuesta);
+  rpc RenombrarPlaylist (SolicitudDeRenombrarPlaylist) returns (Respuesta);
+  rpc EliminarPlaylist (SolicitudDeEliminarPlaylist) returns (Respuesta);
+
+  rpc RegistrarAlbum (SolicitudDeRegistrarAlbum) returns (RespuestaDeAlbum);
+  rpc EliminarAlbum (SolicitudDeEliminarAlbum) returns (Respuesta);
+
+  rpc RegistrarCancion (SolicitudDeRegistrarCancion) returns (RespuestaDeCanciones);
+  rpc EliminarCancion (SolicitudDeEliminarCancion) returns (Respuesta);
 }
 
-// The request message containing the user's name.
+message SolicitudDeEliminarCancion {
+    Token token = 1; 
+    int32 idCanion = 2; 
+}
+ 
+message SolicitudDeRegistrarCancion {
+  Token token = 1; 
+  string nombre = 2;
+  repeated Genero generos = 3;
+  bytes Audio = 4;
+}
+
+message SolicitudDeEliminarAlbum{
+  Token token = 1; 
+  int32 idAlbum = 2;
+}
+
+message SolicitudDeRegistrarAlbum {
+  Token token = 1; 
+  repeated int32 idCanciones = 2;
+}
+
+message SolicitudDeAgregarPlaylist{
+  Token token = 1; 
+  string nombre = 2;
+}
+
+message SolicitudDeRenombrarPlaylist{
+  Token token = 1; 
+  string nombre = 2;
+}
+
+message SolicitudDeEliminarPlaylist{
+  Token token = 1; 
+  int32 idPlaylist = 2;
+}
+
+message SolicitudDeEliminarCancionDePlaylist{
+  Token token = 1; 
+  int32 idPlaylist = 2;
+  int32 idCacnione = 3;
+}
+
+message SolicitudDeAgregarCancionAPlaylist{
+  Token token = 1; 
+  int32 idPlaylist = 2;
+  int32 idCacnione = 3;
+}
+
 message Token {
   string tokenDeAcceso = 1;
 }
 
+message PeticionId {
+    Token token = 1; 
+    int32 idPeticion = 2;
+}
+
 message RespuestaDeCanciones {
-  bool valida = 1;
+  Respuesta respuesta = 1;
   repeated Cancion canciones = 2;
 }
 
-// The response message containing the greetings.
+message RespuestaDeArtista {
+  Respuesta respuesta = 1;
+  repeated Artista artista = 2;
+}
+
+message RespuestaDeAlbum {
+  Respuesta respuesta = 1;
+  repeated Album Album = 2;
+}
+
+message RespuestaDePlaylist{
+    Respuesta respuesta = 1; 
+    repeated Playlist playlists = 2;
+}
+
+message Respuesta{
+    bool exitosa = 1;
+    int32 motivo = 2;
+}
+
+message Artista{
+  int32 id = 1; 
+  string nombre = 2;
+  string descripcion = 3;
+}
+
+message Album{
+  int32 id = 1; 
+  string nombre = 2;
+  string descripcion = 3;
+  Genero Genero = 4;
+  Artista artista = 5;
+  bytes imagen = 6;
+}
+
 message Cancion {
   int32 id = 1;
   string nombre = 2;
   string duracion = 3; 
   string fechaDeLanzamiento = 4;
-  int32 idArtista = 5;
-  int32 idAlbum = 6;
+  Artista artista = 5;
+  Album album = 6;
   bytes imagen = 7;
+}
+
+message Playlist{
+    int32 id = 1;
+    string nombre = 2;
+}
+
+message Genero {
+    int32 id = 1; 
+    string nombre = 2; 
+    string descripcion = 3; 
 }

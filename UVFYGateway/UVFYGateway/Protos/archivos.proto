@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+option csharp_namespace = "UVFYArchivos";
+
+package ServicioDeAccesoAArchivos;
+
+service Archivos {
+  rpc CargarCaratulaDeCancionPorId (PeticionId) returns (RespuestaDeCaratula);
+  rpc CargarAudioDeCancionPorIdYCalidad (PeticionIdYCalidad) returns (RespuestaDeCancion);
+  rpc CargarCaratulaDeAlbumPorId (PeticionId) returns (RespuestaDeCaratula);
+
+  rpc GuardarAudioDeCancionPorIdYCalidad (PeticionGuardadoIdYCalidad) returns (Respuesta);
+  rpc GuardarCaratulaDeCancionPorId (PeticionGuardadoId) returns (Respuesta);
+  rpc GuardarCaratulaDeAlbumPorId (PeticionGuardadoId) returns (Respuesta);
+}
+
+message Token {
+  string tokenDeAcceso = 1;
+}
+
+message PeticionId {
+  Token token = 1; 
+  int32 idPeticion = 2;
+}
+
+message PeticionGuardadoId {
+  Token token = 1; 
+  int32 idPeticion = 2;
+  bytes datos = 3;
+}
+
+message PeticionIdYCalidad {
+  Token token = 1; 
+  int32 idPeticion = 2;
+  calidad calidad = 3;  
+}
+
+message PeticionGuardadoIdYCalidad {
+  Token token = 1; 
+  int32 idPeticion = 2;
+  calidad calidad = 3;  
+  bytes datos = 4; 
+}
+
+message RespuestaDeCaratula {
+  bytes caratula = 1;
+  int32 id = 2;
+  Respuesta respuesta = 4;
+}
+
+message RespuestaDeCancion {
+  bytes autio = 1;
+  int32 id = 2;
+  calidad calidad = 3;
+  Respuesta respuesta = 4;
+}
+
+message Respuesta{
+  bool exitosa = 1;
+  int32 motivo = 2;
+}
+
+enum calidad {
+  BAJA = 0;
+  MEDIA = 1;
+  ALTA = 2;
+}
