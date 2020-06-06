@@ -25,8 +25,8 @@ service Metadata {
   rpc CargarPlaylistPorId (PeticionId) returns (RespuestaDePlaylist);
   rpc CargarPlaylistsPorIdUsuario (PeticionId) returns (RespuestaDePlaylist);
 
-  rpc CargarGenerosTodos(Token) returns (RespuestaDeGenero);
-  rpc CargarGeneroPorid(PeticionId) returns (RespuestaDeGenero);
+  rpc CargarGenerosTodos (Token) returns (RespuestaDeGenero);
+  rpc CargarGeneroPorid (PeticionId) returns (RespuestaDeGenero);
 
   rpc RegistrarPlaylist (SolicitudDeAgregarPlaylist) returns (RespuestaDePlaylist);
   rpc AgregarCancionAPlaylist (SolicitudDeAgregarCancionAPlaylist) returns (Respuesta);
@@ -77,6 +77,7 @@ message SolicitudDeAgregarPlaylist{
 message SolicitudDeRenombrarPlaylist{
   Token token = 1; 
   string nombre = 2;
+  int32 idPlaylist = 3;
 }
 
 message SolicitudDeEliminarPlaylist{

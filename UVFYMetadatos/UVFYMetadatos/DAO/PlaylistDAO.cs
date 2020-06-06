@@ -146,5 +146,27 @@ namespace UVFYMetadatos.DAO
 			}
 			return respuesta;
 		}
+
+		public bool Renombrar(int idPlaylist, string nuevoNombre)
+		{
+			bool respuesta = false;
+			try
+			{
+				Playlists playlistCargada = CargarPorId(idPlaylist);
+				using (UVFYContext context = new UVFYContext())
+				{
+					playlistCargada = context.Playlists.Find(idPlaylist);
+					playlistCargada.Nombre = nuevoNombre;
+					context.SaveChanges();
+				}
+				respuesta = true;
+			}
+			catch (SqlException e)
+			{
+				Console.WriteLine(e.ToString());
+				throw new AccesoADatosException(e.Message, e);
+			}
+			return respuesta;
+		}
 	}
 }

@@ -31,4 +31,11 @@ message Authreply {
   bool response = 1;
   string token = 2;
   int32 idUsuario = 3;
+  TipoDeUsuarioRespuesta tipoDeUsuario = 4;
+}
+
+enum TipoDeUsuarioRespuesta{
+    Indefinido = 0;
+    Consumidor = 1;
+    Artista = 2;
 }

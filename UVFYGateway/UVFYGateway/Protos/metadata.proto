@@ -19,11 +19,14 @@ service Metadata {
 
   rpc CargarAlbumPorId (PeticionId) returns (RespuestaDeAlbum);
   rpc CargarAlbumPorIdCancion (PeticionId) returns (RespuestaDeAlbum);
-  rpc CargarAlbumPorIdArtista (PeticionId) returns (RespuestaDeAlbum);
+  rpc CargarAlbumesPorIdArtista (PeticionId) returns (RespuestaDeAlbum);
   rpc CargarAlbumesPorIdGenero (PeticionId) returns (RespuestaDeAlbum);
 
-  rpc CargarPlaylistPorId (PeticionId) returns (RespuestaDeCanciones);
+  rpc CargarPlaylistPorId (PeticionId) returns (RespuestaDePlaylist);
   rpc CargarPlaylistsPorIdUsuario (PeticionId) returns (RespuestaDePlaylist);
+
+  rpc CargarGenerosTodos (Token) returns (RespuestaDeGenero);
+  rpc CargarGeneroPorid (PeticionId) returns (RespuestaDeGenero);
 
   rpc RegistrarPlaylist (SolicitudDeAgregarPlaylist) returns (RespuestaDePlaylist);
   rpc AgregarCancionAPlaylist (SolicitudDeAgregarCancionAPlaylist) returns (Respuesta);
@@ -36,6 +39,11 @@ service Metadata {
 
   rpc RegistrarCancion (SolicitudDeRegistrarCancion) returns (RespuestaDeCanciones);
   rpc EliminarCancion (SolicitudDeEliminarCancion) returns (Respuesta);
+}
+
+message RespuestaDeGenero{
+    Respuesta Respuesta = 1;
+    repeated Genero generos = 2;
 }
 
 message SolicitudDeEliminarCancion {
@@ -63,11 +71,13 @@ message SolicitudDeRegistrarAlbum {
 message SolicitudDeAgregarPlaylist{
   Token token = 1; 
   string nombre = 2;
+  int32 idConsumidor = 3; 
 }
 
 message SolicitudDeRenombrarPlaylist{
   Token token = 1; 
   string nombre = 2;
+  int32 idPlaylist = 3;
 }
 
 message SolicitudDeEliminarPlaylist{
@@ -131,7 +141,7 @@ message Album{
   int32 id = 1; 
   string nombre = 2;
   string descripcion = 3;
-  Genero Genero = 4;
+  repeated Genero Genero = 4;
   Artista artista = 5;
   bytes imagen = 6;
 }
@@ -147,12 +157,12 @@ message Cancion {
 }
 
 message Playlist{
-    int32 id = 1;
-    string nombre = 2;
+  int32 id = 1;
+  string nombre = 2;
 }
 
 message Genero {
-    int32 id = 1; 
-    string nombre = 2; 
-    string descripcion = 3; 
+  int32 id = 1; 
+  string nombre = 2; 
+  string descripcion = 3; 
 }

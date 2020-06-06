@@ -15,13 +15,13 @@ namespace UVFYGateway.Controllers
 {
 	[ApiController]
 	[Route("Autenticacion")]
-	public class ControladorDeAutenticacion : ControllerBase
+	public class AutenticacionController : ControllerBase
 	{
 		private GrpcChannel ServicioDeAutenticacion;
 
-		private readonly ILogger<ControladorDeAutenticacion> _logger;
+		private readonly ILogger<AutenticacionController> _logger;
 
-		public ControladorDeAutenticacion(ILogger<ControladorDeAutenticacion> logger)
+		public AutenticacionController(ILogger<AutenticacionController> logger)
 		{
 			_logger = logger;
 			GrpcChannelOptions grpcChannelOptions = new GrpcChannelOptions();
@@ -95,7 +95,7 @@ namespace UVFYGateway.Controllers
 			return result;
 		}
 
-		[HttpGet]
+		[HttpPost]
 		[Route("Autenticar")]
 		public IActionResult AutenticarUsuario([FromBody] Usuario usuario)
 		{

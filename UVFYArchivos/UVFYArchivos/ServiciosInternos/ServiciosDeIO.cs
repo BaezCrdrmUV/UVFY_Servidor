@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace UVFYArchivos.ServiciosInternos
 {
@@ -58,16 +52,37 @@ namespace UVFYArchivos.ServiciosInternos
 
 		public static byte[] CargarCaratulaDeCancion(string id)
 		{
-			byte[] caratula = null;
+			byte[] caratula;
 			caratula = File.ReadAllBytes(PathCanciones + id + "/png");
 			return caratula;
 		}
 
-		public static bool VerificarEstructuraDeArchivosAlbum(string id)
+		public static byte[] CargarCaratulaDeAlbum(string id)
+		{
+			byte[] caratula;
+			caratula = File.ReadAllBytes(PathAlbumes + id);
+			return caratula;
+		}
+
+		public static bool VerificarEstructuraDeArchivosAlbum()
 		{
 			bool resultado = false;
-			throw new NotImplementedException();
+			if (Directory.Exists(PathAlbumes))
+			{
+				resultado = true;
+			}
+			else
+			{
+				resultado = false;
+			}
 			return resultado;
+		}
+
+		public static byte[] CargarAudioDeCancionPorCalidad(string id, TipoDeArchivo tipoDeArchivo)
+		{
+			byte[] caratula;
+			caratula = File.ReadAllBytes(PathCanciones + id + "/" + tipoDeArchivo.ToString());
+			return caratula;
 		}
 	}
 

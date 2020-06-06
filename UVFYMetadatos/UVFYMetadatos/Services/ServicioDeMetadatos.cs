@@ -147,7 +147,6 @@ namespace UVFYMetadatos
 			{
 				respuesta.Respuesta.Exitosa = true;
 				CancionDAO cancionDAO = new CancionDAO();
-				CargaDeArchivos cargaDeArchivos = new CargaDeArchivos();
 				Canciones cancion;
 				ArtistaDAO artistaDAO = new ArtistaDAO();
 				AlbumDAO albumDAO = new AlbumDAO();
@@ -173,26 +172,6 @@ namespace UVFYMetadatos
 					respuesta.Respuesta.Motivo = 404;
 					return Task.FromResult(respuesta);
 				}
-				byte[] imagen = new byte[1];
-				try
-				{
-					imagen = cargaDeArchivos.CargarCaratulaDeCancionPorId(cancion.Id);
-				}
-				catch (AccesoAServicioException e)
-				{
-					Console.WriteLine("Error accediendo a servicio: " + e.Message);
-					respuesta.Respuesta.Exitosa = false;
-					respuesta.Respuesta.Motivo = 500;
-					return Task.FromResult(respuesta);
-				}
-				catch (ResultadoDeServicioFallidoException e)
-				{
-					Console.WriteLine("Error interno en servicio: " + e.Message);
-					respuesta.Respuesta.Exitosa = false;
-					respuesta.Respuesta.Motivo = 500;
-					return Task.FromResult(respuesta);
-				}
-
 				respuesta.Canciones.Add(new Cancion()
 				{
 					Id = cancion.Id,
@@ -207,8 +186,6 @@ namespace UVFYMetadatos
 					{
 						Id = artista.Id
 					},
-					Imagen = Google.Protobuf.ByteString.CopyFrom(imagen)
-
 				});
 			}
 
@@ -1277,7 +1254,6 @@ namespace UVFYMetadatos
 
 		public override Task<RespuestaDePlaylist> RegistrarPlaylist(SolicitudDeAgregarPlaylist request, ServerCallContext context)
 		{
-
 			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
 			RespuestaDePlaylist respuesta = new RespuestaDePlaylist()
 			{
@@ -1459,6 +1435,70 @@ namespace UVFYMetadatos
 			}
 			return Task.FromResult(respuesta);
 		}
+
+		public override Task<Respuesta> RenombrarPlaylist(SolicitudDeRenombrarPlaylist request, ServerCallContext context)
+		{
+			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
+			Respuesta respuesta = new Respuesta
+			{
+				Exitosa = false
+			};
+			bool existeSesion;
+			try
+			{
+				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+			}
+			catch (AccesoAServicioException)
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			respuesta.Exitosa = existeSesion;
+			if (existeSesion)
+			{
+				Playlists playlistCargada;
+				PlaylistDAO playlistDAO = new PlaylistDAO();
+				bool tokenTienePermisos;
+				try
+				{
+					playlistCargada = playlistDAO.CargarPorId(request.IdPlaylist);
+					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, playlistCargada.ConsumidorId);
+				}
+				catch (AccesoADatosException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+				catch (RecursoNoExisteException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 404;
+					return Task.FromResult(respuesta);
+				}
+				if (tokenTienePermisos)
+				{
+					try
+					{
+						playlistDAO.Renombrar(request.IdPlaylist, request.Nombre);
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (RecursoNoExisteException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 404;
+						return Task.FromResult(respuesta);
+					}
+				}
+			}
+			return Task.FromResult(respuesta);
+		}
 		#endregion Playlist	
 
 		#region Genero
@@ -1522,6 +1562,7 @@ namespace UVFYMetadatos
 			}
 			return Task.FromResult(respuesta);
 		}
+
 		public override Task<RespuestaDeGenero> CargarGeneroPorid(PeticionId request, ServerCallContext context)
 		{
 			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
@@ -1581,8 +1622,5 @@ namespace UVFYMetadatos
 		}
 		#endregion Genero
 	}
-
-
-
 }
 

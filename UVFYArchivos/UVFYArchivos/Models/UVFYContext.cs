@@ -30,7 +30,7 @@ namespace UVFYArchivos.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=127.0.0.1;Initial Catalog=UVFY;Persist Security Info=True;User ID=SA;Password=Qwerasdfzxcv1!");
+                optionsBuilder.UseSqlServer("Data Source=172.17.0.3;Initial Catalog=UVFY;Persist Security Info=True;User ID=SA;Password=Qwerasdfzxcv1!");
             }
         }
 

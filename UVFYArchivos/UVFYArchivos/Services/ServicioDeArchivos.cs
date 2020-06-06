@@ -27,11 +27,21 @@ namespace UVFYArchivos
 					CancionDAO cancionDAO = new CancionDAO();
 					if (cancionDAO.CargarPorId(request.IdPeticion) != null)
 					{
-						if (ServiciosDeIO.VerificarEstructuraDeArchivosCancion(request.IdPeticion.ToString()))
+						try
 						{
-							ServiciosDeIO.GuardarArchivoDeCancion(request.IdPeticion.ToString(), request.Datos.ToByteArray(), TipoDeArchivo.png);
+							if (ServiciosDeIO.VerificarEstructuraDeArchivosCancion(request.IdPeticion.ToString()))
+							{
+								ServiciosDeIO.GuardarArchivoDeCancion(request.IdPeticion.ToString(), request.Datos.ToByteArray(), TipoDeArchivo.png);
+								respuesta.Exitosa = true;
+							}
+							else
+							{
+								//No se pudo realizar el guardado, error de io
+								respuesta.Exitosa = false;
+								respuesta.Motivo = 500;
+							}
 						}
-						else
+						catch (IOException)
 						{
 							//No se pudo realizar el guardado, error de io
 							respuesta.Exitosa = false;
@@ -46,12 +56,114 @@ namespace UVFYArchivos
 					}
 				}
 			}
-			catch (System.Net.Http.HttpRequestException)
+			catch (AccesoADatosException)
 			{
-				//Error conectandose a otro servicio
+				//Error conectandose a la base de datos
 				respuesta.Exitosa = false;
 				respuesta.Motivo = 500;
 				return Task.FromResult(respuesta);
+			}
+			return Task.FromResult(respuesta);
+		}
+
+		public override Task<RespuestaDeCaratula> CargarCaratulaDeCancionPorId(PeticionId request, ServerCallContext context)
+		{
+			RespuestaDeCaratula respuesta = new RespuestaDeCaratula()
+			{
+				Respuesta = new Respuesta()
+			};
+			try
+			{
+				if (ServiciosDeIO.VerificarEstructuraDeArchivosCancion(request.IdPeticion.ToString()))
+				{
+					respuesta.Caratula = Google.Protobuf.ByteString.CopyFrom(ServiciosDeIO.CargarCaratulaDeCancion(request.IdPeticion.ToString()));
+					respuesta.Respuesta.Exitosa = true;
+				}
+				else
+				{
+					//No se pudo realizar la lectura, error de io
+					respuesta.Respuesta.Exitosa = false;
+					respuesta.Respuesta.Motivo = 500;
+				}
+			}
+			catch (IOException)
+			{
+				//No se encontro el archivo
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 500;
+			}
+
+			return Task.FromResult(respuesta);
+		}
+
+		public override Task<RespuestaDeCaratula> CargarCaratulaDeAlbumPorId(PeticionId request, ServerCallContext context)
+		{
+			RespuestaDeCaratula respuesta = new RespuestaDeCaratula()
+			{
+				Respuesta = new Respuesta()
+			};
+			try
+			{
+				if (ServiciosDeIO.VerificarEstructuraDeArchivosAlbum())
+				{
+					respuesta.Caratula = Google.Protobuf.ByteString.CopyFrom(ServiciosDeIO.CargarCaratulaDeAlbum(request.IdPeticion.ToString()));
+					respuesta.Respuesta.Exitosa = true;
+				}
+				else
+				{
+					//No se pudo realizar la lectura, error de io
+					respuesta.Respuesta.Exitosa = false;
+					respuesta.Respuesta.Motivo = 500;
+				}
+			}
+			catch (IOException)
+			{
+				//No se encontro el archivo
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 500;
+			}
+
+			return Task.FromResult(respuesta);
+		}
+
+		public override Task<Respuesta> GuardarCaratulaDeAlbumPorId(PeticionGuardadoId request, ServerCallContext context)
+		{
+			Respuesta respuesta = new Respuesta();
+			try
+			{
+				using (UVFYContext contexto = new UVFYContext())
+				{
+					AlbumDAO albumDAO = new AlbumDAO();
+					if (albumDAO.CargarPorId(request.IdPeticion) != null)
+					{
+						try
+						{
+							if (ServiciosDeIO.VerificarEstructuraDeArchivosAlbum())
+							{
+								ServiciosDeIO.GuardarCaratulaDeAlbum(request.IdPeticion.ToString(), request.Datos.ToByteArray());
+								respuesta.Exitosa = true;
+							}
+							else
+							{
+								//No se pudo realizar el guardado, error de io
+								respuesta.Exitosa = false;
+								respuesta.Motivo = 500;
+							}
+						}
+						catch (IOException)
+						{
+							//No se pudo realizar el guardado, error de io
+							respuesta.Exitosa = false;
+							respuesta.Motivo = 500;
+						}
+					}
+					else
+					{
+						//No se encontro la cancion con el id dado (Deberia ser imposible porque se valida)
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 400;
+					}
+				}
 			}
 			catch (AccesoADatosException)
 			{
@@ -66,9 +178,69 @@ namespace UVFYArchivos
 			return Task.FromResult(respuesta);
 		}
 
-		public override Task<RespuestaDeCaratula> CargarCaratulaDeCancionPorId(PeticionId request, ServerCallContext context)
+		public override Task<Respuesta> GuardarAudioDeCancionPorIdYCalidad(PeticionGuardadoIdYCalidad request, ServerCallContext context)
 		{
-			RespuestaDeCaratula respuesta = new RespuestaDeCaratula()
+			Respuesta respuesta = new Respuesta();
+			try
+			{
+				using (UVFYContext contexto = new UVFYContext())
+				{
+					CancionDAO cancionDAO = new CancionDAO();
+					if (cancionDAO.CargarPorId(request.IdPeticion) != null)
+					{
+						try
+						{
+							if (ServiciosDeIO.VerificarEstructuraDeArchivosCancion(request.IdPeticion.ToString()))
+							{
+								switch (request.Calidad)
+								{
+									case calidad.Alta:
+										ServiciosDeIO.GuardarArchivoDeCancion(request.IdPeticion.ToString(), request.Datos.ToByteArray(), TipoDeArchivo.mp3_320);
+										break;
+									case calidad.Media:
+										ServiciosDeIO.GuardarArchivoDeCancion(request.IdPeticion.ToString(), request.Datos.ToByteArray(), TipoDeArchivo.mp3_256);
+										break;
+									case calidad.Baja:
+										ServiciosDeIO.GuardarArchivoDeCancion(request.IdPeticion.ToString(), request.Datos.ToByteArray(), TipoDeArchivo.mp3_128);
+										break;
+								}
+								respuesta.Exitosa = true;
+							}
+							else
+							{
+								//No se pudo realizar el guardado, error de io
+								respuesta.Exitosa = false;
+								respuesta.Motivo = 500;
+							}
+						}
+						catch (IOException)
+						{
+							//No se pudo realizar el guardado, error de io
+							respuesta.Exitosa = false;
+							respuesta.Motivo = 500;
+						}
+					}
+					else
+					{
+						//No se encontro la cancion con el id dado (Deberia ser imposible porque se valida)
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 400;
+					}
+				}
+			}
+			catch (AccesoADatosException)
+			{
+				//Error conectandose a la base de datos
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			return Task.FromResult(respuesta);
+		}
+
+		public override Task<RespuestaDeCancion> CargarAudioDeCancionPorIdYCalidad(PeticionIdYCalidad request, ServerCallContext context)
+		{
+			RespuestaDeCancion respuesta = new RespuestaDeCancion()
 			{
 				Respuesta = new Respuesta()
 			};
@@ -76,17 +248,19 @@ namespace UVFYArchivos
 			{
 				if (ServiciosDeIO.VerificarEstructuraDeArchivosCancion(request.IdPeticion.ToString()))
 				{
-					try
+					switch (request.Calidad)
 					{
-						respuesta.Caratula = Google.Protobuf.ByteString.CopyFrom(ServiciosDeIO.CargarCaratulaDeCancion(request.IdPeticion.ToString()));
-						respuesta.Respuesta.Exitosa = true;
+						case calidad.Alta:
+							respuesta.Autio = Google.Protobuf.ByteString.CopyFrom(ServiciosDeIO.CargarAudioDeCancionPorCalidad(request.IdPeticion.ToString(), TipoDeArchivo.mp3_320));
+							break;
+						case calidad.Media:
+							respuesta.Autio = Google.Protobuf.ByteString.CopyFrom(ServiciosDeIO.CargarAudioDeCancionPorCalidad(request.IdPeticion.ToString(), TipoDeArchivo.mp3_256));
+							break;
+						case calidad.Baja:
+							respuesta.Autio = Google.Protobuf.ByteString.CopyFrom(ServiciosDeIO.CargarAudioDeCancionPorCalidad(request.IdPeticion.ToString(), TipoDeArchivo.mp3_128));
+							break;
 					}
-					catch (IOException)
-					{
-						//No se encontro el archivo
-						respuesta.Respuesta.Exitosa = false;
-						respuesta.Respuesta.Motivo = 500;
-					}
+					respuesta.Respuesta.Exitosa = true;
 				}
 				else
 				{
@@ -95,19 +269,11 @@ namespace UVFYArchivos
 					respuesta.Respuesta.Motivo = 500;
 				}
 			}
-			catch (System.Net.Http.HttpRequestException)
+			catch (IOException)
 			{
-				//Error conectandose a otro servicio
+				//No se encontro el archivo
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 500;
-				return Task.FromResult(respuesta);
-			}
-			catch (AccesoADatosException)
-			{
-				//Error conectandose a la base de datos
-				respuesta.Respuesta.Exitosa = false;
-				respuesta.Respuesta.Motivo = 500;
-				return Task.FromResult(respuesta);
 			}
 
 			return Task.FromResult(respuesta);

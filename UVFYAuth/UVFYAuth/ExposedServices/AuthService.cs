@@ -24,7 +24,7 @@ namespace UVFYAuth.ExposedServices
 			GrpcChannelOptions grpcChannelOptions = new GrpcChannelOptions();
 			grpcChannelOptions.Credentials = ChannelCredentials.Insecure;
 			AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-			ServicioDeSesiones = GrpcChannel.ForAddress("http://172.17.0.3:80", grpcChannelOptions);
+			ServicioDeSesiones = GrpcChannel.ForAddress("http://172.17.0.5:80", grpcChannelOptions);
 		}
 
 		public override Task<Authreply> Authenticate(AuthRequest request, ServerCallContext context)
@@ -39,6 +39,7 @@ namespace UVFYAuth.ExposedServices
 			{
 				UVFYSesion.AdministradorDeSesiones.AdministradorDeSesionesClient clienteDeSesiones = new AdministradorDeSesiones.AdministradorDeSesionesClient(ServicioDeSesiones);
 				usuarioRespuesta = UsuarioDAO.CargarUsuarioPorCorreo(request.Name);
+				TipoDeUsuario tipoDeUsuario = UsuarioDAO.ObtenerTipoDeUsuarioPorID(usuarioRespuesta.Id);
 				UsuarioDeSesion usuarioDeSesion = new UsuarioDeSesion()
 				{
 					IdUsuario = usuarioRespuesta.Id
@@ -48,7 +49,8 @@ namespace UVFYAuth.ExposedServices
 				{
 					Response = true,
 					Token = sesionCreada.IdSesion,
-				IdUsuario = usuarioRespuesta.Id
+					IdUsuario = usuarioRespuesta.Id,
+					TipoDeUsuario = (TipoDeUsuarioRespuesta)(int)tipoDeUsuario
 				};
 			}
 			return Task.FromResult(respuesta);

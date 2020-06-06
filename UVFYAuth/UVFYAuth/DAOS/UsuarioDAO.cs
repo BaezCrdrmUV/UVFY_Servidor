@@ -130,7 +130,6 @@ namespace UVFYAuth.DAOS
             }
 
             return tipoDeUsuario;
-
         }
 
         public static void GuardarUsuario(Usuario usuario)

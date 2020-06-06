@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="UVFYCliente.UserControls.Reproductor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UVFYCliente.UserControls"
+             mc:Ignorable="d" Height="103" Width="682.5">
+	<DockPanel>
+		<StackPanel DockPanel.Dock="Left" Margin="10" FlowDirection="LeftToRight" VerticalAlignment="Center">
+			<Image x:Name="ImageCaratulaDeAlbum"></Image>
+			<StackPanel>
+				<Label Name="LabelNombreDaCancionActual" Content="Toxic"/>
+				<Label Name="LabelArtistaDeCancionActual" Content="BritneySpears"/>
+			</StackPanel>
+		</StackPanel>
+		<StackPanel DockPanel.Dock="Right" Margin="10" VerticalAlignment="Center">
+			<Button x:Name="ButtonColaDeReproduccion" Content="Cola de reproduccion"></Button>
+			<StackPanel>
+				<Image x:Name="ImageVolumen"></Image>
+				<ProgressBar x:Name="ProgressBarVolumen" ></ProgressBar>
+			</StackPanel>
+		</StackPanel>
+		<StackPanel Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+			<DockPanel>
+				<Button x:Name="ButtonAnterior" DockPanel.Dock="Left" Content="Atras"></Button>
+				<Button x:Name="ButtonSiguiente" DockPanel.Dock="Right" Content="Adelante"></Button>
+				<Button x:Name="ButtonReproducir" Content="Play"></Button>
+			</DockPanel>
+			<DockPanel>
+				<Label Name="LabelTiempoTranscurrido" Content="0:00" DockPanel.Dock="Left"></Label>
+				<Label Name="LabelTiempoTotal" Content="0:00" DockPanel.Dock="Right"></Label>
+				<Label></Label>
+			</DockPanel>
+			<ProgressBar x:Name="ProgressBarProgresoDeCancion" Height="20"/>
+		</StackPanel>
+	</DockPanel>
+</UserControl>
