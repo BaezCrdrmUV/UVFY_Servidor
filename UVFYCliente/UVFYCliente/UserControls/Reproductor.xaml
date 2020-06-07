@@ -4,28 +4,32 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UVFYCliente.UserControls"
-             mc:Ignorable="d" Height="103" Width="682.5">
-	<DockPanel>
-		<StackPanel DockPanel.Dock="Left" Margin="10" FlowDirection="LeftToRight" VerticalAlignment="Center">
-			<Image x:Name="ImageCaratulaDeAlbum"></Image>
+             mc:Ignorable="d" HorizontalAlignment="Stretch">
+	<DockPanel HorizontalAlignment="Stretch">
+		<StackPanel DockPanel.Dock="Left" Margin="10" Orientation="Horizontal" FlowDirection="LeftToRight" HorizontalAlignment="Stretch">
+			<Image x:Name="ImageCaratulaDeAlbum" MaxHeight="70"></Image>
 			<StackPanel>
 				<Label Name="LabelNombreDaCancionActual" Content="Toxic"/>
 				<Label Name="LabelArtistaDeCancionActual" Content="BritneySpears"/>
 			</StackPanel>
 		</StackPanel>
-		<StackPanel DockPanel.Dock="Right" Margin="10" VerticalAlignment="Center">
+		<StackPanel DockPanel.Dock="Right" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch">
 			<Button x:Name="ButtonColaDeReproduccion" Content="Cola de reproduccion"></Button>
-			<StackPanel>
-				<Image x:Name="ImageVolumen"></Image>
-				<ProgressBar x:Name="ProgressBarVolumen" ></ProgressBar>
+			<StackPanel Orientation="Horizontal">
+				<Image x:Name="ImageVolumen" Source="pack://application:,,,/Recursos/volumen.png" MaxHeight="20"></Image>
+				<ProgressBar x:Name="ProgressBarVolumen" HorizontalAlignment="Stretch" MinWidth="100" ></ProgressBar>
 			</StackPanel>
 		</StackPanel>
-		<StackPanel Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-			<DockPanel>
-				<Button x:Name="ButtonAnterior" DockPanel.Dock="Left" Content="Atras"></Button>
-				<Button x:Name="ButtonSiguiente" DockPanel.Dock="Right" Content="Adelante"></Button>
-				<Button x:Name="ButtonReproducir" Content="Play"></Button>
-			</DockPanel>
+		<StackPanel Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" >
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+				<Button x:Name="ButtonAnterior" DockPanel.Dock="Left" Click="ButtonAnterior_Click" Width="50"></Button>
+				<Button x:Name="ButtonReproducir" Click="ButtonReproducir_Click">
+					<DockPanel>
+						<Image Source="pack://application:,,,/Recursos/playback.png" MaxHeight="20"></Image>
+					</DockPanel>
+				</Button>
+				<Button x:Name="ButtonSiguiente" DockPanel.Dock="Right" Click="ButtonSiguiente_Click" Width="50"></Button>
+			</StackPanel>
 			<DockPanel>
 				<Label Name="LabelTiempoTranscurrido" Content="0:00" DockPanel.Dock="Left"></Label>
 				<Label Name="LabelTiempoTotal" Content="0:00" DockPanel.Dock="Right"></Label>

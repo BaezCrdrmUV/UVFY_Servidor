@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Logica.DAO;
+using Logica.Servicios;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Logica.Clases
 {
-	public class Cancion
+    public class Cancion
     {
         [JsonProperty("id")]
         public int Id { get; set; }
@@ -23,5 +25,26 @@ namespace Logica.Clases
         public Album Album { get; set; }
         [JsonProperty("imagen")]
         public byte[] Imagen { get; set; }
+        public byte[] Audio { get; set; }
+        public string DireccionDeCancion { get; set; }
+        public string DireccionDeCaratula { get; set; }
+        public bool CancionEstaDescargada()
+        {
+            bool respuesta;
+            respuesta = ServiciosDeIO.CancionEstaGuardada(this.Id);
+            return respuesta;
+        }
+
+        public bool CaratulaEstaDescargada()
+        {
+            bool respuesta;
+            respuesta = ServiciosDeIO.CaratulaEstaGuardada(this.Id);
+            return respuesta;
+        }
+
+        public void CargarDireccionDeCancion()
+        {
+            DireccionDeCancion = ServiciosDeIO.ConstruirDireccionDeCancion(Id);
+        }
     }
 }

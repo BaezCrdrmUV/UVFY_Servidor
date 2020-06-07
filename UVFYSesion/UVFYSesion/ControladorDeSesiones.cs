@@ -39,7 +39,7 @@ namespace UVFYSesion
 				{
 					Id = Guid.NewGuid().ToString(),
 					IdUsuario = IdUsuario,
-					HoraDeDestruccion = DateTime.Now.AddMinutes(5)
+					HoraDeDestruccion = DateTime.Now.AddDays(2)
 				};
 				SesionesConectadas.Add(sesion);
 			}

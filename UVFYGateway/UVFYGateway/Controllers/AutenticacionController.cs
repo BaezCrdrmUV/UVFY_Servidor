@@ -27,7 +27,7 @@ namespace UVFYGateway.Controllers
 			GrpcChannelOptions grpcChannelOptions = new GrpcChannelOptions();
 			grpcChannelOptions.Credentials = ChannelCredentials.Insecure;
 			AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-			ServicioDeAutenticacion = GrpcChannel.ForAddress("http://172.17.0.4:80", grpcChannelOptions);
+			ServicioDeAutenticacion = GrpcChannel.ForAddress("http://172.17.0.2:80", grpcChannelOptions);
 		}
 
 		[HttpPost]

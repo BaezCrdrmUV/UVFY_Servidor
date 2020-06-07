@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Caching;
 using Logica.Clases;
 
 namespace Logica.DAO
@@ -28,7 +29,7 @@ namespace Logica.DAO
 			respuesta = await AdministradorDePeticionesHttp.Get("Todas?" + query.ToString());
 			if (respuesta.IsSuccessStatusCode)
 			{
-				cancionesCargadas = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<List<Cancion>>(respuesta.Content.ToString());
+				cancionesCargadas = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<List<Cancion>>(respuesta.Content.ReadAsStringAsync().Result);
 			}
 			return cancionesCargadas;
 		}

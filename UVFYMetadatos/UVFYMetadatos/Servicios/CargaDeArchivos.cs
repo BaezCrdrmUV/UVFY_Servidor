@@ -19,7 +19,7 @@ namespace UVFYMetadatos.Servicios
 			GrpcChannelOptions grpcChannelOptions = new GrpcChannelOptions();
 			grpcChannelOptions.Credentials = ChannelCredentials.Insecure;
 			AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-			ServicioDeArchivos = GrpcChannel.ForAddress("http://172.17.0.7:80", grpcChannelOptions);
+			ServicioDeArchivos = GrpcChannel.ForAddress("http://172.17.0.6:80", grpcChannelOptions);
 		}
 
 		public byte[] CargarCaratulaDeCancionPorId(int id)

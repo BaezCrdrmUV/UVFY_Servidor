@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,6 +56,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConvertidoresDeDatos\ConvertidorDeIdCancionACancionEstaDescargada.cs" />
+    <Compile Include="ConvertidoresDeDatos\ConvertidorDeSegundosAMinutosYSegundos.cs" />
+    <Compile Include="Paginas\Consumidor\PantallaPrincipalDeConsumidor.xaml.cs">
+      <DependentUpon>PantallaPrincipalDeConsumidor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\ListaDeCanciones.xaml.cs">
       <DependentUpon>ListaDeCanciones.xaml</DependentUpon>
     </Compile>
@@ -75,6 +81,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Paginas\Consumidor\PantallaPrincipalDeConsumidor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Paginas\PageInicioDeSesion.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -125,6 +135,18 @@
       <Project>{3df599d8-e2ce-4934-be52-95eda571fb56}</Project>
       <Name>Logica</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recursos\play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recursos\ok.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recursos\volumen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recursos\playback.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

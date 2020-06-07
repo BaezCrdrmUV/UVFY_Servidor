@@ -12,5 +12,6 @@ namespace Logica.Clases
 		public string CorreoElectronico { get; set; }
         [JsonProperty("tipoDeUsuario")]
 		public TipoDeUsuario TipoDeUsuario { get; set; }
+		public string Token { get; set; }
 	}
 }

@@ -27,10 +27,10 @@ namespace UVFYGateway.Controllers
 			GrpcChannelOptions grpcChannelOptions = new GrpcChannelOptions();
 			grpcChannelOptions.Credentials = ChannelCredentials.Insecure;
 			AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-			ServicioDeMetadatos = GrpcChannel.ForAddress("http://172.17.0.6:80", grpcChannelOptions);
+			ServicioDeMetadatos = GrpcChannel.ForAddress("http://172.17.0.7:80", grpcChannelOptions);
 
 		}
-
+		#region Cancion
 		[HttpGet]
 		[Route("Canciones/Todas")]
 		public IActionResult Todas([FromQuery] string tokenDeAcceso)
@@ -265,5 +265,6 @@ namespace UVFYGateway.Controllers
 
 			return actionResult;
 		}
+		#endregion Cancion
 	}
 }

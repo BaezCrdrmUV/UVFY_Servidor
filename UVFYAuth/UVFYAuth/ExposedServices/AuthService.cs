@@ -24,7 +24,7 @@ namespace UVFYAuth.ExposedServices
 			GrpcChannelOptions grpcChannelOptions = new GrpcChannelOptions();
 			grpcChannelOptions.Credentials = ChannelCredentials.Insecure;
 			AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-			ServicioDeSesiones = GrpcChannel.ForAddress("http://172.17.0.5:80", grpcChannelOptions);
+			ServicioDeSesiones = GrpcChannel.ForAddress("http://172.17.0.4:80", grpcChannelOptions);
 		}
 
 		public override Task<Authreply> Authenticate(AuthRequest request, ServerCallContext context)
