@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.IO;
 using System.Net;
@@ -20,45 +20,33 @@ namespace UVFYStream
         private int fileStreamLength;
         
 
-        void Main()
+        public void Main()
         {
             if (GetFile())
             {
-                using (FileStream)
-                {
-                    fileStreamLength = (int)FileStream.Length + 1;
-                    fileInBytes = new byte[fileStreamLength];
-                    int currbyte = 0, i = 0;
-
-                    while(currbyte != -1)
-                    {
-                        currbyte = FileStream.ReadByte();
-                        fileInBytes[i++] = (byte)currbyte;
-                    }
-                }
-
-                String fileInString = Convert.ToBase64String(fileInBytes);
-                    
-
-                GetInfo();
-
+                using (StreamReader sr = new StreamReader(mp3file))
                 
-                    if(Send())
+                    text = sr.ReadToEnd();
+
+
+                    GetInfo();
+
+                while (true) 
+                {
+                    if (Send())
                     {
                         count++;
-                        Console.WriteLine($"{count} Packet have been send");
+                        Console.WriteLine($"{count} Paquete enviado");
                         Thread.Sleep(50);
                     }
                     else
                     {
-                        Console.WriteLine($"Error while sending packet",ConsoleColor.Red);
+                        Console.WriteLine($"Error", ConsoleColor.Red);
                         Thread.Sleep(50);
                     }
-                
-            }
-            else
-            {
-                Main();
+                }
+
+                    
             }
         }
 
