@@ -47,6 +47,10 @@ namespace UVFYMetadatos.DAO
 					Console.WriteLine(e.ToString());
 					throw new AccesoADatosException(e.Message, e);
 				}
+				if (playlistsCargadas == null)
+				{
+					throw new RecursoNoExisteException();
+				}
 			}
 			return playlistsCargadas;
 		}
@@ -60,7 +64,7 @@ namespace UVFYMetadatos.DAO
 			};
 			if (ValidarParaGuardar(playlistConvertida))
 			{
-				ConsumidorDAO consumidorDAO = new ConsumidorDAO();
+				UsuarioDAO consumidorDAO = new UsuarioDAO();
 				playlistConvertida.Consumidor = consumidorDAO.CargarPorId(idUsuario);
 				try
 				{
@@ -156,7 +160,38 @@ namespace UVFYMetadatos.DAO
 				using (UVFYContext context = new UVFYContext())
 				{
 					playlistCargada = context.Playlists.Find(idPlaylist);
+					if (playlistCargada == null)
+					{
+						throw new RecursoNoExisteException();
+					}
 					playlistCargada.Nombre = nuevoNombre;
+					context.SaveChanges();
+				}
+				respuesta = true;
+			}
+			catch (SqlException e)
+			{
+				Console.WriteLine(e.ToString());
+				throw new AccesoADatosException(e.Message, e);
+			}
+
+			return respuesta;
+		}
+
+		public bool Eliminar(int idPlaylist)
+		{
+			bool respuesta;
+			try
+			{
+				Playlists playlistCargada = CargarPorId(idPlaylist);
+				using (UVFYContext context = new UVFYContext())
+				{
+					playlistCargada = context.Playlists.Find(idPlaylist);
+					if (playlistCargada == null)
+					{
+						throw new RecursoNoExisteException();
+					}
+					context.Playlists.Remove(playlistCargada);
 					context.SaveChanges();
 				}
 				respuesta = true;

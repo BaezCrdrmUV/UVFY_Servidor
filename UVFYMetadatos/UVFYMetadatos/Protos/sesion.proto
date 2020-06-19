@@ -7,6 +7,7 @@ package sesion;
 service AdministradorDeSesiones {
   rpc  NuevaSesion (UsuarioDeSesion) returns (SesionPeticion);
   rpc  ExisteSesion (SesionPeticion) returns (ExistenciaDeSesion);
+  rpc  ObtenerIdDeToken (SesionPeticion) returns (UsuarioDeSesion);
 }
 
 message UsuarioDeSesion {

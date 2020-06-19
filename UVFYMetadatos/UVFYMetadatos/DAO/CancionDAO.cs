@@ -1,14 +1,9 @@
 ﻿using LogicaDeNegocios.Excepciones;
 using Microsoft.Data.SqlClient;
-using Microsoft.Data.SqlClient.Server;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
-using System.Threading.Tasks;
+using UVFYMetadatos.Enumeradores;
 using UVFYMetadatos.Exceptiones;
 using UVFYMetadatos.Models;
 
@@ -16,17 +11,16 @@ namespace UVFYMetadatos.DAO
 {
 	public class CancionDAO
 	{
-
-		public List<Canciones> CargarTodas()
+		public List<Canciones> CargarPublicas()
 		{
 			List<Canciones> cancionesCargadas = new List<Canciones>();
 			using (UVFYContext context = new UVFYContext())
 			{
 				try
 				{
-					cancionesCargadas = context.Canciones.ToList();
+					cancionesCargadas = context.Canciones.Where(p => p.Estado == (short)EstadoDeCancion.Publica).ToList();
 				}
-				catch(SqlException e)
+				catch (SqlException e)
 				{
 					Console.WriteLine(e.ToString());
 					throw new AccesoADatosException(e.Message, e);
@@ -49,7 +43,7 @@ namespace UVFYMetadatos.DAO
 					Console.WriteLine(e.ToString());
 					throw new AccesoADatosException(e.Message, e);
 				}
-				if(cancionCargada == null)
+				if (cancionCargada == null)
 				{
 					throw new RecursoNoExisteException();
 				}
@@ -64,7 +58,7 @@ namespace UVFYMetadatos.DAO
 			{
 				try
 				{
-					cancionesCargadas = context.Canciones.Where(c => c.ArtistaId == idArtista).ToList();
+					cancionesCargadas = context.Canciones.Where(c => c.ArtistaId == idArtista && c.Estado == (short)EstadoDeCancion.Publica).ToList();
 				}
 				catch (SqlException e)
 				{
@@ -75,7 +69,7 @@ namespace UVFYMetadatos.DAO
 			return cancionesCargadas;
 		}
 
-		public List<Canciones> CargarPodIdAlbum(int idAlbum)
+		public List<Canciones> CargarPorIdAlbum(int idAlbum)
 		{
 			List<Canciones> cancionesCargadas = new List<Canciones>();
 			using (UVFYContext context = new UVFYContext())
@@ -101,7 +95,7 @@ namespace UVFYMetadatos.DAO
 			{
 				try
 				{
-					relacionCancionPlaylist = context.CancionPlaylist.Where(p => p.PlaylistsId == idPlaylist).ToList();
+					relacionCancionPlaylist = context.CancionPlaylist.Where(p => p.PlaylistsId == idPlaylist && p.Cancion.Estado != (short)EstadoDeCancion.PrivadaDeArtista).ToList();
 				}
 				catch (SqlException e)
 				{
@@ -134,7 +128,7 @@ namespace UVFYMetadatos.DAO
 			{
 				try
 				{
-					relacionCancionGenero = context.CancionGenero.Where(p => p.GenerosId == idGenero).ToList();
+					relacionCancionGenero = context.CancionGenero.Where(p => p.GenerosId == idGenero && p.Canciones.Estado == (short)EstadoDeCancion.Publica).ToList();
 				}
 				catch (SqlException e)
 				{
@@ -157,6 +151,101 @@ namespace UVFYMetadatos.DAO
 				}
 			}
 			return cancionesCargadas;
+		}
+
+		public List<Canciones> CargarCancionesPrivadasPorIdArtista(int idArtista)
+		{
+			List<Canciones> cancionesCargadas = new List<Canciones>();
+			using (UVFYContext context = new UVFYContext())
+			{
+				try
+				{
+					cancionesCargadas = context.Canciones.Where(c => c.ArtistaId == idArtista && c.Estado == (short)EstadoDeCancion.PrivadaDeConsumidor).ToList();
+				}
+				catch (SqlException e)
+				{
+					Console.WriteLine(e.ToString());
+					throw new AccesoADatosException(e.Message, e);
+				}
+			}
+			return cancionesCargadas;
+		}
+
+		public int RegistrarCancionDeArtista(Canciones cancionARegistrar, List<int> generos)
+		{
+			ArtistaDAO artistaDAO = new ArtistaDAO();
+			cancionARegistrar.Artista = artistaDAO.CargarPorId(cancionARegistrar.ArtistaId);
+			cancionARegistrar.Estado = (int)EstadoDeCancion.PrivadaDeArtista;
+			foreach (int idGenero in generos)
+			{
+				CancionGenero cancionGenero = new CancionGenero();
+				GeneroDAO generoDAO = new GeneroDAO();
+				cancionGenero.Generos = generoDAO.CargarPorId(idGenero);
+				cancionARegistrar.CancionGenero.Add(cancionGenero);
+			}
+
+			try
+			{
+				using (UVFYContext context = new UVFYContext())
+				{
+					context.Canciones.Add(cancionARegistrar);
+					context.SaveChanges();
+				}
+			}
+			catch (SqlException e)
+			{
+				Console.WriteLine(e.ToString());
+				throw new AccesoADatosException(e.Message, e);
+			}
+
+			return cancionARegistrar.Id;
+		}
+
+		public int RegistrarCancionDeConsumidor(Canciones cancionARegistrar)
+		{
+			cancionARegistrar.Estado = (int)EstadoDeCancion.PrivadaDeConsumidor;
+
+			try
+			{
+				using (UVFYContext context = new UVFYContext())
+				{
+					context.Canciones.Add(cancionARegistrar);
+					context.SaveChanges();
+				}
+			}
+			catch (SqlException e)
+			{
+				Console.WriteLine(e.ToString());
+				throw new AccesoADatosException(e.Message, e);
+			}
+
+			return cancionARegistrar.Id;
+		}
+
+		public bool CambiarEstadoDeCancion(int idCancion, EstadoDeCancion estadoNuevo)
+		{
+			bool resultado = false;
+			Canciones cancionAEditar;
+			using (UVFYContext context = new UVFYContext())
+			{
+				try
+				{
+					cancionAEditar = context.Canciones.Find(idCancion);
+					cancionAEditar.Estado = (short)estadoNuevo;
+					context.SaveChanges();
+					resultado = true;
+				}
+				catch (SqlException e)
+				{
+					Console.WriteLine(e.ToString());
+					throw new AccesoADatosException(e.Message, e);
+				}
+				if (cancionAEditar == null)
+				{
+					throw new RecursoNoExisteException();
+				}
+			}
+			return resultado;
 		}
 	}
 }

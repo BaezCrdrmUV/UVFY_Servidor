@@ -22,7 +22,7 @@ namespace Logica.DAO
 		public async Task<RespuestaDeAutenticacion> ValidarUsuario(Usuario usuario)
 		{
 			HttpResponseMessage respuesta;
-			respuesta = await AdministradorDePeticionesHttp.Post<Usuario>("Autenticar", usuario);
+			respuesta = await AdministradorDePeticionesHttp.Post("Autenticar", usuario);
 			RespuestaDeAutenticacion respuestaDeAutenticacion = new RespuestaDeAutenticacion();
 			if (respuesta.IsSuccessStatusCode)
 			{

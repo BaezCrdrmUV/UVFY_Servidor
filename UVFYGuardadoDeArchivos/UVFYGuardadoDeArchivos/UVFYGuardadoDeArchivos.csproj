@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>619528eb-f464-45f1-87fc-1e35377af32d</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Protos\archivos.proto" />
+    <None Remove="Protos\guardado.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.27.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+    <PackageReference Include="NAudio" Version="1.10.0" />
+    <PackageReference Include="NAudio.Lame" Version="1.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\archivos.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\guardado.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+</Project>

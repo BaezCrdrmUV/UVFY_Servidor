@@ -59,10 +59,11 @@ namespace UVFYCliente.Paginas
 			{
 				usuario.Token = respuesta.Token;
 				usuario.TipoDeUsuario = respuesta.TipoDeUsuario;
+				usuario.Id = respuesta.IdUsuario;
 				if (respuesta.TipoDeUsuario == TipoDeUsuario.Consumidor)
 				{
 					
-					Consumidor.PantallaPrincipalDeConsumidor pantallaPrincipalDeConsumidor = new Consumidor.PantallaPrincipalDeConsumidor(usuario);
+					Consumidor.PantallaPrincipalDeConsumidor pantallaPrincipalDeConsumidor = new Consumidor.PantallaPrincipalDeConsumidor(usuario, Controlador);
 					Controlador.CambiarANuevaPage(pantallaPrincipalDeConsumidor);
 				}
 				else if (respuesta.TipoDeUsuario == TipoDeUsuario.Artista)

@@ -15,6 +15,7 @@ namespace UVFYMetadatos.Models
         public string Nombre { get; set; }
         public string Duracion { get; set; }
         public DateTime FechaDeLanzamiento { get; set; }
+        public short Estado { get; set; }
         public int ArtistaId { get; set; }
         public int AlbumsId { get; set; }
 

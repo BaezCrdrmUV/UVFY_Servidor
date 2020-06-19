@@ -65,11 +65,38 @@ namespace UVFYMetadatos.Servicios
 			{
 				throw new AccesoAServicioException("Sesiones", e);
 			}
-			if(existenciaDeSesion.IdUsuario == idUsuario)
+			if (existenciaDeSesion.IdUsuario == idUsuario)
 			{
-				resultado = true; 
+				resultado = true;
 			}
 			return resultado;
+		}
+
+		public int ObtenerIdUsuarioPorToken(string token)
+		{
+			int idUsuario;
+			AdministradorDeSesiones.AdministradorDeSesionesClient cliente = new AdministradorDeSesiones.AdministradorDeSesionesClient(ServicioDeSesiones);
+			SesionPeticion sesionPeticion = new SesionPeticion()
+			{
+				IdSesion = token
+			};
+
+			UsuarioDeSesion usuarioDeSesion;
+
+			try
+			{
+				usuarioDeSesion = cliente.ObtenerIdDeToken(sesionPeticion);
+			}
+			catch (System.Net.Http.HttpRequestException e)
+			{
+				throw new AccesoAServicioException("Sesiones", e);
+			}
+			catch (Grpc.Core.RpcException e)
+			{
+				throw new AccesoAServicioException("Sesiones", e);
+			}
+			idUsuario = usuarioDeSesion.IdUsuario;
+			return idUsuario;
 		}
 	}
 }

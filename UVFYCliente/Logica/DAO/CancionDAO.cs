@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Caching;
 using Logica.Clases;
+using Logica.ClasesDeComunicacion;
 
 namespace Logica.DAO
 {
@@ -34,39 +35,163 @@ namespace Logica.DAO
 			return cancionesCargadas;
 		}
 
-		public Cancion CargarPorId(int idCancion)
+		public async Task<Cancion> CargarPorId(int idCancion)
 		{
 			Cancion cancionCargada = new Cancion();
-			
+			var query = HttpUtility.ParseQueryString(string.Empty);
+			query["tokenDeAcceso"] = TokenDeAcceso;
+			query["idCancion"] = idCancion.ToString();
+			HttpResponseMessage respuesta;
+			respuesta = await AdministradorDePeticionesHttp.Get("PorID?" + query.ToString());
+			if (respuesta.IsSuccessStatusCode)
+			{
+				cancionCargada = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<Cancion>(respuesta.Content.ReadAsStringAsync().Result);
+			}
 			return cancionCargada;
 		}
 
-		public List<Cancion> CargarPorIdArtista(int idArtista)
+		public async Task<List<Cancion>> CargarPorIdArtista(int idArtista)
 		{
 			List<Cancion> cancionesCargadas = new List<Cancion>();
-
+			var query = HttpUtility.ParseQueryString(string.Empty);
+			query["tokenDeAcceso"] = TokenDeAcceso;
+			query["idArtista"] = idArtista.ToString();
+			HttpResponseMessage respuesta;
+			respuesta = await AdministradorDePeticionesHttp.Get("PorArtista?" + query.ToString());
+			if (respuesta.IsSuccessStatusCode)
+			{
+				cancionesCargadas = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<List<Cancion>>(respuesta.Content.ReadAsStringAsync().Result);
+			}
 			return cancionesCargadas;
 		}
 
-		public List<Cancion> CargarPodIdAlbum(int idAlbum)
+		public async Task<List<Cancion>> CargarPorIdAlbum(int idAlbum)
 		{
 			List<Cancion> cancionesCargadas = new List<Cancion>();
-
+			var query = HttpUtility.ParseQueryString(string.Empty);
+			query["tokenDeAcceso"] = TokenDeAcceso;
+			query["idAlbum"] = idAlbum.ToString();
+			HttpResponseMessage respuesta;
+			respuesta = await AdministradorDePeticionesHttp.Get("PorAlbum?" + query.ToString());
+			if (respuesta.IsSuccessStatusCode)
+			{
+				cancionesCargadas = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<List<Cancion>>(respuesta.Content.ReadAsStringAsync().Result);
+			}
 			return cancionesCargadas;
 		}
 
-		public List<Cancion> CargarPorIdPlaylist(int idPlaylist)
+		public async Task<List<Cancion>> CargarPorIdPlaylist(int idPlaylist)
 		{
 			List<Cancion> cancionesCargadas = new List<Cancion>();
-
+			var query = HttpUtility.ParseQueryString(string.Empty);
+			query["tokenDeAcceso"] = TokenDeAcceso;
+			query["idPlaylist"] = idPlaylist.ToString();
+			HttpResponseMessage respuesta;
+			respuesta = await AdministradorDePeticionesHttp.Get("PorPlaylist?" + query.ToString());
+			if (respuesta.IsSuccessStatusCode)
+			{
+				cancionesCargadas = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<List<Cancion>>(respuesta.Content.ReadAsStringAsync().Result);
+			}
 			return cancionesCargadas;
 		}
 
-		public List<Cancion> CargarPorIdGenero(int idGenero)
+		public async Task<List<Cancion>> CargarPrivadasPorIdArtista(int idArtista)
 		{
 			List<Cancion> cancionesCargadas = new List<Cancion>();
-			
+			var query = HttpUtility.ParseQueryString(string.Empty);
+			query["tokenDeAcceso"] = TokenDeAcceso;
+			query["idArtista"] = idArtista.ToString();
+			HttpResponseMessage respuesta;
+			respuesta = await AdministradorDePeticionesHttp.Get("PrivadasPorArtista?" + query.ToString());
+			if (respuesta.IsSuccessStatusCode)
+			{
+				cancionesCargadas = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<List<Cancion>>(respuesta.Content.ReadAsStringAsync().Result);
+			}
 			return cancionesCargadas;
+		}
+
+		public async Task<List<Cancion>> CargarPorIdGenero(int idGenero)
+		{
+			List<Cancion> cancionesCargadas = new List<Cancion>();
+			var query = HttpUtility.ParseQueryString(string.Empty);
+			query["tokenDeAcceso"] = TokenDeAcceso;
+			query["idGenero"] = idGenero.ToString();
+			HttpResponseMessage respuesta;
+			respuesta = await AdministradorDePeticionesHttp.Get("PorGenero?" + query.ToString());
+			if (respuesta.IsSuccessStatusCode)
+			{
+				cancionesCargadas = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<List<Cancion>>(respuesta.Content.ReadAsStringAsync().Result);
+			}
+			return cancionesCargadas;
+		}
+
+		public async Task<bool> RegistrarCancionDeArtista(string nombre, List<int> generos, byte[] audio, byte[] imagen)
+		{
+			bool resultado = false;
+			SolicitudDeRegistrarCancion peticion = new SolicitudDeRegistrarCancion()
+			{
+				token = new Token()
+				{
+					tokenDeAcceso = TokenDeAcceso
+				},
+				nombre = nombre,
+				generos = generos,
+				audio = audio,
+				imagen = imagen
+			};
+			ByteArrayContent peticionSerializada = Servicios.ServicioDeConversionDeJson.SerializarPeticion(peticion);
+			HttpResponseMessage respuesta;
+			respuesta = await AdministradorDePeticionesHttp.Post("RegistrarDeArtista", peticionSerializada);
+
+			if (respuesta.IsSuccessStatusCode)
+			{
+				resultado = true;
+			}
+
+			return resultado;
+		}
+
+		public async Task<bool> RegistrarCancionDeConsumidor(string nombre, List<int> generos, byte[] audio, byte[] imagen)
+		{
+			bool resultado = false;
+			SolicitudDeRegistrarCancion peticion = new SolicitudDeRegistrarCancion()
+			{
+				token = new Token()
+				{
+					tokenDeAcceso = TokenDeAcceso
+				},
+				nombre = nombre,
+				generos = generos,
+				audio = audio,
+				imagen = imagen
+			};
+			ByteArrayContent peticionSerializada = Servicios.ServicioDeConversionDeJson.SerializarPeticion(peticion);
+			HttpResponseMessage respuesta;
+			respuesta = await AdministradorDePeticionesHttp.Post("RegistrarDeConsumidor", peticionSerializada);
+
+			if (respuesta.IsSuccessStatusCode)
+			{
+				resultado = true;
+			}
+
+			return resultado;
+		}
+
+		public async Task<bool> EliminarCancion(int idCancion)
+		{
+			bool resultado = false;
+			var query = HttpUtility.ParseQueryString(string.Empty);
+			query["tokenDeAcceso"] = TokenDeAcceso;
+			query["idCancion"] = idCancion.ToString();
+			HttpResponseMessage respuesta;
+			respuesta = await AdministradorDePeticionesHttp.Delete("Eliminar?" + query.ToString());
+			if (respuesta.IsSuccessStatusCode)
+			{
+				resultado = true;
+			}
+
+			return resultado;
+
 		}
 	}
 }

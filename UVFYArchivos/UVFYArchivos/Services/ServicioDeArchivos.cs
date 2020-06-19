@@ -269,7 +269,7 @@ namespace UVFYArchivos
 					respuesta.Respuesta.Motivo = 500;
 				}
 			}
-			catch (IOException)
+			catch (IOException e)
 			{
 				//No se encontro el archivo
 				respuesta.Respuesta.Exitosa = false;

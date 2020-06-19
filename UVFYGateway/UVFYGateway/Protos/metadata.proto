@@ -11,6 +11,12 @@ service Metadata {
   rpc CargarCancionesPorIdAlbum (PeticionId) returns (RespuestaDeCanciones);
   rpc CargarCancionesPorIdPlaylist (PeticionId) returns (RespuestaDeCanciones);
   rpc CargarCancionesPorIdGenero (PeticionId) returns (RespuestaDeCanciones);
+  rpc CargarCancionesPrivadasPorIdArtista (PeticionId) returns (RespuestaDeCanciones);
+  rpc RegistrarCancionDeArtista (SolicitudDeRegistrarCancion) returns (RespuestaDeCanciones);
+  rpc RegistrarCancionDeConsumidor (SolicitudDeRegistrarCancion) returns (RespuestaDeCanciones);
+  rpc EliminarCancion (SolicitudDeEliminarCancion) returns (Respuesta);
+  rpc LiberarCancion (SolicitudDeCambiarEstadoDeCancion) returns (Respuesta);
+  rpc PrivatizarCancion (SolicitudDeCambiarEstadoDeCancion) returns (Respuesta);
 
   rpc CargarArtistasTodos (Token) returns (RespuestaDeArtista);
   rpc CargarArtistaPorId (PeticionId) returns (RespuestaDeArtista);
@@ -21,6 +27,10 @@ service Metadata {
   rpc CargarAlbumPorIdCancion (PeticionId) returns (RespuestaDeAlbum);
   rpc CargarAlbumesPorIdArtista (PeticionId) returns (RespuestaDeAlbum);
   rpc CargarAlbumesPorIdGenero (PeticionId) returns (RespuestaDeAlbum);
+  rpc RegistrarAlbum (SolicitudDeRegistrarAlbum) returns (RespuestaDeAlbum);
+  rpc AgregarCancionAAlbum (SolicitudDeAgregarCancionAPlaylist) returns (Respuesta);
+  rpc EliminarCancionDeAlbum (SolicitudDeEliminarCancionDePlaylist) returns (Respuesta);
+  rpc EliminarAlbum (SolicitudDeEliminarAlbum) returns (Respuesta);
 
   rpc CargarPlaylistPorId (PeticionId) returns (RespuestaDePlaylist);
   rpc CargarPlaylistsPorIdUsuario (PeticionId) returns (RespuestaDePlaylist);
@@ -33,29 +43,29 @@ service Metadata {
   rpc EliminarCancionDePlaylist (SolicitudDeEliminarCancionDePlaylist) returns (Respuesta);
   rpc RenombrarPlaylist (SolicitudDeRenombrarPlaylist) returns (Respuesta);
   rpc EliminarPlaylist (SolicitudDeEliminarPlaylist) returns (Respuesta);
-
-  rpc RegistrarAlbum (SolicitudDeRegistrarAlbum) returns (RespuestaDeAlbum);
-  rpc EliminarAlbum (SolicitudDeEliminarAlbum) returns (Respuesta);
-
-  rpc RegistrarCancion (SolicitudDeRegistrarCancion) returns (RespuestaDeCanciones);
-  rpc EliminarCancion (SolicitudDeEliminarCancion) returns (Respuesta);
 }
 
+message SolicitudDeCambiarEstadoDeCancion{
+  Token token = 1; 
+  int32 idCancion = 2; 
+}
+ 
 message RespuestaDeGenero{
-    Respuesta Respuesta = 1;
-    repeated Genero generos = 2;
+  Respuesta Respuesta = 1;
+  repeated Genero generos = 2;
 }
 
 message SolicitudDeEliminarCancion {
-    Token token = 1; 
-    int32 idCanion = 2; 
+  Token token = 1; 
+  int32 idCancion = 2; 
 }
  
 message SolicitudDeRegistrarCancion {
   Token token = 1; 
   string nombre = 2;
-  repeated Genero generos = 3;
-  bytes Audio = 4;
+  repeated int32 generos = 3;
+  bytes audio = 4;
+  bytes imagen = 5;
 }
 
 message SolicitudDeEliminarAlbum{
@@ -65,13 +75,15 @@ message SolicitudDeEliminarAlbum{
 
 message SolicitudDeRegistrarAlbum {
   Token token = 1; 
-  repeated int32 idCanciones = 2;
+  string nombre = 2; 
+  string descripcion = 3; 
+  repeated int32 generos = 4;
+  bytes imagen = 5;
 }
 
 message SolicitudDeAgregarPlaylist{
   Token token = 1; 
   string nombre = 2;
-  int32 idConsumidor = 3; 
 }
 
 message SolicitudDeRenombrarPlaylist{
@@ -88,13 +100,13 @@ message SolicitudDeEliminarPlaylist{
 message SolicitudDeEliminarCancionDePlaylist{
   Token token = 1; 
   int32 idPlaylist = 2;
-  int32 idCacnione = 3;
+  int32 idCancion = 3;
 }
 
 message SolicitudDeAgregarCancionAPlaylist{
   Token token = 1; 
   int32 idPlaylist = 2;
-  int32 idCacnione = 3;
+  int32 idCancion = 3;
 }
 
 message Token {
@@ -149,7 +161,7 @@ message Album{
 message Cancion {
   int32 id = 1;
   string nombre = 2;
-  string duracion = 3; 
+}  string duracion = 3; 
   string fechaDeLanzamiento = 4;
   Artista artista = 5;
   Album album = 6;
@@ -157,12 +169,12 @@ message Cancion {
 }
 
 message Playlist{
-  int32 id = 1;
-  string nombre = 2;
+    int32 id = 1;
+    string nombre = 2;
 }
 
 message Genero {
-  int32 id = 1; 
-  string nombre = 2; 
-  string descripcion = 3; 
+    int32 id = 1; 
+    string nombre = 2; 
+    string descripcion = 3; 
 }

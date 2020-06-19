@@ -42,5 +42,22 @@ namespace UVFYSesion
 			return Task.FromResult(existenciaDeSesion);
 		}
 
+		public override Task<UsuarioDeSesion> ObtenerIdDeToken(SesionPeticion request, ServerCallContext context)
+		{
+			UsuarioDeSesion usuario = new UsuarioDeSesion();
+			bool existenciaDeSesion = ControladorDeSesiones.SesionExiste(request.IdSesion);
+			
+			if (existenciaDeSesion)
+			{
+				usuario.IdUsuario = ControladorDeSesiones.ObtenerIdUsuarioPorIdSesion(request.IdSesion);
+			}
+			else
+			{
+				usuario.IdUsuario = 0;
+			}
+
+			return Task.FromResult(usuario);
+		}
+
 	}
 }

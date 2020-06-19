@@ -1,0 +1,23 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "UVFYGuardadoDeArchivos";
+
+package guardado;
+
+service Guardado {
+  rpc GuardarAudioDeCancionDeArtista (PeticionDeGuardadoDeCancion) returns (Respuesta);
+}
+
+message PeticionDeGuardadoDeCancion{
+  bytes audioDeCancion = 1;
+  int32 idCancion = 2;
+}
+
+message Token {
+  string tokenDeAcceso = 1;
+}
+
+message Respuesta{
+    bool exitosa = 1;
+    int32 motivo = 2;
+}

@@ -57,12 +57,47 @@ namespace Logica
 			return respuesta;
 		}
 
-		public async Task<HttpResponseMessage> Post<T>(string peticion, T objeto)
+		public async Task<HttpResponseMessage> Post<T>(string peticion, T parametros)
 		{
 			HttpResponseMessage respuesta;
 			try
 			{
-				respuesta = await Cliente.PostAsJsonAsync(peticion, objeto);
+				respuesta = await Cliente.PostAsJsonAsync(peticion, parametros);
+			}
+			catch (HttpException e)
+			{
+				throw new AccesoADatosException(e.Message, e);
+			}
+
+			if (!respuesta.IsSuccessStatusCode)
+			{
+				if (respuesta.StatusCode == (System.Net.HttpStatusCode)404)
+				{
+					throw new RecursoNoExisteException();
+				}
+				else if (respuesta.StatusCode == (System.Net.HttpStatusCode)403)
+				{
+					throw new TokenInvalidoException();
+				}
+				else if (respuesta.StatusCode == (System.Net.HttpStatusCode)500)
+				{
+					throw new ErrorInternoDeServicioException();
+				}
+				else
+				{
+					throw new Exception("Se recibio un codigo de error inesperado: " + respuesta.StatusCode.ToString());
+				}
+			}
+
+			return respuesta;
+		}
+
+		public async Task<HttpResponseMessage> Delete(string peticion)
+		{
+			HttpResponseMessage respuesta;
+			try
+			{
+				respuesta = await Cliente.DeleteAsync(peticion);
 			}
 			catch (HttpException e)
 			{

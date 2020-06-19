@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="UVFYCliente.UserControls.ListaDeArtistas"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UVFYCliente.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+	<StackPanel>
+		<DataGrid x:Name="DataGridArtistas" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserAddRows="false" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False" SelectionChanged="DataGridCanciones_SelectionChanged">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}"></DataGridTextColumn>
+			</DataGrid.Columns>
+			<DataGrid.ColumnHeaderStyle>
+				<Style TargetType="{x:Type DataGridColumnHeader}">
+					<Setter Property="FontWeight" Value="Bold"/>
+					<Setter Property="HorizontalAlignment" Value="Stretch"/>
+					<Setter Property="HorizontalContentAlignment" Value="Center"/>
+				</Style>
+			</DataGrid.ColumnHeaderStyle>
+			<DataGrid.CellStyle>
+				<Style TargetType="{x:Type DataGridCell}">
+					<Setter Property="FontWeight" Value="DemiBold"/>
+					<Setter Property="HorizontalAlignment" Value="Stretch"/>
+					<Setter Property="HorizontalContentAlignment" Value="Center"/>
+				</Style>
+			</DataGrid.CellStyle>
+		</DataGrid>
+	</StackPanel>
+</UserControl>

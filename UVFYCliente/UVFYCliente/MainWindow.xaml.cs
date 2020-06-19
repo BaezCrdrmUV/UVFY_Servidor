@@ -90,5 +90,10 @@ namespace UVFYCliente
 
             Content = inicioDeSesion;
         }
+
+        public void CambiarNombreDeVentana(string nombre)
+        {
+            this.Title = nombre;
+        }
     }
 }

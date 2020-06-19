@@ -61,8 +61,20 @@
     <Compile Include="Paginas\Consumidor\PantallaPrincipalDeConsumidor.xaml.cs">
       <DependentUpon>PantallaPrincipalDeConsumidor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\ListaDeAlbumes.xaml.cs">
+      <DependentUpon>ListaDeAlbumes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ListaDeArtistas.xaml.cs">
+      <DependentUpon>ListaDeArtistas.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\ListaDeCanciones.xaml.cs">
       <DependentUpon>ListaDeCanciones.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ListaDeGeneros.xaml.cs">
+      <DependentUpon>ListaDeGeneros.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ListaDePlaylists.xaml.cs">
+      <DependentUpon>ListaDePlaylists.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\Reproductor.xaml.cs">
       <DependentUpon>Reproductor.xaml</DependentUpon>
@@ -89,7 +101,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\ListaDeAlbumes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ListaDeArtistas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\ListaDeCanciones.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ListaDeGeneros.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ListaDePlaylists.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -14,5 +14,7 @@ namespace UVFYCliente
         void CambiarANuevaPage(Page page);
 
         void Regresar();
+
+        void CambiarNombreDeVentana(string nombre);
     }
 }

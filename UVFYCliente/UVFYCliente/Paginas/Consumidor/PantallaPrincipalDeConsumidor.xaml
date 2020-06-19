@@ -11,7 +11,7 @@
 
     <DockPanel>
 		<c:Reproductor x:Name="Reproductor" DockPanel.Dock="Bottom" HorizontalAlignment="Stretch"/>
-		<TabControl TabStripPlacement="Bottom">
+		<TabControl x:Name="TabControlPaneles" SelectionChanged="TabControlPaneles_SelectionChanged" TabStripPlacement="Bottom">
 			<TabItem Header="Canciones">
 				<DockPanel>
 					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
@@ -23,14 +23,56 @@
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Artistas">
+				<DockPanel>
+					<StackPanel>
+						<Label Name="LabelNombreDeArtista" Content="NombreDeArtista" FontSize="20"/>
+						<Label Name="LabelDescripcionDeArtista" Content="DescripcionDeArtista"/>
+						<TextBox x:Name="TextBoxBusquedaArtista" Margin="5"/>
+						<DockPanel>
+							<c:ListaDeArtistas x:Name="ListaDeArtistas" DockPanel.Dock="Left"></c:ListaDeArtistas>
+							<c:ListaDeAlbumes x:Name="ListaDeAlbumesDeArtista"></c:ListaDeAlbumes>
+							<c:ListaDeCanciones x:Name="ListaDeCancionesDeArtista" DockPanel.Dock="Right"></c:ListaDeCanciones>
+						</DockPanel>
+					</StackPanel>
+				</DockPanel>
 			</TabItem>
-			<TabItem Header="Albumes">
+			<TabItem Header="Generos">
+				<DockPanel>
+					<StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<Image x:Name="ImageCaratulaDeAlbumSeleccionado" Height="70" Width="70" ></Image>
+							<StackPanel>
+								<Label x:Name="LabelNombreDeAlbum" Content="NombreDeAlbum" FontSize="20"/>
+								<Label x:Name="LabelNombreDeArtistaDeAlbum" Content="NombreDeArtistaDeAlbum"/>
+							</StackPanel>
+						</StackPanel>
+						<TextBox x:Name="TextBoxBusquedaAlbum" Margin="5"/>
+						<DockPanel>
+							<c:ListaDeGeneros x:Name="ListaDeGeneros"></c:ListaDeGeneros>
+							<c:ListaDeCanciones x:Name="ListaDeCancionesDeAlbum" DockPanel.Dock="Right"></c:ListaDeCanciones>
+						</DockPanel>
+					</StackPanel>
+				</DockPanel>
 			</TabItem>
 			<TabItem Header="Descargas">
+				<DockPanel>
+					<StackPanel>
+						<TextBox x:Name="TextBoxBusquedaDescargas" Margin="5"/>
+						<c:ListaDeCanciones x:Name="ListaDeCancionesDescargadas"></c:ListaDeCanciones>
+					</StackPanel>
+				</DockPanel>
 			</TabItem>
 			<TabItem Header="Playlists">
+				<DockPanel>
+					<StackPanel>
+						<TextBox x:Name="TextBoxBusquedaPlaylists" Margin="5"/>
+						<DockPanel>
+							<c:ListaDePlaylists x:Name="ListaDePlaylists"></c:ListaDePlaylists>
+							<c:ListaDeCanciones x:Name="ListaDeCancionesDePlaylist" DockPanel.Dock="Right"></c:ListaDeCanciones>
+						</DockPanel>
+					</StackPanel>
+				</DockPanel>
 			</TabItem>
-
 		</TabControl>
 	</DockPanel>
 </Page>

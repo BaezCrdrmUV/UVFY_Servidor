@@ -4,6 +4,8 @@ namespace Logica.Clases
 {
 	public class Usuario
 	{
+		[JsonProperty("idUsuario")]
+		public int Id { get; set; }
         [JsonProperty("nombreDeUsuario")]
 		public string NombreDeusuario { get; set; }
         [JsonProperty("contraseña")]

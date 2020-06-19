@@ -8,11 +8,13 @@
 
   <ItemGroup>
     <None Remove="Protos\archivos.proto" />
+    <None Remove="Protos\guardado.proto" />
     <None Remove="Protos\sesion.proto" />
   </ItemGroup>
 
   <ItemGroup>
     <Protobuf Include="Protos\archivos.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\guardado.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\metadata.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\sesion.proto" GrpcServices="Client" />
   </ItemGroup>

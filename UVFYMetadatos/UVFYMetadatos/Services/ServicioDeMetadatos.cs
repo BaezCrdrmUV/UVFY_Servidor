@@ -3,8 +3,10 @@ using LogicaDeNegocios.Excepciones;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UVFYMetadatos.DAO;
+using UVFYMetadatos.Enumeradores;
 using UVFYMetadatos.Exceptiones;
 using UVFYMetadatos.Models;
 using UVFYMetadatos.Servicios;
@@ -50,7 +52,7 @@ namespace UVFYMetadatos
 				CancionDAO cancionDAO = new CancionDAO();
 				try
 				{
-					canciones = cancionDAO.CargarTodas();
+					canciones = cancionDAO.CargarPublicas();
 				}
 				catch (AccesoADatosException)
 				{
@@ -278,7 +280,7 @@ namespace UVFYMetadatos
 				respuesta.Respuesta.Motivo = 403;
 			}
 
-			return base.CargarCancionesPorIdArtista(request, context);
+			return Task.FromResult(respuesta);
 		}
 
 		public override Task<RespuestaDeCanciones> CargarCancionesPorIdAlbum(PeticionId request, ServerCallContext context)
@@ -309,7 +311,7 @@ namespace UVFYMetadatos
 				CancionDAO cancionDAO = new CancionDAO();
 				try
 				{
-					canciones = cancionDAO.CargarPodIdAlbum(request.IdPeticion);
+					canciones = cancionDAO.CargarPorIdAlbum(request.IdPeticion);
 				}
 				catch (AccesoADatosException)
 				{
@@ -460,6 +462,107 @@ namespace UVFYMetadatos
 			return Task.FromResult(respuesta);
 		}
 
+		public override Task<RespuestaDeCanciones> CargarCancionesPrivadasPorIdArtista(PeticionId request, ServerCallContext context)
+		{
+			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
+			RespuestaDeCanciones respuesta = new RespuestaDeCanciones()
+			{
+				Respuesta = new Respuesta
+				{
+					Exitosa = false
+				}
+			};
+			bool existeSesion = false;
+			try
+			{
+				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+			}
+			catch (AccesoAServicioException)
+			{
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			respuesta.Respuesta.Exitosa = existeSesion;
+			if (existeSesion)
+			{
+				List<Canciones> canciones = new List<Canciones>();
+				CancionDAO cancionDAO = new CancionDAO();
+				bool tokenTienePermisos;
+				try
+				{
+					canciones = cancionDAO.CargarCancionesPrivadasPorIdArtista(request.IdPeticion);
+					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, canciones[0].ArtistaId);
+				}
+				catch (AccesoADatosException)
+				{
+					respuesta.Respuesta.Exitosa = false;
+					respuesta.Respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+				catch (RecursoNoExisteException)
+				{
+					respuesta.Respuesta.Exitosa = false;
+					respuesta.Respuesta.Motivo = 404;
+					return Task.FromResult(respuesta);
+				}
+				if (tokenTienePermisos)
+				{
+
+
+					foreach (Canciones cancion in canciones)
+					{
+						AlbumDAO albumDAO = new AlbumDAO();
+						Albumes album = new Albumes();
+						try
+						{
+							album = albumDAO.CargarPorIdCancion(cancion.Id);
+						}
+						catch (AccesoADatosException)
+						{
+							respuesta.Respuesta.Exitosa = false;
+							respuesta.Respuesta.Motivo = 500;
+							return Task.FromResult(respuesta);
+						}
+						catch (RecursoNoExisteException)
+						{
+							respuesta.Respuesta.Exitosa = false;
+							respuesta.Respuesta.Motivo = 404;
+							return Task.FromResult(respuesta);
+						}
+						Cancion cancionAEnviar = new Cancion()
+						{
+							Id = cancion.Id,
+							Nombre = cancion.Nombre,
+							Duracion = cancion.Duracion,
+							FechaDeLanzamiento = cancion.FechaDeLanzamiento.ToString(),
+							Album = new Album()
+							{
+								Id = album.Id
+							},
+							Artista = new Artista()
+							{
+								Id = request.IdPeticion
+							}
+						};
+						respuesta.Canciones.Add(cancionAEnviar);
+					}
+				}
+				else
+				{
+					respuesta.Respuesta.Exitosa = false;
+					respuesta.Respuesta.Motivo = 403;
+				}
+			}
+			else
+			{
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 403;
+			}
+
+			return Task.FromResult(respuesta);
+		}
+
 		public override Task<RespuestaDeCanciones> CargarCancionesPorIdGenero(PeticionId request, ServerCallContext context)
 		{
 			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
@@ -550,6 +653,444 @@ namespace UVFYMetadatos
 			}
 			return Task.FromResult(respuesta);
 		}
+
+		public override Task<RespuestaDeCanciones> RegistrarCancionDeConsumidor(SolicitudDeRegistrarCancion request, ServerCallContext context)
+		{
+			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
+			RespuestaDeCanciones respuesta = new RespuestaDeCanciones()
+			{
+				Respuesta = new Respuesta
+				{
+					Exitosa = false
+				}
+			};
+			bool existeSesion;
+			int idUsuario;
+			bool usuarioEsConsumidor;
+			int idCancionGuardada;
+			UsuarioDAO consumidorDAO = new UsuarioDAO();
+			try
+			{
+				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+			}
+			catch (AccesoAServicioException)
+			{
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			respuesta.Respuesta.Exitosa = existeSesion;
+			if (existeSesion)
+			{
+				idUsuario = validacionDeSesiones.ObtenerIdUsuarioPorToken(request.Token.TokenDeAcceso);
+				usuarioEsConsumidor = consumidorDAO.IdEsDeConsumidor(idUsuario);
+				if (usuarioEsConsumidor)
+				{
+					CancionDAO cancionDAO = new CancionDAO();
+					Canciones canciones = new Canciones()
+					{
+						Nombre = request.Nombre
+					};
+					try
+					{
+						idCancionGuardada = cancionDAO.RegistrarCancionDeConsumidor(canciones);
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Respuesta.Exitosa = false;
+						respuesta.Respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+
+					GuardadoDeImagenes cargaDeArchivos = new GuardadoDeImagenes();
+
+					try
+					{
+						cargaDeArchivos.GuardarAudioDeCancionDeConsumidor(idCancionGuardada, request.Audio.ToByteArray());
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Respuesta.Exitosa = false;
+						respuesta.Respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (AccesoAServicioException)
+					{
+						respuesta.Respuesta.Exitosa = false;
+						respuesta.Respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (ResultadoDeServicioFallidoException)
+					{
+						respuesta.Respuesta.Exitosa = false;
+						respuesta.Respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+				}
+				else
+				{
+					respuesta.Respuesta.Exitosa = false;
+					respuesta.Respuesta.Motivo = 403;
+					return Task.FromResult(respuesta);
+				}
+			}
+			else
+			{
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 403;
+				return Task.FromResult(respuesta);
+			}
+
+			if (idCancionGuardada > 0)
+			{
+				respuesta.Canciones.Add(new Cancion
+				{
+					Id = idCancionGuardada
+				});
+			}
+			else
+			{
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+
+			return Task.FromResult(respuesta);
+		}
+
+		public override Task<RespuestaDeCanciones> RegistrarCancionDeArtista(SolicitudDeRegistrarCancion request, ServerCallContext context)
+		{
+			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
+			RespuestaDeCanciones respuesta = new RespuestaDeCanciones()
+			{
+				Respuesta = new Respuesta
+				{
+					Exitosa = false
+				}
+			};
+			bool existeSesion;
+			int idUsuario;
+			bool usuarioEsArtista;
+			int idCancionGuardada;
+			try
+			{
+				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+			}
+			catch (AccesoAServicioException)
+			{
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			if (existeSesion)
+			{
+				UsuarioDAO usuarioDAO = new UsuarioDAO();
+				idUsuario = validacionDeSesiones.ObtenerIdUsuarioPorToken(request.Token.TokenDeAcceso);
+				usuarioEsArtista = usuarioDAO.IdEsDeArtista(idUsuario);
+				if (usuarioEsArtista)
+				{
+					CancionDAO cancionDAO = new CancionDAO();
+					Canciones cancionARegistrar = new Canciones()
+					{
+						Nombre = request.Nombre,
+						ArtistaId = idUsuario
+					};
+					try
+					{
+						idCancionGuardada = cancionDAO.RegistrarCancionDeArtista(cancionARegistrar, request.Generos.ToList());
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Respuesta.Exitosa = false;
+						respuesta.Respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+
+					GuardadoDeAudio guardadoDeAudio = new GuardadoDeAudio();
+					GuardadoDeImagenes guardadoDeImagenes = new GuardadoDeImagenes();
+					try
+					{
+						guardadoDeAudio.GuardarAudioDeCancionDeArtista(idCancionGuardada, request.Audio.ToByteArray());
+						guardadoDeImagenes.GuardarCaratulaDeCancion(idCancionGuardada, request.Imagen.ToByteArray());
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Respuesta.Exitosa = false;
+						respuesta.Respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (AccesoAServicioException)
+					{
+						respuesta.Respuesta.Exitosa = false;
+						respuesta.Respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (ResultadoDeServicioFallidoException)
+					{
+						respuesta.Respuesta.Exitosa = false;
+						respuesta.Respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+				}
+				else
+				{
+					respuesta.Respuesta.Exitosa = false;
+					respuesta.Respuesta.Motivo = 403;
+					return Task.FromResult(respuesta);
+				}
+			}
+			else
+			{
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 403;
+				return Task.FromResult(respuesta);
+			}
+
+			if (idCancionGuardada > 0)
+			{
+				respuesta.Canciones.Add(new Cancion
+				{
+					Id = idCancionGuardada
+				});
+			}
+			else
+			{
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+
+			return Task.FromResult(respuesta);
+		}
+
+		public override Task<Respuesta> LiberarCancion(SolicitudDeCambiarEstadoDeCancion request, ServerCallContext context)
+		{
+			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
+
+			Respuesta respuesta = new Respuesta
+			{
+				Exitosa = false
+			};
+			bool existeSesion = false;
+			try
+			{
+				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+			}
+			catch (AccesoAServicioException)
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			respuesta.Exitosa = existeSesion;
+			if (existeSesion)
+			{
+				Canciones cancionCargada = new Canciones();
+				CancionDAO cancionDAO = new CancionDAO();
+				bool tokenTienePermisos;
+				try
+				{
+					cancionCargada = cancionDAO.CargarPorId(request.IdCancion);
+					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, cancionCargada.ArtistaId);
+				}
+				catch (AccesoADatosException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+				catch (RecursoNoExisteException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 404;
+					return Task.FromResult(respuesta);
+				}
+				if (tokenTienePermisos)
+				{
+					try
+					{
+						respuesta.Exitosa = cancionDAO.CambiarEstadoDeCancion(cancionCargada.Id, EstadoDeCancion.Publica);
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (RecursoNoExisteException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 404;
+						return Task.FromResult(respuesta);
+					}
+				}
+				else
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 403;
+				}
+			}
+			else
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 403;
+			}
+
+			return Task.FromResult(respuesta);
+		}
+
+		public override Task<Respuesta> PrivatizarCancion(SolicitudDeCambiarEstadoDeCancion request, ServerCallContext context)
+		{
+			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
+
+			Respuesta respuesta = new Respuesta
+			{
+				Exitosa = false
+			};
+			bool existeSesion = false;
+			try
+			{
+				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+			}
+			catch (AccesoAServicioException)
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			respuesta.Exitosa = existeSesion;
+			if (existeSesion)
+			{
+				Canciones cancionCargada = new Canciones();
+				CancionDAO cancionDAO = new CancionDAO();
+				bool tokenTienePermisos;
+				try
+				{
+					cancionCargada = cancionDAO.CargarPorId(request.IdCancion);
+					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, cancionCargada.ArtistaId);
+				}
+				catch (AccesoADatosException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+				catch (RecursoNoExisteException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 404;
+					return Task.FromResult(respuesta);
+				}
+				if (tokenTienePermisos)
+				{
+					try
+					{
+						respuesta.Exitosa = cancionDAO.CambiarEstadoDeCancion(cancionCargada.Id, EstadoDeCancion.PrivadaDeArtista);
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (RecursoNoExisteException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 404;
+						return Task.FromResult(respuesta);
+					}
+				}
+				else
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 403;
+				}
+			}
+			else
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 403;
+			}
+
+			return Task.FromResult(respuesta);
+		}
+
+		public override Task<Respuesta> EliminarCancion(SolicitudDeEliminarCancion request, ServerCallContext context)
+		{
+			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
+
+			Respuesta respuesta = new Respuesta
+			{
+				Exitosa = false
+			};
+			bool existeSesion = false;
+			try
+			{
+				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+			}
+			catch (AccesoAServicioException)
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			respuesta.Exitosa = existeSesion;
+			if (existeSesion)
+			{
+				Canciones cancionCargada = new Canciones();
+				CancionDAO cancionDAO = new CancionDAO();
+				bool tokenTienePermisos;
+				try
+				{
+					cancionCargada = cancionDAO.CargarPorId(request.IdCancion);
+					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, cancionCargada.ArtistaId);
+				}
+				catch (AccesoADatosException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+				catch (RecursoNoExisteException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 404;
+					return Task.FromResult(respuesta);
+				}
+				if (tokenTienePermisos)
+				{
+					try
+					{
+						respuesta.Exitosa = cancionDAO.CambiarEstadoDeCancion(cancionCargada.Id, EstadoDeCancion.NoDisponible);
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (RecursoNoExisteException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 404;
+						return Task.FromResult(respuesta);
+					}
+				}
+				else
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 403;
+				}
+			}
+			else
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 403;
+			}
+
+			return Task.FromResult(respuesta);
+		}
+
 		#endregion Canciones
 
 		#region Artista
@@ -1132,6 +1673,408 @@ namespace UVFYMetadatos
 			}
 			return Task.FromResult(respuesta);
 		}
+
+		public override Task<RespuestaDeAlbum> RegistrarAlbum(SolicitudDeRegistrarAlbum request, ServerCallContext context)
+		{
+			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
+			RespuestaDeAlbum respuesta = new RespuestaDeAlbum()
+			{
+				Respuesta = new Respuesta
+				{
+					Exitosa = false
+				}
+			};
+			bool existeSesion;
+			int idUsuario;
+			bool usuarioEsArtista;
+			int idAlbumGuardado;
+			UsuarioDAO consumidorDAO = new UsuarioDAO();
+			try
+			{
+				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+			}
+			catch (AccesoAServicioException)
+			{
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			respuesta.Respuesta.Exitosa = existeSesion;
+			if (existeSesion)
+			{
+				try
+				{
+					idUsuario = validacionDeSesiones.ObtenerIdUsuarioPorToken(request.Token.TokenDeAcceso);
+					usuarioEsArtista = consumidorDAO.IdEsDeArtista(idUsuario);
+				}
+				catch (AccesoAServicioException)
+				{
+					respuesta.Respuesta.Exitosa = false;
+					respuesta.Respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+				catch (AccesoADatosException)
+				{
+					respuesta.Respuesta.Exitosa = false;
+					respuesta.Respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+				if (usuarioEsArtista)
+				{
+					AlbumDAO albumDAO = new AlbumDAO();
+					GuardadoDeImagenes guardadoDeImagenes = new GuardadoDeImagenes();
+					Albumes album = new Albumes()
+					{
+						Nombre = request.Nombre
+					};
+					try
+					{
+						idAlbumGuardado = albumDAO.RegistrarAlbum(album, request.Generos.ToList());
+						guardadoDeImagenes.GuardarCaratulaDeAlbum(idAlbumGuardado, request.Imagen.ToByteArray());
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Respuesta.Exitosa = false;
+						respuesta.Respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+				}
+				else
+				{
+					respuesta.Respuesta.Exitosa = false;
+					respuesta.Respuesta.Motivo = 403;
+					return Task.FromResult(respuesta);
+				}
+			}
+			else
+			{
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 403;
+				return Task.FromResult(respuesta);
+			}
+
+			if (idAlbumGuardado > 0)
+			{
+				respuesta.Album.Add(new Album
+				{
+					Id = idAlbumGuardado
+				});
+			}
+			else
+			{
+				respuesta.Respuesta.Exitosa = false;
+				respuesta.Respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+
+			return Task.FromResult(respuesta);
+		}
+
+		public override Task<Respuesta> AgregarCancionAAlbum(SolicitudDeAgregarCancionAPlaylist request, ServerCallContext context)
+		{
+			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
+			Respuesta respuesta = new Respuesta
+			{
+				Exitosa = false
+			};
+			bool existeSesion;
+			int idUsuario;
+			bool usuarioEsArtista;
+			UsuarioDAO consumidorDAO = new UsuarioDAO();
+			try
+			{
+				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+			}
+			catch (AccesoAServicioException)
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			respuesta.Exitosa = existeSesion;
+			if (existeSesion)
+			{
+				try
+				{
+					idUsuario = validacionDeSesiones.ObtenerIdUsuarioPorToken(request.Token.TokenDeAcceso);
+					usuarioEsArtista = consumidorDAO.IdEsDeArtista(idUsuario);
+				}
+				catch (AccesoAServicioException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+				catch (AccesoADatosException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+
+				if (usuarioEsArtista)
+				{
+					Albumes albumCargado;
+					AlbumDAO albumDAO = new AlbumDAO();
+					bool tokenTienePermisos;
+					try
+					{
+						albumCargado = albumDAO.CargarPorId(request.IdPlaylist);
+						tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, albumCargado.ArtistasId);
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (RecursoNoExisteException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 404;
+						return Task.FromResult(respuesta);
+					}
+					if (tokenTienePermisos)
+					{
+						CancionDAO cancionDAO = new CancionDAO();
+						try
+						{
+							albumDAO.AgregarCancionAAlbum(request.IdPlaylist, request.IdCancion);
+							cancionDAO.CambiarEstadoDeCancion(request.IdCancion, EstadoDeCancion.Publica);
+						}
+						catch (AccesoADatosException)
+						{
+							respuesta.Exitosa = false;
+							respuesta.Motivo = 500;
+							return Task.FromResult(respuesta);
+						}
+						catch (RecursoNoExisteException)
+						{
+							respuesta.Exitosa = false;
+							respuesta.Motivo = 404;
+							return Task.FromResult(respuesta);
+						}
+					}
+					else
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 403;
+						return Task.FromResult(respuesta);
+					}
+				}
+				else
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 403;
+					return Task.FromResult(respuesta);
+				}
+			}
+			else
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 403;
+				return Task.FromResult(respuesta);
+			}
+			return Task.FromResult(respuesta);
+		}
+
+		public override Task<Respuesta> EliminarCancionDeAlbum(SolicitudDeEliminarCancionDePlaylist request, ServerCallContext context)
+		{
+			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
+			Respuesta respuesta = new Respuesta
+			{
+				Exitosa = false
+			};
+			bool existeSesion;
+			int idUsuario;
+			bool usuarioEsArtista;
+			UsuarioDAO consumidorDAO = new UsuarioDAO();
+			try
+			{
+				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+			}
+			catch (AccesoAServicioException)
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			respuesta.Exitosa = existeSesion;
+			if (existeSesion)
+			{
+				try
+				{
+					idUsuario = validacionDeSesiones.ObtenerIdUsuarioPorToken(request.Token.TokenDeAcceso);
+					usuarioEsArtista = consumidorDAO.IdEsDeArtista(idUsuario);
+				}
+				catch (AccesoAServicioException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+				catch (AccesoADatosException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+
+				if (usuarioEsArtista)
+				{
+					Albumes albumCargado;
+					AlbumDAO albumDAO = new AlbumDAO();
+					bool tokenTienePermisos;
+					try
+					{
+						albumCargado = albumDAO.CargarPorId(request.IdPlaylist);
+						tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, albumCargado.ArtistasId);
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (RecursoNoExisteException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 404;
+						return Task.FromResult(respuesta);
+					}
+					if (tokenTienePermisos)
+					{
+						CancionDAO cancionDAO = new CancionDAO();
+						try
+						{
+							albumDAO.EliminarCancionDeAlbum(request.IdPlaylist, request.IdCancion);
+							cancionDAO.CambiarEstadoDeCancion(request.IdCancion, EstadoDeCancion.PrivadaDeArtista);
+						}
+						catch (AccesoADatosException)
+						{
+							respuesta.Exitosa = false;
+							respuesta.Motivo = 500;
+							return Task.FromResult(respuesta);
+						}
+						catch (RecursoNoExisteException)
+						{
+							respuesta.Exitosa = false;
+							respuesta.Motivo = 404;
+							return Task.FromResult(respuesta);
+						}
+					}
+					else
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 403;
+						return Task.FromResult(respuesta);
+					}
+				}
+				else
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 403;
+					return Task.FromResult(respuesta);
+				}
+			}
+			else
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 403;
+				return Task.FromResult(respuesta);
+			}
+			return Task.FromResult(respuesta);
+		}
+
+		public override Task<Respuesta> EliminarAlbum(SolicitudDeEliminarAlbum request, ServerCallContext context)
+		{
+			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
+			Respuesta respuesta = new Respuesta
+			{
+				Exitosa = false
+			};
+			bool existeSesion;
+			int idConsumidor;
+			try
+			{
+				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+				idConsumidor = validacionDeSesiones.ObtenerIdUsuarioPorToken(request.Token.TokenDeAcceso);
+			}
+			catch (AccesoAServicioException)
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			respuesta.Exitosa = existeSesion;
+			if (existeSesion)
+			{
+				Albumes albumCargado;
+				AlbumDAO albumDAO = new AlbumDAO();
+				bool tokenTienePermisos;
+				bool resultadoDeEliminacion = false;
+				try
+				{
+					albumCargado = albumDAO.CargarPorId(request.IdAlbum);
+					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, albumCargado.ArtistasId);
+				}
+				catch (AccesoADatosException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+				catch (RecursoNoExisteException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 404;
+					return Task.FromResult(respuesta);
+				}
+				if (tokenTienePermisos)
+				{
+					try
+					{
+						resultadoDeEliminacion = albumDAO.Eliminar(request.IdAlbum);
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (RecursoNoExisteException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 404;
+						return Task.FromResult(respuesta);
+					}
+				}
+				else
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 403;
+					return Task.FromResult(respuesta);
+				}
+
+				if (resultadoDeEliminacion)
+				{
+					respuesta.Exitosa = true;
+				}
+				else
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+			}
+			else
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 403;
+				return Task.FromResult(respuesta);
+			}
+			return Task.FromResult(respuesta);
+		}
 		#endregion Album
 
 		#region Playlist
@@ -1263,9 +2206,11 @@ namespace UVFYMetadatos
 				}
 			};
 			bool existeSesion;
+			int idConsumidor;
 			try
 			{
 				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+				idConsumidor = validacionDeSesiones.ObtenerIdUsuarioPorToken(request.Token.TokenDeAcceso);
 			}
 			catch (AccesoAServicioException)
 			{
@@ -1280,7 +2225,7 @@ namespace UVFYMetadatos
 				bool resultadoDeAdicion;
 				try
 				{
-					resultadoDeAdicion = playlistDAO.Registrar(request.Nombre, request.IdConsumidor);
+					resultadoDeAdicion = playlistDAO.Registrar(request.Nombre, idConsumidor);
 				}
 				catch (AccesoADatosException)
 				{
@@ -1353,7 +2298,7 @@ namespace UVFYMetadatos
 				{
 					try
 					{
-						playlistDAO.AgregarCancion(request.IdPlaylist, request.IdCacnione);
+						playlistDAO.AgregarCancion(request.IdPlaylist, request.IdCancion);
 					}
 					catch (AccesoADatosException)
 					{
@@ -1417,7 +2362,7 @@ namespace UVFYMetadatos
 				{
 					try
 					{
-						playlistDAO.EliminarCancion(request.IdPlaylist, request.IdCacnione);
+						playlistDAO.EliminarCancion(request.IdPlaylist, request.IdCancion);
 					}
 					catch (AccesoADatosException)
 					{
@@ -1496,6 +2441,96 @@ namespace UVFYMetadatos
 						return Task.FromResult(respuesta);
 					}
 				}
+			}
+			return Task.FromResult(respuesta);
+		}
+
+		public override Task<Respuesta> EliminarPlaylist(SolicitudDeEliminarPlaylist request, ServerCallContext context)
+		{
+			ValidacionDeSesiones validacionDeSesiones = new ValidacionDeSesiones();
+			Respuesta respuesta = new Respuesta
+			{
+				Exitosa = false
+			};
+			bool existeSesion;
+			int idConsumidor;
+			try
+			{
+				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
+				idConsumidor = validacionDeSesiones.ObtenerIdUsuarioPorToken(request.Token.TokenDeAcceso);
+			}
+			catch (AccesoAServicioException)
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 500;
+				return Task.FromResult(respuesta);
+			}
+			respuesta.Exitosa = existeSesion;
+			if (existeSesion)
+			{
+				Playlists playlistCargada;
+				PlaylistDAO playlistDAO = new PlaylistDAO();
+				bool tokenTienePermisos;
+				bool resultadoDeEliminacion = false;
+				try
+				{
+					playlistCargada = playlistDAO.CargarPorId(request.IdPlaylist);
+					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, playlistCargada.ConsumidorId);
+				}
+				catch (AccesoADatosException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+				catch (RecursoNoExisteException)
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 404;
+					return Task.FromResult(respuesta);
+				}
+				if (tokenTienePermisos)
+				{
+					try
+					{
+						resultadoDeEliminacion = playlistDAO.Eliminar(request.IdPlaylist);
+					}
+					catch (AccesoADatosException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (RecursoNoExisteException)
+					{
+						respuesta.Exitosa = false;
+						respuesta.Motivo = 404;
+						return Task.FromResult(respuesta);
+					}
+				}
+				else
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 403;
+					return Task.FromResult(respuesta);
+				}
+
+				if (resultadoDeEliminacion)
+				{
+					respuesta.Exitosa = true;
+				}
+				else
+				{
+					respuesta.Exitosa = false;
+					respuesta.Motivo = 500;
+					return Task.FromResult(respuesta);
+				}
+			}
+			else
+			{
+				respuesta.Exitosa = false;
+				respuesta.Motivo = 403;
+				return Task.FromResult(respuesta);
 			}
 			return Task.FromResult(respuesta);
 		}
