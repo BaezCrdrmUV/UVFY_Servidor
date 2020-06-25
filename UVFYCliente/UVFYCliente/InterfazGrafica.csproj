@@ -58,8 +58,25 @@
     </ApplicationDefinition>
     <Compile Include="ConvertidoresDeDatos\ConvertidorDeIdCancionACancionEstaDescargada.cs" />
     <Compile Include="ConvertidoresDeDatos\ConvertidorDeSegundosAMinutosYSegundos.cs" />
-    <Compile Include="Paginas\Consumidor\PantallaPrincipalDeConsumidor.xaml.cs">
+    <Compile Include="EncadenadorDeExcepciones.cs" />
+    <Compile Include="MensajeDeErrorParaMessageBox.cs" />
+    <Compile Include="Paginas\PaginasDeArtista\EstudioDeCanciones.xaml.cs">
+      <DependentUpon>EstudioDeCanciones.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Paginas\PaginasDeArtista\PantallaPrincipalDeArtista.xaml.cs">
+      <DependentUpon>PantallaPrincipalDeArtista.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Paginas\PaginasDeArtista\RegistroDeAlbum.xaml.cs">
+      <DependentUpon>RegistroDeAlbum.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Paginas\PaginasDeArtista\RegistroDeCancion.xaml.cs">
+      <DependentUpon>RegistroDeCancion.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Paginas\PaginasDeConsumidor\PantallaPrincipalDeConsumidor.xaml.cs">
       <DependentUpon>PantallaPrincipalDeConsumidor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Paginas\RegistroDeUsuario.xaml.cs">
+      <DependentUpon>RegistroDeUsuario.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\ListaDeAlbumes.xaml.cs">
       <DependentUpon>ListaDeAlbumes.xaml</DependentUpon>
@@ -93,11 +110,31 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Paginas\Consumidor\PantallaPrincipalDeConsumidor.xaml">
+    <Page Include="Paginas\PaginasDeArtista\EstudioDeCanciones.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Paginas\PaginasDeArtista\PantallaPrincipalDeArtista.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Paginas\PaginasDeArtista\RegistroDeAlbum.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Paginas\PaginasDeArtista\RegistroDeCancion.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Paginas\PaginasDeConsumidor\PantallaPrincipalDeConsumidor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Paginas\PageInicioDeSesion.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Paginas\RegistroDeUsuario.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -176,5 +213,6 @@
   <ItemGroup>
     <Resource Include="Recursos\playback.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

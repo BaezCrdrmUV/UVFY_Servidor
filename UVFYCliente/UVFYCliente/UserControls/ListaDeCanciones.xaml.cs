@@ -54,6 +54,7 @@ namespace UVFYCliente.UserControls
 			ControladorDeReproduccion = controlador;
 		}
 
+
 		public void AsignarToken(string token)
 		{
 			Token = token;

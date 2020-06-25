@@ -30,7 +30,7 @@ namespace UVFYArchivos.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=172.17.0.3;Initial Catalog=UVFY;Persist Security Info=True;User ID=SA;Password=Qwerasdfzxcv1!");
+                optionsBuilder.UseSqlServer("Data Source=172.17.0.2;Initial Catalog=UVFY;Persist Security Info=True;User ID=SA;Password=Qwerasdfzxcv1!");
             }
         }
 
@@ -134,9 +134,14 @@ namespace UVFYArchivos.Models
                 entity.HasIndex(e => e.ArtistaId)
                     .HasName("IX_FK_ArtistaCancion");
 
+                entity.HasIndex(e => e.ConsumidorId)
+                    .HasName("IX_FK_ConsumidorCancion");
+
                 entity.Property(e => e.AlbumsId).HasColumnName("Albums_Id");
 
                 entity.Property(e => e.ArtistaId).HasColumnName("Artista_Id");
+
+                entity.Property(e => e.ConsumidorId).HasColumnName("Consumidor_Id");
 
                 entity.Property(e => e.Duracion).IsRequired();
 
@@ -147,14 +152,17 @@ namespace UVFYArchivos.Models
                 entity.HasOne(d => d.Albums)
                     .WithMany(p => p.Canciones)
                     .HasForeignKey(d => d.AlbumsId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CancionAlbum");
 
                 entity.HasOne(d => d.Artista)
                     .WithMany(p => p.Canciones)
                     .HasForeignKey(d => d.ArtistaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ArtistaCancion");
+
+                entity.HasOne(d => d.Consumidor)
+                    .WithMany(p => p.Canciones)
+                    .HasForeignKey(d => d.ConsumidorId)
+                    .HasConstraintName("FK_ConsumidorCancion");
             });
 
             modelBuilder.Entity<Generos>(entity =>

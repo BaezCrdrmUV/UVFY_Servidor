@@ -1,18 +1,8 @@
 ﻿using Logica.Clases;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace UVFYCliente.UserControls
 {
@@ -56,13 +46,23 @@ namespace UVFYCliente.UserControls
 			ActualizarLista();
 		}
 
-		private void DataGridCanciones_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void DataGridAlbumes_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (DataGridAlbumes.SelectedItem != null)
+			if (e.AddedItems.Count == 1)
 			{
-				Album albumSeleccionado = ((FrameworkElement)sender).DataContext as Album;
+				Album albumSeleccionado = e.AddedItems[0] as Album;
 				AlbumSeleccionado = albumSeleccionado;
 			}
+		}
+
+		private void ButtonDescargar_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void ButtonAñadirACola_Click(object sender, RoutedEventArgs e)
+		{
+
 		}
 	}
 }

@@ -160,7 +160,7 @@ namespace UVFYMetadatos.DAO
 			{
 				try
 				{
-					cancionesCargadas = context.Canciones.Where(c => c.ArtistaId == idArtista && c.Estado == (short)EstadoDeCancion.PrivadaDeConsumidor).ToList();
+					cancionesCargadas = context.Canciones.Where(c => c.ArtistaId == idArtista && c.Estado == (short)EstadoDeCancion.PrivadaDeArtista).ToList();
 				}
 				catch (SqlException e)
 				{
@@ -174,7 +174,8 @@ namespace UVFYMetadatos.DAO
 		public int RegistrarCancionDeArtista(Canciones cancionARegistrar, List<int> generos)
 		{
 			ArtistaDAO artistaDAO = new ArtistaDAO();
-			cancionARegistrar.Artista = artistaDAO.CargarPorId(cancionARegistrar.ArtistaId);
+			cancionARegistrar.Artista = artistaDAO.CargarPorId(cancionARegistrar.ArtistaId.GetValueOrDefault());
+			cancionARegistrar.FechaDeLanzamiento = DateTime.Now;
 			cancionARegistrar.Estado = (int)EstadoDeCancion.PrivadaDeArtista;
 			foreach (int idGenero in generos)
 			{
@@ -188,6 +189,11 @@ namespace UVFYMetadatos.DAO
 			{
 				using (UVFYContext context = new UVFYContext())
 				{
+					context.Attach(cancionARegistrar.Artista);
+					foreach(CancionGenero cancionGenero in cancionARegistrar.CancionGenero)
+					{
+						context.Attach(cancionGenero.Generos);
+					}
 					context.Canciones.Add(cancionARegistrar);
 					context.SaveChanges();
 				}

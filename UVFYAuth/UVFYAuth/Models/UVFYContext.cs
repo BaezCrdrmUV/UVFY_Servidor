@@ -30,7 +30,7 @@ namespace UVFYAuth.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=172.17.0.3;Initial Catalog=UVFY;Persist Security Info=True;User ID=SA;Password=Qwerasdfzxcv1!");
+                optionsBuilder.UseSqlServer("Data Source=172.17.0.2;Initial Catalog=UVFY;Persist Security Info=True;User ID=SA;Password=Qwerasdfzxcv1!");
             }
         }
 
@@ -138,7 +138,7 @@ namespace UVFYAuth.Models
 
                 entity.Property(e => e.ArtistaId).HasColumnName("Artista_Id");
 
-                entity.Property(e => e.Duracion).IsRequired();
+                entity.Property(e => e.Duracion).IsRequired(); 
 
                 entity.Property(e => e.FechaDeLanzamiento).HasColumnType("datetime");
 

@@ -1,5 +1,6 @@
 ﻿using Logica.Clases;
 using Logica.DAO;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -105,6 +106,33 @@ namespace Logica.Servicios
 			}
 
 			return imagen;
+		}
+
+		public static bool ExisteArchivo(string direccionDeArchivo)
+		{
+			bool resultado = false;
+
+			if (File.Exists(direccionDeArchivo))
+			{
+				resultado = true;
+			}
+
+			return resultado;
+		}
+
+		public static byte[] CargarBytesDeArchivo(string direccionDeArchivo)
+		{
+			byte[] resultado = File.ReadAllBytes(direccionDeArchivo);
+			return resultado; 
+		}
+
+		public static int ObtenerDuracionDeCancion(string direccionDeArchivo)
+		{
+			int resultado;
+			Mp3FileReader mp3FileReader = new Mp3FileReader(direccionDeArchivo);
+			resultado = (int)mp3FileReader.TotalTime.TotalSeconds;
+
+			return resultado;
 		}
 	}
 }

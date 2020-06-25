@@ -66,6 +66,7 @@ message SolicitudDeRegistrarCancion {
   repeated int32 generos = 3;
   bytes audio = 4;
   bytes imagen = 5;
+  int32 duracion = 6;
 }
 
 message SolicitudDeEliminarAlbum{

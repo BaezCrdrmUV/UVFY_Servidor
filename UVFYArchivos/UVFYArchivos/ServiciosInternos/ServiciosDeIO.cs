@@ -22,7 +22,8 @@ namespace UVFYArchivos.ServiciosInternos
 				}
 				else
 				{
-					resultado = false;
+					Directory.CreateDirectory(PathCanciones);
+					resultado = true;
 				}
 			}
 			return resultado;
@@ -35,7 +36,7 @@ namespace UVFYArchivos.ServiciosInternos
 			{
 				File.Delete(path);
 			}
-			File.Create(path);
+
 			File.WriteAllBytes(path, datos);
 		}
 
@@ -46,7 +47,7 @@ namespace UVFYArchivos.ServiciosInternos
 			{
 				File.Delete(path);
 			}
-			File.Create(path);
+
 			File.WriteAllBytes(path, datos);
 		}
 
@@ -73,7 +74,8 @@ namespace UVFYArchivos.ServiciosInternos
 			}
 			else
 			{
-				resultado = false;
+				Directory.CreateDirectory(PathAlbumes);
+				resultado = true;
 			}
 			return resultado;
 		}

@@ -1,0 +1,49 @@
+﻿<Window x:Class="UVFYCliente.Paginas.PaginasDeArtista.RegistroDeCancion"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UVFYCliente.Paginas.PaginasDeArtista"
+        mc:Ignorable="d"
+        Title="RegistroDeCancion" Height="450" Width="525">
+    <DockPanel>
+		<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+			<Button x:Name="ButtonCancelar" Content="Cancelar" HorizontalAlignment="Right" Click="ButtonCancelar_Click"></Button>
+			<Button x:Name="ButtonGuardar" Content="Registrar cancion" HorizontalAlignment="Left" Click="ButtonGuardar_Click"/>
+		</StackPanel>
+		<StackPanel Orientation="Horizontal">
+			<StackPanel>
+				<StackPanel Orientation="Horizontal" Margin="10">
+					<Label Content="Nombre"></Label>
+					<TextBox x:Name="TextBoxNombreDeCancion" MinWidth="200"></TextBox>
+				</StackPanel>
+				<StackPanel>
+					<StackPanel Orientation="Horizontal" Margin="10">
+						<Image x:Name="ImageIconoDeArchivoDeAudio" MinHeight="20" MinWidth="20" Margin="10"></Image>
+						<Button x:Name="ButtonElegirArchivoDeAudio" Content="Elegir archivo" Margin="10" Click="ButtonElegirArchivoDeAudio_Click"></Button>
+						<Button x:Name="ButtonVistaPreviaDeAudio" Content="Vista previa" Margin="10" Click="ButtonVistaPreviaDeAudio_Click"></Button>
+					</StackPanel>
+					<Label x:Name="LabelDireccionDeArchivoDeAudio" Content="C:/Prueba.mp3" Margin="10"></Label>
+				</StackPanel>
+				<StackPanel>
+					<StackPanel Orientation="Horizontal" Margin="10">
+						<Image x:Name="ImageIconoDeArchivoDeCaratula" MinHeight="40" MinWidth="40"></Image>
+						<Button x:Name="ButtonElegirArchivoDeCaratula" Content="Elegir archivo" Margin="10" Click="ButtonElegirArchivoDeCaratula_Click"></Button>
+						<Image x:Name="ImagenVistaPreviaDeCaratula" MaxHeight="60" MaxWidth="60" MinHeight="40" MinWidth="40"></Image>
+					</StackPanel>
+					<Label x:Name="LabelDireccionDeArchivoDeCaratula" Content="C:/Prueba.png" Margin="10"></Label>
+				</StackPanel>
+			</StackPanel>
+			<StackPanel Margin="10">
+				<Label Content="Generos" Margin="10"></Label>
+				<DataGrid x:Name="DataGridGeneros" Margin="10" MinHeight="300" MinWidth="200" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False"> 
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Genero" Binding="{Binding Nombre}" MinWidth="90"></DataGridTextColumn>
+						<DataGridCheckBoxColumn x:Name="CheckBoxColumn" MinWidth="100"></DataGridCheckBoxColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</StackPanel>
+		</StackPanel>
+		
+    </DockPanel>
+</Window>

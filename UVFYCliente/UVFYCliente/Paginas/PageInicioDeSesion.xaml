@@ -8,10 +8,14 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PageInicioDeSesion">
 
-	<Grid>
-		<Image HorizontalAlignment="Center" Height="156" Margin="245,66,399,0" VerticalAlignment="Top" Width="156"/>
-		<TextBox x:Name="TextBoxNombreDeUsuario" HorizontalAlignment="Center" Height="23" Margin="0,241,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="157"  TabIndex="1" TextChanged="TextBoxNombreDeUsuario_TextChanged"/>
-		<PasswordBox x:Name="PasswordBoxContraseña" HorizontalAlignment="Center" Margin="0,271,0,0" VerticalAlignment="Top" Width="157" Height="23" TabIndex="2" PasswordChanged="PasswordBoxContraseña_PasswordChanged"/>
-		<Button x:Name="ButtonIniciarSesion" Content="Iniciar Sesion" HorizontalAlignment="Center" Margin="358,313,358,0" VerticalAlignment="Top" Width="76"  TabIndex="3" Click="ButtonIniciarSesion_Click"/>
-	</Grid>
+	<StackPanel>
+		<Image Margin="60,20" Height="156"  Width="156"/>
+		<TextBox x:Name="TextBoxNombreDeUsuario" Margin="2.5" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" VerticalAlignment="Top" Width="157"  TabIndex="1" TextChanged="TextBoxNombreDeUsuario_TextChanged"/>
+		<PasswordBox x:Name="PasswordBoxContraseña" Margin="2.5" HorizontalAlignment="Center" VerticalAlignment="Top" Width="157" Height="23" TabIndex="2" PasswordChanged="PasswordBoxContraseña_PasswordChanged"/>
+		<Button x:Name="ButtonIniciarSesion" Margin="2.5" Content=" Iniciar Sesion " HorizontalAlignment="Center" TabIndex="3" Click="ButtonIniciarSesion_Click"/>
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="25">
+			<Label Content="¿No tienes cuenta?"></Label>
+			<Button x:Name="ButtonCrearCuenta" Content="Registrate" Background="Transparent" BorderBrush="Transparent" Foreground="Blue" Click="ButtonCrearCuenta_Click" ></Button>
+		</StackPanel>
+	</StackPanel>
 </Page>

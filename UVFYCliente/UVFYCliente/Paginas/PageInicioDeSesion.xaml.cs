@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Logica.Clases;
+using Logica.ClasesDeComunicacion;
+using Logica.DAO;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using static UVFYCliente.UtileriasGráficas;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Net;
-using Logica.Clases;
-using Logica.ClasesDeComunicacion;
-using Logica.DAO;
 
 namespace UVFYCliente.Paginas
 {
@@ -25,8 +13,8 @@ namespace UVFYCliente.Paginas
 	/// </summary>
 	public partial class PageInicioDeSesion : Page
 	{
-		ControladorDeCambioDePantalla Controlador;
-		public PageInicioDeSesion(ControladorDeCambioDePantalla controlador)
+		IControladorDeCambioDePantalla Controlador;
+		public PageInicioDeSesion(IControladorDeCambioDePantalla controlador)
 		{
 			Controlador = controlador;
 			InitializeComponent();
@@ -42,18 +30,25 @@ namespace UVFYCliente.Paginas
 		{
 			MostrarEstadoDeValidacionContraseña(sender as PasswordBox);
 		}
-
 		private async void ButtonIniciarSesion_Click(object sender, RoutedEventArgs e)
 		{
 			Usuario usuario = new Usuario()
 			{
-				CorreoElectronico = TextBoxNombreDeUsuario.Text,
-				Contraseña = PasswordBoxContraseña.Password
+				CorreoElectronico = "britny@correo.com",
+				Contraseña = "perros"
 			};
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
-			//Catch excepcion personalizada NoServerException
-			var respuestaDeAutenticacion = await usuarioDAO.ValidarUsuario(usuario);
-			RespuestaDeAutenticacion respuesta = respuestaDeAutenticacion;
+			RespuestaDeAutenticacion respuesta = new RespuestaDeAutenticacion();
+			try
+			{
+				respuesta = await usuarioDAO.ValidarUsuario(usuario);
+			}
+			catch (Exception ex)
+			{
+				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+				return;
+			}
 
 			if (respuesta.Response)
 			{
@@ -62,13 +57,14 @@ namespace UVFYCliente.Paginas
 				usuario.Id = respuesta.IdUsuario;
 				if (respuesta.TipoDeUsuario == TipoDeUsuario.Consumidor)
 				{
-					
+
 					Consumidor.PantallaPrincipalDeConsumidor pantallaPrincipalDeConsumidor = new Consumidor.PantallaPrincipalDeConsumidor(usuario, Controlador);
 					Controlador.CambiarANuevaPage(pantallaPrincipalDeConsumidor);
 				}
 				else if (respuesta.TipoDeUsuario == TipoDeUsuario.Artista)
 				{
-					MessageBox.Show("Artistas no soportados aun");
+					PaginasDeArtista.PantallaPrincipalDeArtista pantallaPrincipalDeArtista = new PaginasDeArtista.PantallaPrincipalDeArtista(usuario, Controlador);
+					Controlador.CambiarANuevaPage(pantallaPrincipalDeArtista);
 				}
 				else
 				{
@@ -79,6 +75,12 @@ namespace UVFYCliente.Paginas
 			{
 				MessageBox.Show("Correo electronico o contraseña invalidos");
 			}
+		}
+
+		private void ButtonCrearCuenta_Click(object sender, RoutedEventArgs e)
+		{
+			RegistroDeUsuario registroDeUsuario = new RegistroDeUsuario(Controlador);
+			Controlador.CambiarANuevaPage(registroDeUsuario);
 		}
 	}
 }

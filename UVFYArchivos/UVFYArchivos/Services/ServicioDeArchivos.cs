@@ -213,7 +213,7 @@ namespace UVFYArchivos
 								respuesta.Motivo = 500;
 							}
 						}
-						catch (IOException)
+						catch (IOException e)
 						{
 							//No se pudo realizar el guardado, error de io
 							respuesta.Exitosa = false;

@@ -2,6 +2,9 @@
 using Logica.Clases;
 using Logica.DAO;
 using System;
+using System.Collections.Generic;
+using System.Security;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace UVFYCliente.Paginas.Consumidor
@@ -11,10 +14,10 @@ namespace UVFYCliente.Paginas.Consumidor
 	/// </summary>
 	public partial class PantallaPrincipalDeConsumidor : Page
 	{
-		private ControladorDeCambioDePantalla Controlador { get; set; }
+		private IControladorDeCambioDePantalla Controlador { get; set; }
 		private Usuario UsuarioActual { get; set; }
 		private ControladorDeReproduccion ControladorDeReproduccion { get; set; } = new ControladorDeReproduccion();
-		public PantallaPrincipalDeConsumidor(Usuario usuario, ControladorDeCambioDePantalla controlador)
+		public PantallaPrincipalDeConsumidor(Usuario usuario, IControladorDeCambioDePantalla controlador)
 		{
 			InitializeComponent();
 			Controlador = controlador;
@@ -26,7 +29,32 @@ namespace UVFYCliente.Paginas.Consumidor
 		{
 			CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
 			var respuesta = await cancionDAO.CargarTodas();
+			await CargarArtistasDeCanciones(respuesta);
 			ListaDeCanciones.AsignarCanciones(respuesta);
+			await CargarAlbumDeCanciones(respuesta);
+			ListaDeCanciones.AsignarCanciones(respuesta);
+		}
+
+		private async Task<bool> CargarArtistasDeCanciones(List<Cancion> canciones)
+		{
+			ArtistaDAO artistaDAO = new ArtistaDAO(UsuarioActual.Token);
+			foreach (Cancion cancion in canciones)
+			{
+				var respuesta = await artistaDAO.CargarPorId(cancion.Artista.Id);
+				cancion.Artista = respuesta;
+			}
+			return true;
+		}
+
+		private async Task<bool> CargarAlbumDeCanciones(List<Cancion> canciones)
+		{
+			AlbumDAO albumDAO = new AlbumDAO(UsuarioActual.Token);
+			foreach (Cancion cancion in canciones)
+			{
+				var respuesta = await albumDAO.CargarPorId(cancion.Album.Id);
+				cancion.Album = respuesta;
+			}
+			return true;
 		}
 
 		private async void CargarArtistas()
@@ -94,7 +122,7 @@ namespace UVFYCliente.Paginas.Consumidor
 			TabControl controlDePestañas = sender as TabControl;
 			if (controlDePestañas.SelectedIndex == 0)
 			{
-				CargarCanciones();
+				
 			}
 			else if (controlDePestañas.SelectedIndex == 1)
 			{
@@ -137,6 +165,10 @@ namespace UVFYCliente.Paginas.Consumidor
 			CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
 			var respuesta = await cancionDAO.CargarPorIdGenero(genero.Id);
 			ListaDeCancionesDeAlbum.AsignarCanciones(respuesta);
+			await CargarArtistasDeCanciones(respuesta);
+			ListaDeCancionesDeAlbum.AsignarCanciones(respuesta);
+			await CargarAlbumDeCanciones(respuesta);
+			ListaDeCancionesDeAlbum.AsignarCanciones(respuesta);
 		}
 
 		private void DataGridAlbumesDeArtista_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -154,6 +186,8 @@ namespace UVFYCliente.Paginas.Consumidor
 		private void DataGridArtistas_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			MostrarAlbumesDeArtista(ListaDeArtistas.ArtistaSeleccionado);
+			LabelNombreDeArtista.Content = ListaDeArtistas.ArtistaSeleccionado.Nombre;
+			LabelDescripcionDeArtista.Content = ListaDeArtistas.ArtistaSeleccionado.Descripcion;
 		}
 
 		private async void MostrarAlbumesDeArtista(Artista artista)

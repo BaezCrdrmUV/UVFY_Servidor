@@ -11,7 +11,7 @@
 
     <DockPanel>
 		<c:Reproductor x:Name="Reproductor" DockPanel.Dock="Bottom" HorizontalAlignment="Stretch"/>
-		<TabControl x:Name="TabControlPaneles" SelectionChanged="TabControlPaneles_SelectionChanged" TabStripPlacement="Bottom">
+		<TabControl x:Name="TabControlPaneles" SelectionChanged="TabControlPaneles_SelectionChanged" TabStripPlacement="Left">
 			<TabItem Header="Canciones">
 				<DockPanel>
 					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">

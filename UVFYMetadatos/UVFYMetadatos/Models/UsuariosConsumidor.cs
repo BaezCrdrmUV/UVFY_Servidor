@@ -7,6 +7,7 @@ namespace UVFYMetadatos.Models
     {
         public UsuariosConsumidor()
         {
+            Canciones = new HashSet<Canciones>();
             Playlists = new HashSet<Playlists>();
         }
 
@@ -15,6 +16,7 @@ namespace UVFYMetadatos.Models
         public int Id { get; set; }
 
         public virtual Usuarios IdNavigation { get; set; }
+        public virtual ICollection<Canciones> Canciones { get; set; }
         public virtual ICollection<Playlists> Playlists { get; set; }
     }
 }

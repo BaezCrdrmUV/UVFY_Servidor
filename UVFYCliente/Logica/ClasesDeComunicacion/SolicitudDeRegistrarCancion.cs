@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Logica.ClasesDeComunicacion
 {
-	class SolicitudDeRegistrarCancion
+	public class SolicitudDeRegistrarCancion
 	{
 		public Token token;
 		public string nombre;
 		public List<int> generos;
 		public byte[] audio;
 		public byte[] imagen;
+		public int duracion; 
 	}
 }

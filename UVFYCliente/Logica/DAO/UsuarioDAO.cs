@@ -31,5 +31,18 @@ namespace Logica.DAO
 
 			return respuestaDeAutenticacion;
 		}
+
+		public async Task<bool> RegistrarUsuario(Usuario usuario)
+		{
+			HttpResponseMessage respuesta;
+			respuesta = await AdministradorDePeticionesHttp.Post("Registrar", usuario);
+			bool resultado = false;
+			if (respuesta.IsSuccessStatusCode)
+			{
+				resultado = true;
+			}
+
+			return resultado;
+		}
 	}
 }

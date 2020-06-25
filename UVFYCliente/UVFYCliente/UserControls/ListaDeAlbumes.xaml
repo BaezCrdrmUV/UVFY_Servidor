@@ -40,7 +40,7 @@
 		</DataTemplate>
 	</UserControl.Resources>
     <StackPanel>
-		<DataGrid x:Name="DataGridAlbumes" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserAddRows="false" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False">
+		<DataGrid x:Name="DataGridAlbumes" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserAddRows="false" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False" SelectionChanged="DataGridAlbumes_SelectionChanged">
 			<DataGrid.Columns>
 				<DataGridTemplateColumn CellTemplate="{StaticResource ButtonReproducir}" MaxWidth="20"></DataGridTemplateColumn>
 				<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>

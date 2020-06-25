@@ -66,6 +66,7 @@ message SolicitudDeRegistrarCancion {
   repeated int32 generos = 3;
   bytes audio = 4;
   bytes imagen = 5;
+  int32 duracion = 6;
 }
 
 message SolicitudDeEliminarAlbum{
@@ -161,7 +162,7 @@ message Album{
 message Cancion {
   int32 id = 1;
   string nombre = 2;
-}  string duracion = 3; 
+  string duracion = 3; 
   string fechaDeLanzamiento = 4;
   Artista artista = 5;
   Album album = 6;

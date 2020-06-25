@@ -30,8 +30,7 @@ namespace UVFYMetadatos.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=127.0.0.1;Initial Catalog=UVFY;Persist Security Info=True;User ID=SA;Password=Qwerasdfzxcv1!");
+                optionsBuilder.UseSqlServer("Data Source=172.17.0.2;Initial Catalog=UVFY;Persist Security Info=True;User ID=SA;Password=Qwerasdfzxcv1!");
             }
         }
 
@@ -51,13 +50,13 @@ namespace UVFYMetadatos.Models
                 entity.HasOne(d => d.Albumes)
                     .WithMany(p => p.AlbumGenero)
                     .HasForeignKey(d => d.AlbumesId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_AlbumGenero_Album");
 
                 entity.HasOne(d => d.Generos)
                     .WithMany(p => p.AlbumGenero)
                     .HasForeignKey(d => d.GenerosId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_AlbumGenero_Genero");
             });
 
@@ -75,7 +74,7 @@ namespace UVFYMetadatos.Models
                 entity.HasOne(d => d.Artistas)
                     .WithMany(p => p.Albumes)
                     .HasForeignKey(d => d.ArtistasId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_ArtistaAlbum");
             });
 
@@ -93,13 +92,13 @@ namespace UVFYMetadatos.Models
                 entity.HasOne(d => d.Canciones)
                     .WithMany(p => p.CancionGenero)
                     .HasForeignKey(d => d.CancionesId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_CancionGenero_Cancion");
 
                 entity.HasOne(d => d.Generos)
                     .WithMany(p => p.CancionGenero)
                     .HasForeignKey(d => d.GenerosId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_CancionGenero_Genero");
             });
 
@@ -117,13 +116,13 @@ namespace UVFYMetadatos.Models
                 entity.HasOne(d => d.Cancion)
                     .WithMany(p => p.CancionPlaylist)
                     .HasForeignKey(d => d.CancionId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_CancionPlaylist_Cancion");
 
                 entity.HasOne(d => d.Playlists)
                     .WithMany(p => p.CancionPlaylist)
                     .HasForeignKey(d => d.PlaylistsId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_CancionPlaylist_Playlist");
             });
 
@@ -135,9 +134,14 @@ namespace UVFYMetadatos.Models
                 entity.HasIndex(e => e.ArtistaId)
                     .HasName("IX_FK_ArtistaCancion");
 
+                entity.HasIndex(e => e.ConsumidorId)
+                    .HasName("IX_FK_ConsumidorCancion");
+
                 entity.Property(e => e.AlbumsId).HasColumnName("Albums_Id");
 
                 entity.Property(e => e.ArtistaId).HasColumnName("Artista_Id");
+
+                entity.Property(e => e.ConsumidorId).HasColumnName("Consumidor_Id");
 
                 entity.Property(e => e.Duracion).IsRequired();
 
@@ -148,14 +152,17 @@ namespace UVFYMetadatos.Models
                 entity.HasOne(d => d.Albums)
                     .WithMany(p => p.Canciones)
                     .HasForeignKey(d => d.AlbumsId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CancionAlbum");
 
                 entity.HasOne(d => d.Artista)
                     .WithMany(p => p.Canciones)
                     .HasForeignKey(d => d.ArtistaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ArtistaCancion");
+
+                entity.HasOne(d => d.Consumidor)
+                    .WithMany(p => p.Canciones)
+                    .HasForeignKey(d => d.ConsumidorId)
+                    .HasConstraintName("FK_ConsumidorCancion");
             });
 
             modelBuilder.Entity<Generos>(entity =>

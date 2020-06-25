@@ -15,9 +15,9 @@
 		</StackPanel>
 		<StackPanel DockPanel.Dock="Right" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch">
 			<Button x:Name="ButtonColaDeReproduccion" Content="Cola de reproduccion"></Button>
-			<StackPanel Orientation="Horizontal">
+			<StackPanel Orientation="Horizontal" Margin="10">
 				<Image x:Name="ImageVolumen" Source="pack://application:,,,/Recursos/volumen.png" MaxHeight="20"></Image>
-				<ProgressBar x:Name="ProgressBarVolumen" HorizontalAlignment="Stretch" MinWidth="100" ></ProgressBar>
+				<Slider x:Name="ProgressBarVolumen" HorizontalAlignment="Stretch" MinWidth="100" ValueChanged="ProgressBarVolumen_ValueChanged" Maximum="1" Margin="5"></Slider>
 			</StackPanel>
 		</StackPanel>
 		<StackPanel Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" >
@@ -35,7 +35,7 @@
 				<Label Name="LabelTiempoTotal" Content="0:00" DockPanel.Dock="Right"></Label>
 				<Label></Label>
 			</DockPanel>
-			<ProgressBar x:Name="ProgressBarProgresoDeCancion" Height="20"/>
+			<Slider x:Name="SliderProgresoDeCancion" Height="20" IsMoveToPointEnabled="False" Thumb.DragCompleted="SliderProgresoDeCancion_DragCompleted"/>
 		</StackPanel>
 	</DockPanel>
 </UserControl>

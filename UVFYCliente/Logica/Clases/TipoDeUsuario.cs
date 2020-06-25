@@ -2,8 +2,8 @@
 {
 	public enum TipoDeUsuario
 	{
-		Indefinido,
-		Consumidor, 
-		Artista
+		Indefinido = -1,
+		Consumidor = 1,
+		Artista = 2
 	}
 }

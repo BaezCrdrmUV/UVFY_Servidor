@@ -14,30 +14,38 @@ service Archivos {
   rpc GuardarCaratulaDeAlbumPorId (PeticionGuardadoId) returns (Respuesta);
 }
 
-message PeticionId { 
-  int32 idPeticion = 1;
+message Token {
+  string tokenDeAcceso = 1;
+}
+
+message PeticionId {
+  Token token = 1; 
+  int32 idPeticion = 2;
 }
 
 message PeticionGuardadoId {
-  int32 idPeticion = 1;
-  bytes datos = 2;
+  Token token = 1; 
+  int32 idPeticion = 2;
+  bytes datos = 3;
 }
 
 message PeticionIdYCalidad {
-  int32 idPeticion = 1;
-  calidad calidad = 2;  
+  Token token = 1; 
+  int32 idPeticion = 2;
+  calidad calidad = 3;  
 }
 
 message PeticionGuardadoIdYCalidad {
-  int32 idPeticion = 1;
-  calidad calidad = 2;  
-  bytes datos = 3; 
+  Token token = 1; 
+  int32 idPeticion = 2;
+  calidad calidad = 3;  
+  bytes datos = 4; 
 }
 
 message RespuestaDeCaratula {
   bytes caratula = 1;
   int32 id = 2;
-  Respuesta respuesta = 3;
+  Respuesta respuesta = 4;
 }
 
 message RespuestaDeCancion {

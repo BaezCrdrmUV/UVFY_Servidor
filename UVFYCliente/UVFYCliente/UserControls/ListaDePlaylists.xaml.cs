@@ -64,5 +64,15 @@ namespace UVFYCliente.UserControls
 				PlaylistSeleccionada = albumSeleccionado;
 			}
 		}
+
+		private void ButtonDescargar_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void ButtonAñadirACola_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
 	}
 }

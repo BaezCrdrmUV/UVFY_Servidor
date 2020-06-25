@@ -95,14 +95,33 @@ namespace UVFYCliente
 			}
 		}
 
-		public static string MostrarVentanaDeSeleccionDeArchivos()
+		public static string MostrarVentanaDeSeleccionDeArchivosDeAudio()
 		{
 
 			string direccionDeArchivoSeleccionado = string.Empty;
 
-			SaveFileDialog ventanaDeSeleccionDeArchivo = new SaveFileDialog
+			OpenFileDialog ventanaDeSeleccionDeArchivo = new OpenFileDialog
 			{
-				Filter = "DocumentosPDF (*.PDF)|*.PDF",
+				Filter = "Archivos de audio (*.mp3)|*.mp3",
+				InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+			};
+
+			if (ventanaDeSeleccionDeArchivo.ShowDialog() == true)
+			{
+				direccionDeArchivoSeleccionado = ventanaDeSeleccionDeArchivo.FileName;
+			}
+
+			return direccionDeArchivoSeleccionado;
+		}
+
+		public static string MostrarVentanaDeSeleccionDeArchivosDeCaratula()
+		{
+
+			string direccionDeArchivoSeleccionado = string.Empty;
+
+			OpenFileDialog ventanaDeSeleccionDeArchivo = new OpenFileDialog
+			{
+				Filter = "Imagenes (*.jpg)|*.jpg",
 				InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
 			};
 

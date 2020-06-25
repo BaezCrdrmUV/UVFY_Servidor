@@ -1,5 +1,6 @@
 using Grpc.Core;
 using LogicaDeNegocios.Excepciones;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -488,11 +489,14 @@ namespace UVFYMetadatos
 			{
 				List<Canciones> canciones = new List<Canciones>();
 				CancionDAO cancionDAO = new CancionDAO();
-				bool tokenTienePermisos;
+				bool tokenTienePermisos = true;
 				try
 				{
 					canciones = cancionDAO.CargarCancionesPrivadasPorIdArtista(request.IdPeticion);
-					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, canciones[0].ArtistaId);
+					if (canciones.Count > 0)
+					{
+						tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, canciones[0].ArtistaId.GetValueOrDefault());
+					}
 				}
 				catch (AccesoADatosException)
 				{
@@ -512,34 +516,12 @@ namespace UVFYMetadatos
 
 					foreach (Canciones cancion in canciones)
 					{
-						AlbumDAO albumDAO = new AlbumDAO();
-						Albumes album = new Albumes();
-						try
-						{
-							album = albumDAO.CargarPorIdCancion(cancion.Id);
-						}
-						catch (AccesoADatosException)
-						{
-							respuesta.Respuesta.Exitosa = false;
-							respuesta.Respuesta.Motivo = 500;
-							return Task.FromResult(respuesta);
-						}
-						catch (RecursoNoExisteException)
-						{
-							respuesta.Respuesta.Exitosa = false;
-							respuesta.Respuesta.Motivo = 404;
-							return Task.FromResult(respuesta);
-						}
 						Cancion cancionAEnviar = new Cancion()
 						{
 							Id = cancion.Id,
 							Nombre = cancion.Nombre,
 							Duracion = cancion.Duracion,
 							FechaDeLanzamiento = cancion.FechaDeLanzamiento.ToString(),
-							Album = new Album()
-							{
-								Id = album.Id
-							},
 							Artista = new Artista()
 							{
 								Id = request.IdPeticion
@@ -668,6 +650,7 @@ namespace UVFYMetadatos
 			int idUsuario;
 			bool usuarioEsConsumidor;
 			int idCancionGuardada;
+			bool guardadoDeArchivosExitoso = false;
 			UsuarioDAO consumidorDAO = new UsuarioDAO();
 			try
 			{
@@ -679,7 +662,6 @@ namespace UVFYMetadatos
 				respuesta.Respuesta.Motivo = 500;
 				return Task.FromResult(respuesta);
 			}
-			respuesta.Respuesta.Exitosa = existeSesion;
 			if (existeSesion)
 			{
 				idUsuario = validacionDeSesiones.ObtenerIdUsuarioPorToken(request.Token.TokenDeAcceso);
@@ -706,7 +688,7 @@ namespace UVFYMetadatos
 
 					try
 					{
-						cargaDeArchivos.GuardarAudioDeCancionDeConsumidor(idCancionGuardada, request.Audio.ToByteArray());
+						guardadoDeArchivosExitoso = cargaDeArchivos.GuardarAudioDeCancionDeConsumidor(idCancionGuardada, request.Audio.ToByteArray());
 					}
 					catch (AccesoADatosException)
 					{
@@ -747,6 +729,10 @@ namespace UVFYMetadatos
 				{
 					Id = idCancionGuardada
 				});
+				if (guardadoDeArchivosExitoso)
+				{
+					respuesta.Respuesta.Exitosa = true;
+				}
 			}
 			else
 			{
@@ -772,6 +758,7 @@ namespace UVFYMetadatos
 			int idUsuario;
 			bool usuarioEsArtista;
 			int idCancionGuardada;
+			bool guardadoDeArchivosExitoso = false;
 			try
 			{
 				existeSesion = validacionDeSesiones.ValidarSesion(request.Token.TokenDeAcceso);
@@ -793,7 +780,8 @@ namespace UVFYMetadatos
 					Canciones cancionARegistrar = new Canciones()
 					{
 						Nombre = request.Nombre,
-						ArtistaId = idUsuario
+						ArtistaId = idUsuario,
+						Duracion = request.Duracion.ToString()
 					};
 					try
 					{
@@ -805,13 +793,18 @@ namespace UVFYMetadatos
 						respuesta.Respuesta.Motivo = 500;
 						return Task.FromResult(respuesta);
 					}
-
 					GuardadoDeAudio guardadoDeAudio = new GuardadoDeAudio();
 					GuardadoDeImagenes guardadoDeImagenes = new GuardadoDeImagenes();
 					try
 					{
-						guardadoDeAudio.GuardarAudioDeCancionDeArtista(idCancionGuardada, request.Audio.ToByteArray());
-						guardadoDeImagenes.GuardarCaratulaDeCancion(idCancionGuardada, request.Imagen.ToByteArray());
+						if (guardadoDeAudio.GuardarAudioDeCancionDeArtista(idCancionGuardada, request.Audio.ToByteArray()))
+						{
+
+							if(guardadoDeImagenes.GuardarCaratulaDeCancion(idCancionGuardada, request.Imagen.ToByteArray()))
+							{
+								guardadoDeArchivosExitoso = true;
+							}
+						}
 					}
 					catch (AccesoADatosException)
 					{
@@ -852,6 +845,10 @@ namespace UVFYMetadatos
 				{
 					Id = idCancionGuardada
 				});
+				if (guardadoDeArchivosExitoso)
+				{
+					respuesta.Respuesta.Exitosa = true;
+				}
 			}
 			else
 			{
@@ -891,7 +888,7 @@ namespace UVFYMetadatos
 				try
 				{
 					cancionCargada = cancionDAO.CargarPorId(request.IdCancion);
-					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, cancionCargada.ArtistaId);
+					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, cancionCargada.ArtistaId.GetValueOrDefault());
 				}
 				catch (AccesoADatosException)
 				{
@@ -967,7 +964,7 @@ namespace UVFYMetadatos
 				try
 				{
 					cancionCargada = cancionDAO.CargarPorId(request.IdCancion);
-					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, cancionCargada.ArtistaId);
+					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, cancionCargada.ArtistaId.GetValueOrDefault());
 				}
 				catch (AccesoADatosException)
 				{
@@ -1043,7 +1040,7 @@ namespace UVFYMetadatos
 				try
 				{
 					cancionCargada = cancionDAO.CargarPorId(request.IdCancion);
-					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, cancionCargada.ArtistaId);
+					tokenTienePermisos = validacionDeSesiones.TokenTienePermisos(request.Token.TokenDeAcceso, cancionCargada.ArtistaId.GetValueOrDefault());
 				}
 				catch (AccesoADatosException)
 				{
@@ -1725,7 +1722,9 @@ namespace UVFYMetadatos
 					GuardadoDeImagenes guardadoDeImagenes = new GuardadoDeImagenes();
 					Albumes album = new Albumes()
 					{
-						Nombre = request.Nombre
+						Nombre = request.Nombre,
+						Descripcion = request.Descripcion,
+						ArtistasId = idUsuario
 					};
 					try
 					{
@@ -1733,6 +1732,12 @@ namespace UVFYMetadatos
 						guardadoDeImagenes.GuardarCaratulaDeAlbum(idAlbumGuardado, request.Imagen.ToByteArray());
 					}
 					catch (AccesoADatosException)
+					{
+						respuesta.Respuesta.Exitosa = false;
+						respuesta.Respuesta.Motivo = 500;
+						return Task.FromResult(respuesta);
+					}
+					catch (ResultadoDeServicioFallidoException)
 					{
 						respuesta.Respuesta.Exitosa = false;
 						respuesta.Respuesta.Motivo = 500;
@@ -1839,7 +1844,7 @@ namespace UVFYMetadatos
 						CancionDAO cancionDAO = new CancionDAO();
 						try
 						{
-							albumDAO.AgregarCancionAAlbum(request.IdPlaylist, request.IdCancion);
+							albumDAO.AgregarCancionAAlbum(request.IdCancion, request.IdPlaylist);
 							cancionDAO.CambiarEstadoDeCancion(request.IdCancion, EstadoDeCancion.Publica);
 						}
 						catch (AccesoADatosException)
@@ -1947,7 +1952,7 @@ namespace UVFYMetadatos
 						CancionDAO cancionDAO = new CancionDAO();
 						try
 						{
-							albumDAO.EliminarCancionDeAlbum(request.IdPlaylist, request.IdCancion);
+							albumDAO.EliminarCancionDeAlbum(request.IdCancion, request.IdPlaylist);
 							cancionDAO.CambiarEstadoDeCancion(request.IdCancion, EstadoDeCancion.PrivadaDeArtista);
 						}
 						catch (AccesoADatosException)

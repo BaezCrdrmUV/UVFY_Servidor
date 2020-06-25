@@ -7,7 +7,7 @@ using System.Windows.Controls;
 
 namespace UVFYCliente
 {
-    public interface ControladorDeCambioDePantalla
+    public interface IControladorDeCambioDePantalla
     {
         void RegresarAInicioDeSesion();
 

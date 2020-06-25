@@ -29,28 +29,39 @@ namespace UVFYCliente.UserControls
 
 		private ControladorDeReproduccion ControladorDeReproduccion { get; set; }
 		private string Token { get; set; }
-		DispatcherTimer Contador { get; set; }
-		TimeSpan TiempoContado { get; set; }
+		private DispatcherTimer Contador { get; set; }
+		private TimeSpan TiempoContado { get; set; }
+		private bool CancionCambiada { get; set; }
 		public Reproductor()
 		{
+			CancionCambiada = true;
 			InitializeComponent();
 			Contador = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
 			{
-
-				if (ControladorDeReproduccion.EstaReproduciendo())
-				{
-					TiempoContado = TiempoContado.Add(TimeSpan.FromSeconds(1));
-					ProgressBarProgresoDeCancion.Value++;
-					if(TiempoContado.Seconds < 10)
-					{
-						LabelTiempoTranscurrido.Content = TiempoContado.Minutes + ":0" + TiempoContado.Seconds;
-					}
-					else
-					{
-						LabelTiempoTranscurrido.Content = TiempoContado.Minutes + ":" + TiempoContado.Seconds;
-					}
-				}
+				AumentarTiempo();
 			}, this.Dispatcher);
+		}
+
+		private void AumentarTiempo()
+		{
+			if (ControladorDeReproduccion.EstaReproduciendo())
+			{
+				TiempoContado = TiempoContado.Add(TimeSpan.FromSeconds(1));
+				SliderProgresoDeCancion.Value++;
+				ActualizarTiempo();
+			}
+		}
+
+		private void ActualizarTiempo()
+		{
+			if (TiempoContado.Seconds < 10)
+			{
+				LabelTiempoTranscurrido.Content = TiempoContado.Minutes + ":0" + TiempoContado.Seconds;
+			}
+			else
+			{
+				LabelTiempoTranscurrido.Content = TiempoContado.Minutes + ":" + TiempoContado.Seconds;
+			}
 		}
 
 		public void AsignarControlador(ControladorDeReproduccion controlador)
@@ -66,7 +77,11 @@ namespace UVFYCliente.UserControls
 		private void ButtonReproducir_Click(object sender, RoutedEventArgs e)
 		{
 			ControladorDeReproduccion.PausarOReproducir();
-			CargarDatosDeCancionActual();
+			if (CancionCambiada)
+			{
+				CargarDatosDeCancionActual();
+				CancionCambiada = false;
+			}
 		}
 
 		private void ButtonAnterior_Click(object sender, RoutedEventArgs e)
@@ -90,8 +105,8 @@ namespace UVFYCliente.UserControls
 			Cancion cancionActual = ControladorDeReproduccion.CancionesEnCola[ControladorDeReproduccion.CancionActual];
 			LabelNombreDaCancionActual.Content = cancionActual.Nombre;
 			LabelArtistaDeCancionActual.Content = cancionActual.Artista.Nombre;
-			ProgressBarProgresoDeCancion.Maximum = cancionActual.Duracion;
-			ProgressBarProgresoDeCancion.Value = 0;
+			SliderProgresoDeCancion.Maximum = cancionActual.Duracion;
+			SliderProgresoDeCancion.Value = 0;
 			ConvertidorDeSegundosAMinutosYSegundos convertidorDeSegundosAMinutosYSegundos = new ConvertidorDeSegundosAMinutosYSegundos();
 			LabelTiempoTotal.Content = convertidorDeSegundosAMinutosYSegundos.Convert((int)cancionActual.Duracion, typeof(string), null, null);
 			AsignarImagenDeCancionActual(cancionActual.Id);
@@ -119,6 +134,20 @@ namespace UVFYCliente.UserControls
 			}
 			imagen.Freeze();
 			return imagen;
+		}
+
+		private void SliderProgresoDeCancion_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+		{
+			Slider sliderDeProgreso = sender as Slider;
+			ControladorDeReproduccion.Buscar((int)sliderDeProgreso.Value);
+			TiempoContado = TimeSpan.FromSeconds(sliderDeProgreso.Value);
+			ActualizarTiempo();
+		}
+
+		private void ProgressBarVolumen_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			Slider sliderDeProgreso = sender as Slider;
+			ControladorDeReproduccion.CambiarVolumen((float)sliderDeProgreso.Value);
 		}
 	}
 }

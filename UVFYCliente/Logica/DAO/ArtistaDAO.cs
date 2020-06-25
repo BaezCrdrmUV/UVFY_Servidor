@@ -43,7 +43,7 @@ namespace Logica.DAO
 			respuesta = await AdministradorDePeticionesHttp.Get("PorID?" + query.ToString());
 			if (respuesta.IsSuccessStatusCode)
 			{
-				artistaCargado = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<Artista>(respuesta.Content.ReadAsStringAsync().Result);
+				artistaCargado = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<List<Artista>>(respuesta.Content.ReadAsStringAsync().Result)[0];
 			}
 			return artistaCargado;
 		}

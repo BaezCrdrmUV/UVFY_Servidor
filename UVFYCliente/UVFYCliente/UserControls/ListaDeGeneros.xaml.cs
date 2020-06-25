@@ -56,11 +56,11 @@ namespace UVFYCliente.UserControls
 			ActualizarLista();
 		}
 
-		private void DataGridCanciones_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void DataGridGeneros_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (DataGridGeneros.SelectedItem != null)
+			if (e.AddedItems.Count == 1)
 			{
-				Genero generoSeleccionado = ((FrameworkElement)sender).DataContext as Genero;
+				Genero generoSeleccionado = e.AddedItems[0] as Genero;
 				GeneroSeleccionado = generoSeleccionado;
 			}
 		}

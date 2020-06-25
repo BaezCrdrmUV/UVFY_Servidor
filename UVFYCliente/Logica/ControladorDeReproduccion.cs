@@ -1,8 +1,8 @@
 ﻿using Logica.Clases;
+using NAudio.Utils;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
-using System.Security.Permissions;
 
 namespace Logica
 {
@@ -11,6 +11,7 @@ namespace Logica
 		public List<Cancion> CancionesEnCola { get; set; } = new List<Cancion>();
 		public int CancionActual { get; set; } = 0;
 		public WaveOutEvent Reproductor { get; set; } = new WaveOutEvent();
+		public Mp3FileReader Lector { get; set; }
 
 
 		public void Reproducir()
@@ -25,6 +26,32 @@ namespace Logica
 			}
 		}
 
+		public void ReiniciarVistaPrevia()
+		{
+			Reproductor.Stop();
+		}
+
+		public void ReproducirVistaPrevia(string direccionDeCancion)
+		{
+			if (Reproductor.PlaybackState == PlaybackState.Stopped)
+			{
+				Lector = new Mp3FileReader(direccionDeCancion);
+				Reproductor.DeviceNumber = 0;
+				Reproductor.Init(Lector);
+				Reproductor.Play();
+				Reproductor.Volume = 0.1f;
+			}
+			else if (Reproductor.PlaybackState == PlaybackState.Playing)
+			{
+				Reproductor.Pause();
+			}
+			else if (Reproductor.PlaybackState == PlaybackState.Paused)
+			{
+				Reproductor.Play();
+			}
+		}
+
+
 		private void InicializarReproduccion()
 		{
 			if (CancionesEnCola.Count > CancionActual)
@@ -32,9 +59,9 @@ namespace Logica
 				if (CancionesEnCola[CancionActual].CancionEstaDescargada())
 				{
 					CancionesEnCola[CancionActual].CargarDireccionDeCancion();
-					Mp3FileReader lector = new Mp3FileReader(CancionesEnCola[CancionActual].DireccionDeCancion);
+					Lector = new Mp3FileReader(CancionesEnCola[CancionActual].DireccionDeCancion);
 					Reproductor.DeviceNumber = 0;
-					Reproductor.Init(lector);
+					Reproductor.Init(Lector);
 					Reproductor.Play();
 					Reproductor.Volume = 0.1f;
 				}
@@ -45,7 +72,7 @@ namespace Logica
 		{
 			bool resultado = false;
 
-			if(Reproductor.PlaybackState == PlaybackState.Playing)
+			if (Reproductor.PlaybackState == PlaybackState.Playing)
 			{
 				resultado = true;
 			}
@@ -75,7 +102,7 @@ namespace Logica
 
 		public void Pausar()
 		{
-			if(Reproductor.PlaybackState == PlaybackState.Playing)
+			if (Reproductor.PlaybackState == PlaybackState.Playing)
 			{
 				Reproductor.Pause();
 			}
@@ -83,7 +110,7 @@ namespace Logica
 
 		public void Siguiente()
 		{
-			if(Reproductor.PlaybackState != PlaybackState.Stopped)
+			if (Reproductor.PlaybackState != PlaybackState.Stopped)
 			{
 				CancionActual++;
 				if (CancionActual > CancionesEnCola.Count - 1)
@@ -102,11 +129,26 @@ namespace Logica
 				CancionActual--;
 				if (CancionActual < 0)
 				{
-					CancionActual = CancionesEnCola.Count-1;
+					CancionActual = CancionesEnCola.Count - 1;
 				}
 				Reproductor.Stop();
 				InicializarReproduccion();
 			}
+		}
+
+		public TimeSpan ObtenerTiempoActual()
+		{
+			return Reproductor.GetPositionTimeSpan();
+		}
+
+		public void Buscar(int posicion)
+		{
+			Lector.Seek(Lector.WaveFormat.AverageBytesPerSecond * posicion, System.IO.SeekOrigin.Begin);
+		}
+
+		public void CambiarVolumen(float volumen)
+		{
+			Reproductor.Volume = volumen;
 		}
 
 		public void AgregarCancionAlFinal(Cancion cancion)

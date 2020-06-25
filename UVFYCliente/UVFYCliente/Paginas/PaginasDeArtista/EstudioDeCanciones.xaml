@@ -1,0 +1,59 @@
+﻿<Page x:Class="UVFYCliente.Paginas.PaginasDeArtista.EstudioDeCanciones"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:UVFYCliente.Paginas.PaginasDeArtista"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="EstudioDeCanciones">
+	<Page.Resources>
+		<DataTemplate x:Key="BotonDeEliminarAlbum">
+			<Button Content="Eliminar" Click="ButtonEliminarAlbum_Click"></Button>
+		</DataTemplate>
+		<DataTemplate x:Key="BotonDeEliminarCancionDeAlbum">
+			<Button Content="Eliminar de album" Click="ButtonEliminarCancionDeAlbum_Click"></Button>
+		</DataTemplate>
+		<DataTemplate x:Key="BotonDeEliminarCancion">
+			<Button Content="Eliminar" Click="ButtonEliminarCancion_Click"></Button>
+		</DataTemplate>
+		<DataTemplate x:Key="BotonDeAgregarCancionAAlbum">
+			<Button Content="Agregar a album seleccionado" Click="ButtonAgregarCancionAAlbum_Click"></Button>
+		</DataTemplate>
+	</Page.Resources>
+    <DockPanel>
+		<StackPanel>
+			<Button Content="Regresar" Margin="10" Click="Button_Click"></Button>
+		</StackPanel>
+		<StackPanel>
+			
+			<Label Content="Albumes" FontSize="24" Margin="15"></Label>
+			<Button x:Name="ButtonNuevoAlbum" Margin="10" Content="Registrar nuevo album" Click="ButtonNuevoAlbum_Click"></Button>
+			<DataGrid x:Name="DataGridListaDeAlbumes" Margin="10" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow" SelectionChanged="DataGridListaDeAlbumes_SelectionChanged">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
+					<DataGridTemplateColumn CellTemplate="{StaticResource BotonDeEliminarAlbum}" CellEditingTemplate="{StaticResource BotonDeEliminarAlbum}"></DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+			<DataGrid x:Name="DataGridListaDeCancionesEnAlbum" Margin="10" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
+					<DataGridTextColumn Header="Duracion" Binding="{Binding Duracion}"></DataGridTextColumn>
+					<DataGridTemplateColumn CellTemplate="{StaticResource BotonDeEliminarCancionDeAlbum}" CellEditingTemplate="{StaticResource BotonDeEliminarCancionDeAlbum}"></DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+		</StackPanel>
+		<StackPanel>
+			<Label Content="Canciones sin album" FontSize="24" Margin="15"></Label>
+			<Button x:Name="ButtonNuevaCancion" Margin="10" Content="Registrar nueva cancion" Click="ButtonNuevaCancion_Click"></Button>
+			<DataGrid x:Name="DataGridListaDeCancionesSinAlbum" Margin="10" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow">
+				<DataGrid.Columns>
+					<DataGridTemplateColumn CellEditingTemplate="{StaticResource BotonDeAgregarCancionAAlbum }" CellTemplate="{StaticResource BotonDeAgregarCancionAAlbum}"></DataGridTemplateColumn>
+					<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
+					<DataGridTextColumn Header="Duracion" Binding="{Binding Duracion}"></DataGridTextColumn>
+					<DataGridTemplateColumn CellTemplate="{StaticResource BotonDeEliminarCancion}" CellEditingTemplate="{StaticResource BotonDeEliminarCancion}"></DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+		</StackPanel>
+    </DockPanel>
+</Page>

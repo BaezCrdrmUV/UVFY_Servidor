@@ -1,5 +1,6 @@
 ﻿using Logica.Clases;
 using Logica.ClasesDeComunicacion;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace Logica.DAO
 			respuesta = await AdministradorDePeticionesHttp.Get("PorID?" + query.ToString());
 			if (respuesta.IsSuccessStatusCode)
 			{
-				albumCargado = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<Album>(respuesta.Content.ReadAsStringAsync().Result);
+				albumCargado = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<List<Album>>(respuesta.Content.ReadAsStringAsync().Result)[0];
 			}
 			return albumCargado;
 		}
@@ -62,6 +63,7 @@ namespace Logica.DAO
 			return albumesCargados;
 		}
 
+
 		public async Task<List<Album>> CargarPorIdGenero(int idGenero)
 		{
 			List<Album> albumesCargados = new List<Album>();
@@ -92,9 +94,8 @@ namespace Logica.DAO
 				imagen = imagen
 			};
 
-			ByteArrayContent peticionSerializada = Servicios.ServicioDeConversionDeJson.SerializarPeticion(peticion);
 			HttpResponseMessage respuesta;
-			respuesta = await AdministradorDePeticionesHttp.Post("Registrar", peticionSerializada);
+			respuesta = await AdministradorDePeticionesHttp.Post("Registrar", peticion);
 
 			if (respuesta.IsSuccessStatusCode)
 			{
@@ -117,9 +118,8 @@ namespace Logica.DAO
 				idCancion = idCancion
 			};
 
-			ByteArrayContent peticionSerializada = Servicios.ServicioDeConversionDeJson.SerializarPeticion(peticion);
 			HttpResponseMessage respuesta;
-			respuesta = await AdministradorDePeticionesHttp.Post("AgregarCancion", peticionSerializada);
+			respuesta = await AdministradorDePeticionesHttp.Post("AgregarCancion", peticion);
 
 			if (respuesta.IsSuccessStatusCode)
 			{
@@ -132,7 +132,7 @@ namespace Logica.DAO
 		public async Task<bool> EliminarCancionDeAlbum(int idAlbum, int idCancion)
 		{
 			bool resultado = false;
-			SolicitudDeAgregarCancionAPlaylist peticion = new SolicitudDeAgregarCancionAPlaylist()
+			SolicitudDeEliminarCancionDePlaylist peticion = new SolicitudDeEliminarCancionDePlaylist()
 			{
 				token = new Token
 				{
@@ -142,9 +142,8 @@ namespace Logica.DAO
 				idCancion = idCancion
 			};
 
-			ByteArrayContent peticionSerializada = Servicios.ServicioDeConversionDeJson.SerializarPeticion(peticion);
 			HttpResponseMessage respuesta;
-			respuesta = await AdministradorDePeticionesHttp.Post("EliminarCancion", peticionSerializada);
+			respuesta = await AdministradorDePeticionesHttp.Post("EliminarCancion", peticion);
 
 			if (respuesta.IsSuccessStatusCode)
 			{

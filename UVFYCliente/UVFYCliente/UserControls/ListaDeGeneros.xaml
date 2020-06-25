@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 	<StackPanel>
-		<DataGrid x:Name="DataGridGeneros" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserAddRows="false" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False">
+		<DataGrid x:Name="DataGridGeneros" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserAddRows="false" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False" SelectionChanged="DataGridGeneros_SelectionChanged">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
 			</DataGrid.Columns>

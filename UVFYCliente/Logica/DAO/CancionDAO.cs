@@ -1,13 +1,10 @@
-﻿using System;
+﻿using Logica.Clases;
+using Logica.ClasesDeComunicacion;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Caching;
-using Logica.Clases;
-using Logica.ClasesDeComunicacion;
 
 namespace Logica.DAO
 {
@@ -125,7 +122,7 @@ namespace Logica.DAO
 			return cancionesCargadas;
 		}
 
-		public async Task<bool> RegistrarCancionDeArtista(string nombre, List<int> generos, byte[] audio, byte[] imagen)
+		public async Task<bool> RegistrarCancionDeArtista(string nombre, List<int> generos, byte[] audio, byte[] imagen, int duracion)
 		{
 			bool resultado = false;
 			SolicitudDeRegistrarCancion peticion = new SolicitudDeRegistrarCancion()
@@ -137,12 +134,13 @@ namespace Logica.DAO
 				nombre = nombre,
 				generos = generos,
 				audio = audio,
-				imagen = imagen
+				imagen = imagen,
+				duracion = duracion
 			};
 			ByteArrayContent peticionSerializada = Servicios.ServicioDeConversionDeJson.SerializarPeticion(peticion);
 			HttpResponseMessage respuesta;
-			respuesta = await AdministradorDePeticionesHttp.Post("RegistrarDeArtista", peticionSerializada);
-
+		
+			respuesta = await AdministradorDePeticionesHttp.Post("RegistrarDeArtista", peticion);
 			if (respuesta.IsSuccessStatusCode)
 			{
 				resultado = true;
@@ -177,7 +175,7 @@ namespace Logica.DAO
 			return resultado;
 		}
 
-		public async Task<bool> EliminarCancion(int idCancion)
+		public async Task<bool> Eliminar(int idCancion)
 		{
 			bool resultado = false;
 			var query = HttpUtility.ParseQueryString(string.Empty);
@@ -191,7 +189,6 @@ namespace Logica.DAO
 			}
 
 			return resultado;
-
 		}
 	}
 }

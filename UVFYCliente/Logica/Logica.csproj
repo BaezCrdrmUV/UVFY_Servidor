@@ -62,6 +62,7 @@
     <Compile Include="ClasesDeComunicacion\SolicitudDeEliminarPlaylist.cs" />
     <Compile Include="ClasesDeComunicacion\SolicitudDeRegistrarAlbum.cs" />
     <Compile Include="ClasesDeComunicacion\SolicitudDeRegistrarCancion.cs" />
+    <Compile Include="ClasesDeComunicacion\SolicitudDeRegistrarUsuario.cs" />
     <Compile Include="ClasesDeComunicacion\SolicitudDeRenombrarPlaylist.cs" />
     <Compile Include="ClasesDeComunicacion\Token.cs" />
     <Compile Include="Clases\CalidadDeAudio.cs" />

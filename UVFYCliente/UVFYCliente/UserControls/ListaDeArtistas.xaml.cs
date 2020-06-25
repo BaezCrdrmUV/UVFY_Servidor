@@ -58,9 +58,10 @@ namespace UVFYCliente.UserControls
 
 		private void DataGridCanciones_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if(DataGridArtistas.SelectedItem != null)
+
+			if (e.AddedItems.Count == 1)
 			{
-				Artista artistaSeleccionado = ((FrameworkElement)sender).DataContext as Artista;
+				Artista artistaSeleccionado = e.AddedItems[0] as Artista;
 				ArtistaSeleccionado = artistaSeleccionado;
 			}
 		}

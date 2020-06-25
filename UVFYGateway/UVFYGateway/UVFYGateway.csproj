@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NewFolder1\**" />
+    <Compile Remove="NewFolder\**" />
+    <Content Remove="NewFolder1\**" />
+    <Content Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder1\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder1\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Protos\archivos.proto" />
     <None Remove="Protos\auth.proto" />
     <None Remove="Protos\metadata.proto" />
@@ -22,10 +33,6 @@
     <Protobuf Include="Protos\archivos.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\auth.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\metadata.proto" GrpcServices="Client" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Peticiones\" />
   </ItemGroup>
 
 

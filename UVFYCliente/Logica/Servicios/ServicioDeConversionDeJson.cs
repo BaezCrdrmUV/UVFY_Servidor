@@ -31,10 +31,10 @@ namespace Logica.Servicios
 			return bytesDePeticion;
 		}
 
-		public static HttpRequestMessage SerializarDelete()
-		{
-			var request = new HttpRequestMessage(HttpMethod.Delete, "http://www.example.com/");
-			request.Content = new StringContent(JsonConvert.SerializeObject(object), Encoding.UTF8, "application/json");
-		}
+		//public static HttpRequestMessage SerializarDelete()
+		//{
+		//	var request = new HttpRequestMessage(HttpMethod.Delete, "http://www.example.com/");
+		//	request.Content = new StringContent(JsonConvert.SerializeObject(object), Encoding.UTF8, "application/json");
+		//}
 	}
 }

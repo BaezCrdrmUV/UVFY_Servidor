@@ -19,7 +19,7 @@ namespace UVFYCliente
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window, ControladorDeCambioDePantalla
+	public partial class MainWindow : Window, IControladorDeCambioDePantalla
 	{
         private Stack<Page> Pantallas = new Stack<Page>();
 

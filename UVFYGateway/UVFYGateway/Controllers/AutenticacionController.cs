@@ -27,12 +27,12 @@ namespace UVFYGateway.Controllers
 			GrpcChannelOptions grpcChannelOptions = new GrpcChannelOptions();
 			grpcChannelOptions.Credentials = ChannelCredentials.Insecure;
 			AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-			ServicioDeAutenticacion = GrpcChannel.ForAddress("http://172.17.0.2:80", grpcChannelOptions);
+			ServicioDeAutenticacion = GrpcChannel.ForAddress("http://172.17.0.3:80", grpcChannelOptions);
 		}
 
 		[HttpPost]
 		[Route("Registrar")]
-		public IActionResult RegistrarUsuario([FromBody] Usuario usuario)
+		public IActionResult RegistrarUsuario([FromBody] Artista usuario)
 		{
 			IActionResult result = BadRequest();
 			var clienteDeAutenticacion = new Authenticator.AuthenticatorClient(ServicioDeAutenticacion);
@@ -40,15 +40,14 @@ namespace UVFYGateway.Controllers
 			{
 				if(usuario.TipoDeUsuario == TipoDeUsuario.Artista)
 				{
-					Artista artista = (Artista)usuario;
 					RegistrationRequest registrationRequest = new RegistrationRequest
 					{
-						Name = artista.NombreDeusuario,
-						Password = artista.Contraseña,
-						Email = artista.CorreoElectronico,
-						UserType = artista.TipoDeUsuario.ToString(),
-						NombreDeArtista = artista.Nombre, 
-						DescripcionDeArtista = artista.Descripcion
+						Name = usuario.NombreDeusuario,
+						Password = usuario.Contraseña,
+						Email = usuario.CorreoElectronico,
+						UserType = usuario.TipoDeUsuario.ToString(),
+						NombreDeArtista = usuario.Nombre, 
+						DescripcionDeArtista = usuario.Descripcion
 					};
 					ResgitrationResponse respuesta = clienteDeAutenticacion.RegisterUser(registrationRequest);
 					if(respuesta.Response == true)

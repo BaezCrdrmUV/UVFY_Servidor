@@ -26,6 +26,7 @@ namespace UVFYGateway.Controllers
 			_logger = logger;
 			GrpcChannelOptions grpcChannelOptions = new GrpcChannelOptions();
 			grpcChannelOptions.Credentials = ChannelCredentials.Insecure;
+			grpcChannelOptions.MaxReceiveMessageSize = 200000000;
 			AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 			ServicioDeMetadatos = GrpcChannel.ForAddress("http://172.17.0.7:80", grpcChannelOptions);
 
@@ -308,16 +309,32 @@ namespace UVFYGateway.Controllers
 
 		[HttpPost]
 		[Route("Canciones/RegistrarDeArtista")]
-		public IActionResult RegistrarCancionDeArtista([FromBody]SolicitudDeRegistrarCancion peticion)
+		public IActionResult RegistrarCancionDeArtista([FromBody]Peticiones.SolicitudDeRegistrarCancion peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
 
 			RespuestaDeCanciones respuesta;
+			SolicitudDeRegistrarCancion solicitudDeRegistrarCancion = new SolicitudDeRegistrarCancion()
+			{
+				Token = new Token
+				{
+					TokenDeAcceso = peticion.token.tokenDeAcceso
+				},
+				Nombre = peticion.nombre,
+				Audio = Google.Protobuf.ByteString.CopyFrom(peticion.audio),
+				Imagen = Google.Protobuf.ByteString.CopyFrom(peticion.imagen),
+				Duracion = peticion.duracion
+			};
+
+			foreach (int genero in peticion.generos)
+			{
+				solicitudDeRegistrarCancion.Generos.Add(genero);
+			}
 
 			try
 			{
-				respuesta = clienteDeMetadatos.RegistrarCancionDeArtista(peticion);
+				respuesta = clienteDeMetadatos.RegistrarCancionDeArtista(solicitudDeRegistrarCancion);
 			}
 			catch (System.Net.Http.HttpRequestException)
 			{
@@ -340,16 +357,31 @@ namespace UVFYGateway.Controllers
 
 		[HttpPost]
 		[Route("Canciones/RegistrarDeConsumidor")]
-		public IActionResult RegistrarCancionDeConsumidor([FromBody]SolicitudDeRegistrarCancion peticion)
+		public IActionResult RegistrarCancionDeConsumidor([FromBody]Peticiones.SolicitudDeRegistrarCancion peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
 
 			RespuestaDeCanciones respuesta;
+			SolicitudDeRegistrarCancion solicitudDeRegistrarCancion = new SolicitudDeRegistrarCancion()
+			{
+				Token = new Token
+				{
+					TokenDeAcceso = peticion.token.tokenDeAcceso
+				},
+				Nombre = peticion.nombre,
+				Audio = Google.Protobuf.ByteString.CopyFrom(peticion.audio),
+				Imagen = Google.Protobuf.ByteString.CopyFrom(peticion.imagen)
+			};
+
+			foreach (int genero in peticion.generos)
+			{
+				solicitudDeRegistrarCancion.Generos.Add(genero);
+			}
 
 			try
 			{
-				respuesta = clienteDeMetadatos.RegistrarCancionDeConsumidor(peticion);
+				respuesta = clienteDeMetadatos.RegistrarCancionDeConsumidor(solicitudDeRegistrarCancion);
 			}
 			catch (System.Net.Http.HttpRequestException)
 			{
@@ -730,16 +762,32 @@ namespace UVFYGateway.Controllers
 
 		[HttpPost]
 		[Route("Albumes/Registrar")]
-		public IActionResult RegistrarAlbum([FromBody] SolicitudDeRegistrarAlbum peticion)
+		public IActionResult RegistrarAlbum([FromBody] Peticiones.SolicitudDeRegistrarAlbum peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
 
 			RespuestaDeAlbum respuesta;
 
+			SolicitudDeRegistrarAlbum solicitudDeRegistrarAlbum = new SolicitudDeRegistrarAlbum()
+			{
+				Token = new Token
+				{
+					TokenDeAcceso = peticion.token.tokenDeAcceso
+				},
+				Nombre = peticion.nombre,
+				Descripcion = peticion.descripcion,
+				Imagen = Google.Protobuf.ByteString.CopyFrom(peticion.imagen)
+			};
+
+			foreach(int genero in peticion.generos)
+			{
+				solicitudDeRegistrarAlbum.Generos.Add(genero);
+			}
+
 			try
 			{
-				respuesta = clienteDeMetadatos.RegistrarAlbum(peticion);
+				respuesta = clienteDeMetadatos.RegistrarAlbum(solicitudDeRegistrarAlbum);
 			}
 			catch (System.Net.Http.HttpRequestException)
 			{
@@ -762,16 +810,26 @@ namespace UVFYGateway.Controllers
 
 		[HttpPost]
 		[Route("Albumes/AgregarCancion")] 
-		public IActionResult AgregarCancionAAlbum([FromBody] SolicitudDeAgregarCancionAPlaylist peticion)
+		public IActionResult AgregarCancionAAlbum([FromBody] Peticiones.SolicitudDeAgregarCancionAPlaylist peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
 
 			Respuesta respuesta;
 
+			SolicitudDeAgregarCancionAPlaylist solicitudDeAgregarCancionAPlaylist = new SolicitudDeAgregarCancionAPlaylist()
+			{
+				Token = new Token
+				{
+					TokenDeAcceso = peticion.token.tokenDeAcceso
+				},
+				IdCancion = peticion.idCancion,
+				IdPlaylist = peticion.idPlaylist
+			};
+
 			try
 			{
-				respuesta = clienteDeMetadatos.AgregarCancionAAlbum(peticion);
+				respuesta = clienteDeMetadatos.AgregarCancionAAlbum(solicitudDeAgregarCancionAPlaylist);
 			}
 			catch (System.Net.Http.HttpRequestException)
 			{
@@ -793,16 +851,26 @@ namespace UVFYGateway.Controllers
 
 		[HttpPost]
 		[Route("Albumes/EliminarCancion")]
-		public IActionResult EliminarCancionDeAlbum([FromBody] SolicitudDeEliminarCancionDePlaylist peticion)
+		public IActionResult EliminarCancionDeAlbum([FromBody] Peticiones.SolicitudDeEliminarCancionDePlaylist peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
 
 			Respuesta respuesta;
 
+			SolicitudDeEliminarCancionDePlaylist solicitudDeEliminarCancionAPlaylist = new SolicitudDeEliminarCancionDePlaylist()
+			{
+				Token = new Token
+				{
+					TokenDeAcceso = peticion.token.tokenDeAcceso
+				},
+				IdCancion = peticion.idCancion,
+				IdPlaylist = peticion.idPlaylist
+			};
+
 			try
 			{
-				respuesta = clienteDeMetadatos.EliminarCancionDeAlbum(peticion);
+				respuesta = clienteDeMetadatos.EliminarCancionDeAlbum(solicitudDeEliminarCancionAPlaylist);
 			}
 			catch (System.Net.Http.HttpRequestException)
 			{

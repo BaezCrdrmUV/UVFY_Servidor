@@ -112,31 +112,27 @@ namespace UVFYMetadatos.DAO
 			int idDeAlbumGuardado = 0;
 			if (ValidarParaGuardado(albumARegistrar))
 			{
+				ArtistaDAO artistaDAO = new ArtistaDAO();
+				albumARegistrar.Artistas = artistaDAO.CargarPorId(albumARegistrar.ArtistasId);
+				foreach (int idGenero in generos)
+				{
+					AlbumGenero albumGenero = new AlbumGenero();
+					GeneroDAO generoDAO = new GeneroDAO();
+					albumGenero.Generos = generoDAO.CargarPorId(idGenero);
+					albumARegistrar.AlbumGenero.Add(albumGenero);
+				}
 				using (UVFYContext context = new UVFYContext())
 				{
 					try
 					{
+						foreach (AlbumGenero cancionGenero in albumARegistrar.AlbumGenero)
+						{
+							context.Attach(cancionGenero.Generos);
+						}
 						context.Albumes.Add(albumARegistrar);
+						context.Attach(albumARegistrar.Artistas);
 						context.SaveChanges();
 						idDeAlbumGuardado = albumARegistrar.Id;
-					}
-					catch (SqlException e)
-					{
-						Console.WriteLine(e.ToString());
-						throw new AccesoADatosException(e.Message, e);
-					}
-					try
-					{
-						foreach (int idGenero in generos)
-						{
-							AlbumGenero albumGenero = new AlbumGenero()
-							{
-								AlbumesId = albumARegistrar.Id,
-								GenerosId = idGenero
-							};
-							albumARegistrar.AlbumGenero.Add(albumGenero);
-						}
-						context.SaveChanges();
 					}
 					catch (SqlException e)
 					{
@@ -158,12 +154,12 @@ namespace UVFYMetadatos.DAO
 			bool respuesta = false;
 			try
 			{
-				Albumes album = CargarPorId(idAlbum);
 				CancionDAO cancionDAO = new CancionDAO();
 				Canciones cancion = cancionDAO.CargarPorId(idCancion);
 				using (UVFYContext context = new UVFYContext())
 				{
-					album.Canciones.Add(cancion);
+					cancion.AlbumsId = idAlbum;
+					context.Entry(cancion).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 					context.SaveChanges();
 				}
 				respuesta = true;
@@ -181,12 +177,12 @@ namespace UVFYMetadatos.DAO
 			bool respuesta = false;
 			try
 			{
-				Albumes album = CargarPorId(idAlbum);
 				CancionDAO cancionDAO = new CancionDAO();
 				Canciones cancion = cancionDAO.CargarPorId(idCancion);
 				using (UVFYContext context = new UVFYContext())
 				{
-					album.Canciones.Remove(cancion);
+					cancion.AlbumsId = null;
+					context.Entry(cancion).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 					context.SaveChanges();
 				}
 				respuesta = true;
