@@ -148,7 +148,7 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 
 		private void ButtonNuevaCancion_Click(object sender, RoutedEventArgs e)
 		{
-			RegistroDeCancion registroDeCancion = new RegistroDeCancion(Artista);
+			RegistroDeCancion registroDeCancion = new RegistroDeCancion(Artista, TipoDeUsuario.Artista);
 			registroDeCancion.ShowDialog();
 			CargarDatos();
 		}

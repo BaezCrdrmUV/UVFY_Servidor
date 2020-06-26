@@ -42,7 +42,7 @@ namespace Logica.DAO
 			respuesta = await AdministradorDePeticionesHttp.Get("PorID?" + query.ToString());
 			if (respuesta.IsSuccessStatusCode)
 			{
-				cancionCargada = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<Cancion>(respuesta.Content.ReadAsStringAsync().Result);
+				cancionCargada = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<List<Cancion>>(respuesta.Content.ReadAsStringAsync().Result)[0];
 			}
 			return cancionCargada;
 		}
@@ -149,7 +149,7 @@ namespace Logica.DAO
 			return resultado;
 		}
 
-		public async Task<bool> RegistrarCancionDeConsumidor(string nombre, List<int> generos, byte[] audio, byte[] imagen)
+		public async Task<bool> RegistrarCancionDeConsumidor(string nombre, byte[] audio, byte[] imagen, int duracion)
 		{
 			bool resultado = false;
 			SolicitudDeRegistrarCancion peticion = new SolicitudDeRegistrarCancion()
@@ -159,13 +159,13 @@ namespace Logica.DAO
 					tokenDeAcceso = TokenDeAcceso
 				},
 				nombre = nombre,
-				generos = generos,
+				generos = new List<int>(),
 				audio = audio,
-				imagen = imagen
+				imagen = imagen,
+				duracion = duracion
 			};
-			ByteArrayContent peticionSerializada = Servicios.ServicioDeConversionDeJson.SerializarPeticion(peticion);
 			HttpResponseMessage respuesta;
-			respuesta = await AdministradorDePeticionesHttp.Post("RegistrarDeConsumidor", peticionSerializada);
+			respuesta = await AdministradorDePeticionesHttp.Post("RegistrarDeConsumidor", peticion);
 
 			if (respuesta.IsSuccessStatusCode)
 			{
@@ -173,6 +173,21 @@ namespace Logica.DAO
 			}
 
 			return resultado;
+		}
+
+		public async Task<List<Cancion>> CargarPrivadasPorIdConsumidor(int idConsumidor)
+		{
+			List<Cancion> cancionesCargadas = new List<Cancion>();
+			var query = HttpUtility.ParseQueryString(string.Empty);
+			query["tokenDeAcceso"] = TokenDeAcceso;
+			query["idConsumidor"] = idConsumidor.ToString();
+			HttpResponseMessage respuesta;
+			respuesta = await AdministradorDePeticionesHttp.Get("PrivadasPorConsumidor?" + query.ToString());
+			if (respuesta.IsSuccessStatusCode)
+			{
+				cancionesCargadas = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<List<Cancion>>(respuesta.Content.ReadAsStringAsync().Result);
+			}
+			return cancionesCargadas;
 		}
 
 		public async Task<bool> Eliminar(int idCancion)

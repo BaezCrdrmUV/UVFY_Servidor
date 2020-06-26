@@ -9,7 +9,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PantallaPrincipalDeConsumidor">
 
-    <DockPanel>
+	<DockPanel>
 		<c:Reproductor x:Name="Reproductor" DockPanel.Dock="Bottom" HorizontalAlignment="Stretch"/>
 		<TabControl x:Name="TabControlPaneles" SelectionChanged="TabControlPaneles_SelectionChanged" TabStripPlacement="Left">
 			<TabItem Header="Canciones">
@@ -65,12 +65,24 @@
 			<TabItem Header="Playlists">
 				<DockPanel>
 					<StackPanel>
-						<TextBox x:Name="TextBoxBusquedaPlaylists" Margin="5"/>
+						<DockPanel>
+							<Button x:Name="ButtonNuevaPlaylist" Content=" Agregar playlist " Margin="5" Click="ButtonNuevaPlaylist_Click"></Button>
+							<TextBox x:Name="TextBoxBusquedaPlaylists" Margin="5" HorizontalAlignment="Stretch"/>
+						</DockPanel>
 						<DockPanel>
 							<c:ListaDePlaylists x:Name="ListaDePlaylists"></c:ListaDePlaylists>
 							<c:ListaDeCanciones x:Name="ListaDeCancionesDePlaylist" DockPanel.Dock="Right"></c:ListaDeCanciones>
 						</DockPanel>
 					</StackPanel>
+				</DockPanel>
+			</TabItem>
+			<TabItem Header="Mi biblioteca">
+				<DockPanel>
+					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+						<Button x:Name="ButtonAgregarCancion" Content=" Agregar cancion " Margin="5" Click="ButtonAgregarCancion_Click"></Button>
+						<TextBox x:Name="TextBoxBusquedaBiblioteca" Width="600" Margin="5" TextChanged="TextBoxBusquedaBiblioteca_TextChanged"></TextBox>
+					</StackPanel>
+					<c:ListaDeCanciones x:Name="ListaDeCancionesPrivadas"></c:ListaDeCanciones>
 				</DockPanel>
 			</TabItem>
 		</TabControl>

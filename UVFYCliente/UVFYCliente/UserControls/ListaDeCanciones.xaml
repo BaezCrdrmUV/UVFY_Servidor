@@ -20,7 +20,7 @@
 			</DockPanel>
 		</DataTemplate>
 		<DataTemplate x:Key="ButtonReproducir">
-			<Button>
+			<Button x:Name="ButtonReproducir" Click="ButtonReproducir_Click">
 				<DockPanel>
 					<Image Source="pack://application:,,,/Recursos/play.png"/>
 				</DockPanel>
@@ -60,18 +60,26 @@
 				</DockPanel>
 			</Button>
 		</DataTemplate>
+		<convertidores:ConvertidorDeSegundosAMinutosYSegundos x:Key="convertidorDeSegundosAMinutosYSegundos"></convertidores:ConvertidorDeSegundosAMinutosYSegundos>
 	</UserControl.Resources>
 	<StackPanel>
-		<DataGrid x:Name="DataGridCanciones" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserAddRows="false" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False"> 
+		<DataGrid x:Name="DataGridCanciones" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserAddRows="false" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False" MouseRightButtonDown="DataGridCanciones_MouseRightButtonDown" SelectionChanged="DataGridCanciones_SelectionChanged"> 
 			<DataGrid.Columns>
 				<DataGridTemplateColumn CellTemplate="{StaticResource ButtonReproducir}" MaxWidth="20"></DataGridTemplateColumn>
 				<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
 				<DataGridTextColumn Header="Artista" Binding="{Binding Artista.Nombre}"></DataGridTextColumn>
 				<DataGridTextColumn Header="Album" Binding="{Binding Album.Nombre}"></DataGridTextColumn>
-				<DataGridTextColumn Header="Duración" Binding="{Binding Duracion}"></DataGridTextColumn>
+				<DataGridTextColumn Header="Duración" Binding="{Binding Duracion, Converter={StaticResource convertidorDeSegundosAMinutosYSegundos}}"></DataGridTextColumn>
 				<DataGridTemplateColumn HeaderTemplate="{StaticResource ImageDescargasTemplate}" CellTemplate="{StaticResource ButtonDescargar}" MaxWidth="20"></DataGridTemplateColumn>
 				<DataGridTemplateColumn  CellTemplate="{StaticResource ButtonAñadirACola}" MaxWidth="20"></DataGridTemplateColumn>
 			</DataGrid.Columns>
+			<DataGrid.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="Agregar a playlist..." Click="NuevaPlaylistClick">
+						<MenuItem Header="Nueva playlist..."></MenuItem>
+					</MenuItem>
+				</ContextMenu>
+			</DataGrid.ContextMenu>
 			<DataGrid.ColumnHeaderStyle>
 				<Style TargetType="{x:Type DataGridColumnHeader}">
 					<Setter Property="FontWeight" Value="Bold"/>

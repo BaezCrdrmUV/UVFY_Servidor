@@ -45,6 +45,61 @@ namespace Logica.Servicios
 			return resultado;
 		}
 
+		public static void EliminarCancion(int idCancion)
+		{
+			if (ExisteDirectorioDeAplicacion())
+			{
+				string direccionDeCancion = ConstruirDireccionDeCancion(idCancion);
+				if (File.Exists(direccionDeCancion))
+				{
+					File.Delete(direccionDeCancion);
+				}
+			}
+		}
+
+		public static void EliminarCaratula(int idCancion)
+		{
+			if (ExisteDirectorioDeAplicacion())
+			{
+				string direccionDeCaratula = ConstruirDireccionDeCaratula(idCancion);
+				if (File.Exists(direccionDeCaratula))
+				{
+					File.Delete(direccionDeCaratula);
+				}
+			}
+		}
+		
+		public static List<int> ListarCancionesDescargadas()
+		{
+			string pathLocal = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY;
+
+			List<int> cancionesEncontradas = new List<int>();
+			List<string> archivosEncontrados = new List<string>();
+		
+			if (Directory.Exists(pathLocal))
+			{
+				archivosEncontrados = Directory.GetFiles(pathLocal).ToList();
+				List<string> listaTemporal = new List<string>();
+				foreach (string archivo in archivosEncontrados)
+				{
+					listaTemporal.Add(Path.GetFileName(archivo));
+				}
+				archivosEncontrados = listaTemporal;
+				archivosEncontrados = archivosEncontrados.Where(a => ServiciosDeValidacion.ValidarNumeroEntero(a)).ToList();
+			}
+
+			foreach (string archivo in archivosEncontrados)
+			{
+				int resultado = 0;
+				if (int.TryParse(archivo, out resultado))
+				{
+					cancionesEncontradas.Add(resultado);
+				}
+			}
+
+			return cancionesEncontradas;
+		}
+
 		internal static void GuardarCaratula(byte[] imagen, int idCancion)
 		{
 			if (ExisteDirectorioDeAplicacion())

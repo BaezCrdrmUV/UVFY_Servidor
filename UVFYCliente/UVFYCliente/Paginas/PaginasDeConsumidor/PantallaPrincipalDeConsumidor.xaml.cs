@@ -1,11 +1,14 @@
 ﻿using Logica;
 using Logica.Clases;
 using Logica.DAO;
+using Logica.Servicios;
 using System;
 using System.Collections.Generic;
-using System.Security;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using UVFYCliente.Paginas.PaginasDeArtista;
+using UVFYCliente.Paginas.PaginasDeConsumidor;
+using UVFYCliente.UserControls;
 
 namespace UVFYCliente.Paginas.Consumidor
 {
@@ -17,6 +20,7 @@ namespace UVFYCliente.Paginas.Consumidor
 		private IControladorDeCambioDePantalla Controlador { get; set; }
 		private Usuario UsuarioActual { get; set; }
 		private ControladorDeReproduccion ControladorDeReproduccion { get; set; } = new ControladorDeReproduccion();
+		private List<Playlist> PlaylistsDeUsuarioActual { get; set; } = new List<Playlist>();
 		public PantallaPrincipalDeConsumidor(Usuario usuario, IControladorDeCambioDePantalla controlador)
 		{
 			InitializeComponent();
@@ -33,6 +37,7 @@ namespace UVFYCliente.Paginas.Consumidor
 			ListaDeCanciones.AsignarCanciones(respuesta);
 			await CargarAlbumDeCanciones(respuesta);
 			ListaDeCanciones.AsignarCanciones(respuesta);
+			ControladorDeReproduccion.AsignarCanciones(respuesta);
 		}
 
 		private async Task<bool> CargarArtistasDeCanciones(List<Cancion> canciones)
@@ -74,17 +79,19 @@ namespace UVFYCliente.Paginas.Consumidor
 		private async void CargarPlaylists()
 		{
 			PlaylistDAO playlistDAO = new PlaylistDAO(UsuarioActual.Token);
-			var respuesta = await playlistDAO.CargarPorIdConsumidor(UsuarioActual.Id);
-			ListaDePlaylists.AsignarPlaylists(respuesta);
+			PlaylistsDeUsuarioActual = await playlistDAO.CargarPorIdConsumidor(UsuarioActual.Id);
+			ListaDePlaylists.AsignarPlaylists(PlaylistsDeUsuarioActual);
+			PropagarPlaylists();
 		}
 
 		private void Inicializar()
 		{
+			Reproductor.AsignarControlador(ControladorDeReproduccion);
 			AsignarDisparadores();
 			PropagarTokens();
 			PropagarControladorDeReproduccion();
 			CargarCanciones();
-			Reproductor.AsignarControlador(ControladorDeReproduccion);
+			CargarPlaylists();
 		}
 
 		private void AsignarDisparadores()
@@ -102,6 +109,21 @@ namespace UVFYCliente.Paginas.Consumidor
 			ListaDeCancionesDeAlbum.AsignarToken(tokenActual);
 			ListaDeCancionesDeArtista.AsignarToken(tokenActual);
 			ListaDeCancionesDescargadas.AsignarToken(tokenActual);
+			ListaDeCancionesDePlaylist.AsignarToken(tokenActual);
+			ListaDeCancionesPrivadas.AsignarToken(tokenActual);
+			ListaDeAlbumesDeArtista.AsignarToken(tokenActual);
+			ListaDePlaylists.AsignarToken(tokenActual);
+			Reproductor.AsignarToken(tokenActual);
+		}
+
+		private void PropagarPlaylists()
+		{
+			ListaDeCanciones.AsignarPlaylistsEnMenuDeContexto(PlaylistsDeUsuarioActual);
+			ListaDeCancionesDeAlbum.AsignarPlaylistsEnMenuDeContexto(PlaylistsDeUsuarioActual);
+			ListaDeCancionesDeArtista.AsignarPlaylistsEnMenuDeContexto(PlaylistsDeUsuarioActual);
+			ListaDeCancionesDePlaylist.AsignarPlaylistsEnMenuDeContexto(PlaylistsDeUsuarioActual);
+			ListaDeCancionesDescargadas.AsignarPlaylistsEnMenuDeContexto(PlaylistsDeUsuarioActual);
+			ListaDeCancionesPrivadas.AsignarPlaylistsEnMenuDeContexto(PlaylistsDeUsuarioActual);
 		}
 
 		private void PropagarControladorDeReproduccion()
@@ -109,7 +131,11 @@ namespace UVFYCliente.Paginas.Consumidor
 			ListaDeCanciones.AsignarControladorDeReproduccion(ControladorDeReproduccion);
 			ListaDeCancionesDeAlbum.AsignarControladorDeReproduccion(ControladorDeReproduccion);
 			ListaDeCancionesDeArtista.AsignarControladorDeReproduccion(ControladorDeReproduccion);
+			ListaDeCancionesDePlaylist.AsignarControladorDeReproduccion(ControladorDeReproduccion);
 			ListaDeCancionesDescargadas.AsignarControladorDeReproduccion(ControladorDeReproduccion);
+			ListaDeAlbumesDeArtista.AsignarControladorDeReproduccion(ControladorDeReproduccion);
+			ListaDePlaylists.AsignarControladorDeReproduccion(ControladorDeReproduccion);
+			ListaDeCancionesPrivadas.AsignarControladorDeReproduccion(ControladorDeReproduccion);
 		}
 
 		private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -122,7 +148,7 @@ namespace UVFYCliente.Paginas.Consumidor
 			TabControl controlDePestañas = sender as TabControl;
 			if (controlDePestañas.SelectedIndex == 0)
 			{
-				
+
 			}
 			else if (controlDePestañas.SelectedIndex == 1)
 			{
@@ -134,12 +160,23 @@ namespace UVFYCliente.Paginas.Consumidor
 			}
 			else if (controlDePestañas.SelectedIndex == 3)
 			{
-
+				CargarCancionesDescargadas();
 			}
 			else if (controlDePestañas.SelectedIndex == 4)
 			{
-
+				CargarPlaylists();
 			}
+			else if (controlDePestañas.SelectedIndex == 5)
+			{
+				CargarPrivadas();
+			}
+		}
+
+		private async void CargarPrivadas()
+		{
+			CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
+			var respuesta = await cancionDAO.CargarPrivadasPorIdConsumidor(UsuarioActual.Id);
+			ListaDeCancionesPrivadas.AsignarCanciones(respuesta);
 		}
 
 		#region Eventos
@@ -171,6 +208,18 @@ namespace UVFYCliente.Paginas.Consumidor
 			ListaDeCancionesDeAlbum.AsignarCanciones(respuesta);
 		}
 
+		private async void CargarCancionesDescargadas()
+		{
+			List<int> idsCancionesDescargadas = ServiciosDeIO.ListarCancionesDescargadas();
+			List<Cancion> cancionesDescargadas = new List<Cancion>();
+			foreach (int idCancion in idsCancionesDescargadas)
+			{
+				CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
+				cancionesDescargadas.Add(await cancionDAO.CargarPorId(idCancion));
+			}
+			ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
+		}
+
 		private void DataGridAlbumesDeArtista_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			MostrarCancionesDeAlbumDeArtista(ListaDeAlbumesDeArtista.AlbumSeleccionado);
@@ -198,5 +247,24 @@ namespace UVFYCliente.Paginas.Consumidor
 		}
 
 		#endregion Eventos
+
+		private void ButtonNuevaPlaylist_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+			RegistroDePlaylist registroDePlaylist = new RegistroDePlaylist(UsuarioActual);
+			registroDePlaylist.ShowDialog();
+			CargarPlaylists();
+		}
+
+		private void TextBoxBusquedaBiblioteca_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			ListaDeCancionesPrivadas.Buscar((sender as TextBox).Text);
+		}
+
+		private void ButtonAgregarCancion_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+			RegistroDeCancion registroDeCancion = new RegistroDeCancion(UsuarioActual, TipoDeUsuario.Consumidor);
+			registroDeCancion.ShowDialog();
+			CargarPrivadas();
+		}
 	}
 }

@@ -210,11 +210,14 @@ namespace UVFYMetadatos.DAO
 		public int RegistrarCancionDeConsumidor(Canciones cancionARegistrar)
 		{
 			cancionARegistrar.Estado = (int)EstadoDeCancion.PrivadaDeConsumidor;
-
+			cancionARegistrar.FechaDeLanzamiento = DateTime.Now;
+			ConsumidorDAO consumidorDAO = new ConsumidorDAO();
+			cancionARegistrar.Consumidor = consumidorDAO.CargarPorId(cancionARegistrar.ConsumidorId.Value);
 			try
 			{
 				using (UVFYContext context = new UVFYContext())
 				{
+					context.Attach(cancionARegistrar.Consumidor);
 					context.Canciones.Add(cancionARegistrar);
 					context.SaveChanges();
 				}
@@ -252,6 +255,24 @@ namespace UVFYMetadatos.DAO
 				}
 			}
 			return resultado;
+		}
+
+		public List<Canciones> CargarCancionesPrivadasPorIdConsumidor(int idConsumidor)
+		{
+			List<Canciones> cancionesCargadas = new List<Canciones>();
+			using (UVFYContext context = new UVFYContext())
+			{
+				try
+				{
+					cancionesCargadas = context.Canciones.Where(c => c.ConsumidorId == idConsumidor && c.Estado == (short)EstadoDeCancion.PrivadaDeConsumidor).ToList();
+				}
+				catch (SqlException e)
+				{
+					Console.WriteLine(e.ToString());
+					throw new AccesoADatosException(e.Message, e);
+				}
+			}
+			return cancionesCargadas;
 		}
 	}
 }

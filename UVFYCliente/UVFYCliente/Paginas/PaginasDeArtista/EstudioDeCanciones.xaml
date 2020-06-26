@@ -3,11 +3,13 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	  xmlns:convertidores="clr-namespace:UVFYCliente.ConvertidoresDeDatos"
       xmlns:local="clr-namespace:UVFYCliente.Paginas.PaginasDeArtista"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="EstudioDeCanciones">
 	<Page.Resources>
+		<convertidores:ConvertidorDeSegundosAMinutosYSegundos x:Key="ConvertidorDeSegundosAMinutosYSegundos"></convertidores:ConvertidorDeSegundosAMinutosYSegundos>
 		<DataTemplate x:Key="BotonDeEliminarAlbum">
 			<Button Content="Eliminar" Click="ButtonEliminarAlbum_Click"></Button>
 		</DataTemplate>
@@ -38,7 +40,7 @@
 			<DataGrid x:Name="DataGridListaDeCancionesEnAlbum" Margin="10" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow">
 				<DataGrid.Columns>
 					<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
-					<DataGridTextColumn Header="Duracion" Binding="{Binding Duracion}"></DataGridTextColumn>
+					<DataGridTextColumn Header="Duracion" Binding="{Binding Duracion, Converter={StaticResource ConvertidorDeSegundosAMinutosYSegundos}}"></DataGridTextColumn>
 					<DataGridTemplateColumn CellTemplate="{StaticResource BotonDeEliminarCancionDeAlbum}" CellEditingTemplate="{StaticResource BotonDeEliminarCancionDeAlbum}"></DataGridTemplateColumn>
 				</DataGrid.Columns>
 			</DataGrid>
@@ -50,7 +52,7 @@
 				<DataGrid.Columns>
 					<DataGridTemplateColumn CellEditingTemplate="{StaticResource BotonDeAgregarCancionAAlbum }" CellTemplate="{StaticResource BotonDeAgregarCancionAAlbum}"></DataGridTemplateColumn>
 					<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
-					<DataGridTextColumn Header="Duracion" Binding="{Binding Duracion}"></DataGridTextColumn>
+					<DataGridTextColumn Header="Duracion" Binding="{Binding Duracion, Converter={StaticResource ConvertidorDeSegundosAMinutosYSegundos}}"></DataGridTextColumn>
 					<DataGridTemplateColumn CellTemplate="{StaticResource BotonDeEliminarCancion}" CellEditingTemplate="{StaticResource BotonDeEliminarCancion}"></DataGridTemplateColumn>
 				</DataGrid.Columns>
 			</DataGrid>

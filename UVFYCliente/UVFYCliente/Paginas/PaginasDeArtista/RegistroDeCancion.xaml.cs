@@ -1,22 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using static UVFYCliente.UtileriasGráficas;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Logica.ClasesDeComunicacion;
-using Logica.Servicios;
-using Logica.DAO;
+﻿using Logica;
 using Logica.Clases;
-using Logica;
+using Logica.DAO;
+using Logica.Servicios;
+using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using static UVFYCliente.UtileriasGráficas;
 
 namespace UVFYCliente.Paginas.PaginasDeArtista
 {
@@ -32,14 +23,21 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 		private List<int> GenerosSeleccionados { get; set; } = new List<int>();
 		private List<Genero> GenerosCargados { get; set; } = new List<Genero>();
 		private Usuario UsuarioActual { get; set; } = new Usuario();
+		private TipoDeUsuario TipoDeUsuario { get; set; }
 		private ControladorDeReproduccion ControladorDeVistaPrevia { get; set; } = new ControladorDeReproduccion();
 
-		public RegistroDeCancion(Usuario usuario)
+		public RegistroDeCancion(Usuario usuario, TipoDeUsuario tipoDeUsuario)
 		{
 			InitializeComponent();
 			ButtonVistaPreviaDeAudio.Visibility = Visibility.Hidden;
 			ImagenVistaPreviaDeCaratula.Visibility = Visibility.Hidden;
+			if(tipoDeUsuario == TipoDeUsuario.Consumidor)
+			{
+				DataGridGeneros.Visibility = Visibility.Collapsed;
+				LabelGeneros.Visibility = Visibility.Collapsed; 
+			}
 			UsuarioActual = usuario;
+			TipoDeUsuario = tipoDeUsuario;
 			CargarGeneros();
 		}
 
@@ -100,6 +98,7 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 		{
 			if (ValidarCampos())
 			{
+
 				byte[] datosDeAudio = ServiciosDeIO.CargarBytesDeArchivo(DireccionDeArchivoDeAudio);
 				byte[] datosDeCaratula = ServiciosDeIO.CargarBytesDeArchivo(DireccionDeArchivoDeCaratula);
 				int duracionDeAudio = ServiciosDeIO.ObtenerDuracionDeCancion(DireccionDeArchivoDeAudio);
@@ -113,7 +112,16 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 				CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
 				try
 				{
-					bool resultado = await cancionDAO.RegistrarCancionDeArtista(TextBoxNombreDeCancion.Text, GenerosSeleccionados, datosDeAudio, datosDeCaratula, duracionDeAudio);
+					if (TipoDeUsuario == TipoDeUsuario.Artista)
+					{
+
+
+						bool resultado = await cancionDAO.RegistrarCancionDeArtista(TextBoxNombreDeCancion.Text, GenerosSeleccionados, datosDeAudio, datosDeCaratula, duracionDeAudio);
+					}
+					else if (TipoDeUsuario == TipoDeUsuario.Consumidor)
+					{
+						bool resultado = await cancionDAO.RegistrarCancionDeConsumidor(TextBoxNombreDeCancion.Text, datosDeAudio, datosDeCaratula, duracionDeAudio);
+					}
 				}
 				catch (Exception ex)
 				{
@@ -124,14 +132,14 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 			}
 			else
 			{
-
+				MessageBox.Show("Campos invalidos", "Error");
 			}
 		}
-		
+
 		private bool ValidarCampos()
 		{
 			bool respuesta = false;
-			if(ServiciosDeIO.ExisteArchivo(DireccionDeArchivoDeAudio) && ServiciosDeIO.ExisteArchivo(DireccionDeArchivoDeCaratula))
+			if (ServiciosDeIO.ExisteArchivo(DireccionDeArchivoDeAudio) && ServiciosDeIO.ExisteArchivo(DireccionDeArchivoDeCaratula))
 			{
 				if (ServiciosDeValidacion.ValidarCadena(TextBoxNombreDeCancion.Text))
 				{

@@ -1,18 +1,11 @@
-﻿	using Logica.Clases;
+﻿using Logica;
+using Logica.Clases;
+using Logica.DAO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace UVFYCliente.UserControls
 {
@@ -25,9 +18,19 @@ namespace UVFYCliente.UserControls
 		private List<Playlist> PlaylistsVisbles { get; set; }
 		public List<Playlist> Playlists { get { return playlistsCargadas; } set { playlistsCargadas = value; ActualizarLista(); } }
 		public Playlist PlaylistSeleccionada { get; set; }
+		private string Token { get; set; }
+		private ControladorDeReproduccion ControladorDeReproduccion { get; set; }
+		public void AsignarControladorDeReproduccion(ControladorDeReproduccion controlador)
+		{
+			ControladorDeReproduccion = controlador;
+		}
 		public ListaDePlaylists()
 		{
 			InitializeComponent();
+		}
+		public void AsignarToken(string token)
+		{
+			Token = token;
 		}
 
 		private void ActualizarLista()
@@ -56,23 +59,53 @@ namespace UVFYCliente.UserControls
 			ActualizarLista();
 		}
 
-		private void DataGridCanciones_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void DataGridPlaylists_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (DataGridPlaylists.SelectedItem != null)
+			if (e.AddedItems.Count == 1)
 			{
-				Playlist albumSeleccionado = ((FrameworkElement)sender).DataContext as Playlist;
-				PlaylistSeleccionada = albumSeleccionado;
+				Playlist playlistSeleccionada = e.AddedItems[0] as Playlist;
+				PlaylistSeleccionada = playlistSeleccionada;
 			}
 		}
 
-		private void ButtonDescargar_Click(object sender, RoutedEventArgs e)
+		private async void ButtonAñadirACola_Click(object sender, RoutedEventArgs e)
 		{
-
+			Playlist playlistSeleccionada = ((FrameworkElement)sender).DataContext as Playlist;
+			CancionDAO cancionDAO = new CancionDAO(Token);
+			List<Cancion> cancionesDePlaylist;
+			try
+			{
+				cancionesDePlaylist = await cancionDAO.CargarPorIdPlaylist(playlistSeleccionada.Id);
+			}
+			catch (Exception ex)
+			{
+				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+				return;
+			}
+			foreach (Cancion cancion in cancionesDePlaylist)
+			{
+				ControladorDeReproduccion.AgregarCancionAlFinal(cancion);
+			}
 		}
 
-		private void ButtonAñadirACola_Click(object sender, RoutedEventArgs e)
+		private async void ButtonReproducir_Click(object sender, RoutedEventArgs e)
 		{
+			Playlist playlistSeleccionada = ((FrameworkElement)sender).DataContext as Playlist;
+			CancionDAO cancionDAO = new CancionDAO(Token);
+			List<Cancion> cancionesDePlaylist;
+			try
+			{
+				cancionesDePlaylist = await cancionDAO.CargarPorIdPlaylist(playlistSeleccionada.Id);
+			}
+			catch (Exception ex)
+			{
+				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+				return;
+			}
 
+			ControladorDeReproduccion.AsignarCanciones(cancionesDePlaylist);
 		}
 	}
 }

@@ -63,9 +63,8 @@ namespace Logica.DAO
 				nombre = nombre
 			};
 
-			ByteArrayContent peticionSerializada = Servicios.ServicioDeConversionDeJson.SerializarPeticion<SolicitudDeAgregarPlaylist>(peticion);
 			HttpResponseMessage respuesta;
-			respuesta = await AdministradorDePeticionesHttp.Post<ByteArrayContent>("Crear", peticionSerializada);
+			respuesta = await AdministradorDePeticionesHttp.Post("Crear", peticion);
 
 			if (respuesta.IsSuccessStatusCode)
 			{
@@ -88,9 +87,8 @@ namespace Logica.DAO
 				idCancion = idCancion
 			};
 
-			ByteArrayContent peticionSerializada = Servicios.ServicioDeConversionDeJson.SerializarPeticion<SolicitudDeAgregarCancionAPlaylist>(peticion);
 			HttpResponseMessage respuesta;
-			respuesta = await AdministradorDePeticionesHttp.Post("Crear", peticionSerializada);
+			respuesta = await AdministradorDePeticionesHttp.Post("AgregarCancion", peticion);
 
 			if (respuesta.IsSuccessStatusCode)
 			{
@@ -113,9 +111,8 @@ namespace Logica.DAO
 				idCancion = idCancion
 			};
 
-			ByteArrayContent peticionSerializada = Servicios.ServicioDeConversionDeJson.SerializarPeticion<SolicitudDeEliminarCancionDePlaylist>(peticion);
 			HttpResponseMessage respuesta;
-			respuesta = await AdministradorDePeticionesHttp.Post("Crear", peticionSerializada);
+			respuesta = await AdministradorDePeticionesHttp.Post("EliminarCancion", peticion);
 
 			if (respuesta.IsSuccessStatusCode)
 			{
@@ -138,9 +135,8 @@ namespace Logica.DAO
 				nombre = nuevoNombre
 			};
 
-			ByteArrayContent peticionSerializada = Servicios.ServicioDeConversionDeJson.SerializarPeticion<SolicitudDeRenombrarPlaylist>(peticion);
 			HttpResponseMessage respuesta;
-			respuesta = await AdministradorDePeticionesHttp.Post("Crear", peticionSerializada);
+			respuesta = await AdministradorDePeticionesHttp.Post("Renombrar", peticion);
 
 			if (respuesta.IsSuccessStatusCode)
 			{

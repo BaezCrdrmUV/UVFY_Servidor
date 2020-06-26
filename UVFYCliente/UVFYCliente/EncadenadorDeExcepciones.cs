@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Logica.Excepciones;
+﻿using Logica.Excepciones;
+using System;
 
 namespace UVFYCliente
 {
@@ -25,7 +21,7 @@ namespace UVFYCliente
 		{
 			MensajeDeErrorParaMessageBox mensajeDeErrorParaMessageBox = new MensajeDeErrorParaMessageBox();
 
-			if(e is AccesoADatosException)
+			if (e is AccesoADatosException)
 			{
 				mensajeDeErrorParaMessageBox = new MensajeDeErrorParaMessageBox("Hubo un error accediendo a los datos. Por favor intentelo mas tarde", "Error");
 			}
@@ -44,6 +40,10 @@ namespace UVFYCliente
 			else if (e is TokenInvalidoException)
 			{
 				mensajeDeErrorParaMessageBox = new MensajeDeErrorParaMessageBox("Hubo un error de autenticación, intente reiniciando la aplicación", "Error");
+			}
+			else if (e is RecursoYaExisteException)
+			{
+				mensajeDeErrorParaMessageBox = new MensajeDeErrorParaMessageBox("El recurso que esta intentando crear ya existe", "Error");
 			}
 			return mensajeDeErrorParaMessageBox;
 		}

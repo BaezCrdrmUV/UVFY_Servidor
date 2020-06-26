@@ -102,14 +102,17 @@ namespace UVFYCliente.UserControls
 
 		private void CargarDatosDeCancionActual()
 		{
-			Cancion cancionActual = ControladorDeReproduccion.CancionesEnCola[ControladorDeReproduccion.CancionActual];
-			LabelNombreDaCancionActual.Content = cancionActual.Nombre;
-			LabelArtistaDeCancionActual.Content = cancionActual.Artista.Nombre;
-			SliderProgresoDeCancion.Maximum = cancionActual.Duracion;
-			SliderProgresoDeCancion.Value = 0;
-			ConvertidorDeSegundosAMinutosYSegundos convertidorDeSegundosAMinutosYSegundos = new ConvertidorDeSegundosAMinutosYSegundos();
-			LabelTiempoTotal.Content = convertidorDeSegundosAMinutosYSegundos.Convert((int)cancionActual.Duracion, typeof(string), null, null);
-			AsignarImagenDeCancionActual(cancionActual.Id);
+			if (ControladorDeReproduccion.CancionesEnCola.Count > 0)
+			{
+				Cancion cancionActual = ControladorDeReproduccion.CancionesEnCola[ControladorDeReproduccion.CancionActual];
+				LabelNombreDaCancionActual.Content = cancionActual.Nombre;
+				LabelArtistaDeCancionActual.Content = cancionActual.Artista.Nombre;
+				SliderProgresoDeCancion.Maximum = cancionActual.Duracion;
+				SliderProgresoDeCancion.Value = 0;
+				ConvertidorDeSegundosAMinutosYSegundos convertidorDeSegundosAMinutosYSegundos = new ConvertidorDeSegundosAMinutosYSegundos();
+				LabelTiempoTotal.Content = convertidorDeSegundosAMinutosYSegundos.Convert((int)cancionActual.Duracion, typeof(string), null, null);
+				AsignarImagenDeCancionActual(cancionActual.Id);
+			}
 		}
 
 		private async void AsignarImagenDeCancionActual(int idCancion)

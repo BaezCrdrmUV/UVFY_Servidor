@@ -1,4 +1,5 @@
-﻿using Logica.Clases;
+﻿using Logica;
+using Logica.Clases;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -52,6 +52,7 @@ namespace Logica
 				{
 					throw new ErrorInternoDeServicioException(peticion);
 				}
+				
 				else 
 				{
 					throw new Exception("Se recibio un codigo de error inesperado: " + respuesta.StatusCode.ToString() + " " + peticion);
@@ -96,6 +97,10 @@ namespace Logica
 				else if (respuesta.StatusCode == (System.Net.HttpStatusCode)500)
 				{
 					throw new ErrorInternoDeServicioException(peticion);
+				}
+				else if (respuesta.StatusCode == (System.Net.HttpStatusCode)409)
+				{
+					throw new RecursoYaExisteException(peticion);
 				}
 				else
 				{

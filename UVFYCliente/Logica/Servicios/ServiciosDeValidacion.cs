@@ -18,6 +18,8 @@ namespace Logica.Servicios
         /// </summary>
         private static readonly Regex RegexContraseña = new Regex(@"^\S{6,255}$");
 
+        private static readonly Regex RegexNumeroEntero = new Regex(@"^\d+$");
+
         public const int TAMAÑO_MAXIMO_VARCHAR = 255;
         public const int VALOR_ENTERO_MINIMO_PERMITIDO = 0;
         private const int VALOR_ENTERO_MAXIMO_PERMITIDO = 255;
@@ -42,6 +44,17 @@ namespace Logica.Servicios
             return resultadoDeValidacion;
         }
 
+        public static bool ValidarNumeroEntero(string numero)
+        {
+            bool resultadoDeValidacion = false;
+
+            if (RegexNumeroEntero.IsMatch(numero))
+            {
+                resultadoDeValidacion = true;
+            }
+
+            return resultadoDeValidacion;
+        }
 
         /// <summary>
         /// Valida la estructura de la cadena de la contraseña del usuario.

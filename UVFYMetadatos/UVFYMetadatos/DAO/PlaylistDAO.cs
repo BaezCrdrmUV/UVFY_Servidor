@@ -1,5 +1,6 @@
 ﻿using LogicaDeNegocios.Excepciones;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,13 +65,15 @@ namespace UVFYMetadatos.DAO
 			};
 			if (ValidarParaGuardar(playlistConvertida))
 			{
-				UsuarioDAO consumidorDAO = new UsuarioDAO();
-				playlistConvertida.Consumidor = consumidorDAO.CargarPorId(idUsuario);
+				ConsumidorDAO consumidorDAO = new ConsumidorDAO();
+				UsuariosConsumidor usuario = consumidorDAO.CargarPorId(idUsuario);
+				playlistConvertida.Consumidor = usuario;
 				try
 				{
 					using (UVFYContext context = new UVFYContext())
 					{
 						context.Playlists.Add(playlistConvertida);
+						context.Attach(usuario);
 						context.SaveChanges();
 						respuesta = true;
 					}
@@ -106,12 +109,13 @@ namespace UVFYMetadatos.DAO
 				Canciones cancion = cancionDAO.CargarPorId(idCancion);
 				CancionPlaylist cancionPlaylist = new CancionPlaylist
 				{
-					Cancion = cancion,
-					Playlists = playlist
+					CancionId = cancion.Id,
+					PlaylistsId = playlist.Id
 				};
 				using (UVFYContext context = new UVFYContext())
 				{
 					context.CancionPlaylist.Add(cancionPlaylist);
+					context.SaveChanges();
 				}
 				respuesta = true;
 			}
@@ -120,6 +124,11 @@ namespace UVFYMetadatos.DAO
 				Console.WriteLine(e.ToString());
 				throw new AccesoADatosException(e.Message, e);
 			}
+			catch(DbUpdateException e)
+			{
+				Console.WriteLine(e.ToString());
+				throw new RecursoYaExisteException(e.Message, e);
+			} 
 			return respuesta;
 		}
 

@@ -72,8 +72,14 @@
     <Compile Include="Paginas\PaginasDeArtista\RegistroDeCancion.xaml.cs">
       <DependentUpon>RegistroDeCancion.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Paginas\PaginasDeConsumidor\ListaDeReproduccion.xaml.cs">
+      <DependentUpon>ListaDeReproduccion.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Paginas\PaginasDeConsumidor\PantallaPrincipalDeConsumidor.xaml.cs">
       <DependentUpon>PantallaPrincipalDeConsumidor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Paginas\PaginasDeConsumidor\RegistroDePlaylist.xaml.cs">
+      <DependentUpon>RegistroDePlaylist.xaml</DependentUpon>
     </Compile>
     <Compile Include="Paginas\RegistroDeUsuario.xaml.cs">
       <DependentUpon>RegistroDeUsuario.xaml</DependentUpon>
@@ -126,11 +132,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Paginas\PaginasDeConsumidor\ListaDeReproduccion.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Paginas\PaginasDeConsumidor\PantallaPrincipalDeConsumidor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Paginas\PageInicioDeSesion.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Paginas\PaginasDeConsumidor\RegistroDePlaylist.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

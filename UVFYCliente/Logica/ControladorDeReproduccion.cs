@@ -110,8 +110,7 @@ namespace Logica
 
 		public void Siguiente()
 		{
-			if (Reproductor.PlaybackState != PlaybackState.Stopped)
-			{
+
 				CancionActual++;
 				if (CancionActual > CancionesEnCola.Count - 1)
 				{
@@ -119,21 +118,20 @@ namespace Logica
 				}
 				Reproductor.Stop();
 				InicializarReproduccion();
-			}
+			
 		}
 
 		public void Anterior()
 		{
-			if (Reproductor.PlaybackState != PlaybackState.Stopped)
-			{
+
 				CancionActual--;
 				if (CancionActual < 0)
 				{
 					CancionActual = CancionesEnCola.Count - 1;
 				}
 				Reproductor.Stop();
-				InicializarReproduccion();
-			}
+			InicializarReproduccion();
+			
 		}
 
 		public TimeSpan ObtenerTiempoActual()

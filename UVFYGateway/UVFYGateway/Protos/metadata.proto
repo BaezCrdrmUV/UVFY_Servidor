@@ -13,6 +13,7 @@ service Metadata {
   rpc CargarCancionesPorIdGenero (PeticionId) returns (RespuestaDeCanciones);
   rpc CargarCancionesPrivadasPorIdArtista (PeticionId) returns (RespuestaDeCanciones);
   rpc RegistrarCancionDeArtista (SolicitudDeRegistrarCancion) returns (RespuestaDeCanciones);
+  rpc CargarCancionesPrivadasPorIdConsumidor (PeticionId) returns (RespuestaDeCanciones);
   rpc RegistrarCancionDeConsumidor (SolicitudDeRegistrarCancion) returns (RespuestaDeCanciones);
   rpc EliminarCancion (SolicitudDeEliminarCancion) returns (Respuesta);
   rpc LiberarCancion (SolicitudDeCambiarEstadoDeCancion) returns (Respuesta);

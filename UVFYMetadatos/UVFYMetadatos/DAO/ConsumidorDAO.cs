@@ -9,7 +9,7 @@ using UVFYMetadatos.Models;
 
 namespace UVFYMetadatos.DAO
 {
-	public class UsuarioDAO
+	public class ConsumidorDAO
 	{
 		public UsuariosConsumidor CargarPorId(int idConsumidor)
 		{

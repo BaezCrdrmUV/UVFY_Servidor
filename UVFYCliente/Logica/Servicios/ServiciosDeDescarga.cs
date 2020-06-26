@@ -24,5 +24,15 @@ namespace Logica.Servicios
 			byte[] imagen = await archivosDAO.CargarCaratulaDeCancionPorId(idCancion);
 			ServiciosDeIO.GuardarCaratula(imagen, idCancion);
 		}
+
+		public void EliminarCaratulaDeCancion(int idCancion)
+		{
+			ServiciosDeIO.EliminarCaratula(idCancion);
+		}
+
+		public void EliminarAudioDeCancion(int idCancion)
+		{
+			ServiciosDeIO.EliminarCancion(idCancion);
+		}
 	}
 }
