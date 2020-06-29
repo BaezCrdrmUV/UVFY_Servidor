@@ -24,7 +24,7 @@ namespace UVFYCliente.UserControls
 	/// <summary>
 	/// Interaction logic for Reproductor.xaml
 	/// </summary>
-	public partial class Reproductor : UserControl
+	public partial class Reproductor : UserControl, IReproductor
 	{
 
 		private ControladorDeReproduccion ControladorDeReproduccion { get; set; }
@@ -100,13 +100,21 @@ namespace UVFYCliente.UserControls
 			CargarDatosDeCancionActual();
 		}
 
-		private void CargarDatosDeCancionActual()
+		public void CargarDatosDeCancionActual()
 		{
 			if (ControladorDeReproduccion.CancionesEnCola.Count > 0)
 			{
 				Cancion cancionActual = ControladorDeReproduccion.CancionesEnCola[ControladorDeReproduccion.CancionActual];
 				LabelNombreDaCancionActual.Content = cancionActual.Nombre;
-				LabelArtistaDeCancionActual.Content = cancionActual.Artista.Nombre;
+				if (cancionActual.Artista != null)
+				{
+					LabelArtistaDeCancionActual.Content = cancionActual.Artista.Nombre;
+					LabelArtistaDeCancionActual.Visibility = Visibility.Visible;
+				}
+				else
+				{
+					LabelArtistaDeCancionActual.Visibility = Visibility.Hidden;
+				}
 				SliderProgresoDeCancion.Maximum = cancionActual.Duracion;
 				SliderProgresoDeCancion.Value = 0;
 				ConvertidorDeSegundosAMinutosYSegundos convertidorDeSegundosAMinutosYSegundos = new ConvertidorDeSegundosAMinutosYSegundos();
@@ -151,6 +159,17 @@ namespace UVFYCliente.UserControls
 		{
 			Slider sliderDeProgreso = sender as Slider;
 			ControladorDeReproduccion.CambiarVolumen((float)sliderDeProgreso.Value);
+		}
+
+		void IReproductor.CargarDatosDeCancionActual()
+		{
+			CargarDatosDeCancionActual();
+		}
+
+		private void ButtonColaDeReproduccion_Click(object sender, RoutedEventArgs e)
+		{
+			Paginas.PaginasDeConsumidor.ListaDeReproduccion listaDeReproduccion = new Paginas.PaginasDeConsumidor.ListaDeReproduccion(ControladorDeReproduccion, this, Token);
+			listaDeReproduccion.Show();
 		}
 	}
 }

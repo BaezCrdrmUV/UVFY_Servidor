@@ -12,6 +12,8 @@ namespace Logica
 		public int CancionActual { get; set; } = 0;
 		public WaveOutEvent Reproductor { get; set; } = new WaveOutEvent();
 		public Mp3FileReader Lector { get; set; }
+		private IReproductor IReproductor { get; set; }
+		private float Volumen { get; set; } = 0.1f;
 
 
 		public void Reproducir()
@@ -24,6 +26,21 @@ namespace Logica
 			{
 				InicializarReproduccion();
 			}
+		}
+
+		public void SaltarA(int indiceDeCancion)
+		{
+			if (indiceDeCancion <= CancionesEnCola.Count - 1)
+			{
+				CancionActual = indiceDeCancion;
+				Reproductor.Stop();
+				InicializarReproduccion();
+			}
+		}
+
+		public void AsignarInterfaz(IReproductor reproductor)
+		{
+			IReproductor = reproductor;
 		}
 
 		public void ReiniciarVistaPrevia()
@@ -39,7 +56,7 @@ namespace Logica
 				Reproductor.DeviceNumber = 0;
 				Reproductor.Init(Lector);
 				Reproductor.Play();
-				Reproductor.Volume = 0.1f;
+				Reproductor.Volume = Volumen;
 			}
 			else if (Reproductor.PlaybackState == PlaybackState.Playing)
 			{
@@ -48,6 +65,7 @@ namespace Logica
 			else if (Reproductor.PlaybackState == PlaybackState.Paused)
 			{
 				Reproductor.Play();
+
 			}
 		}
 
@@ -63,7 +81,8 @@ namespace Logica
 					Reproductor.DeviceNumber = 0;
 					Reproductor.Init(Lector);
 					Reproductor.Play();
-					Reproductor.Volume = 0.1f;
+					Reproductor.Volume = Volumen;
+					IReproductor.CargarDatosDeCancionActual();
 				}
 			}
 		}
@@ -110,28 +129,26 @@ namespace Logica
 
 		public void Siguiente()
 		{
-
-				CancionActual++;
-				if (CancionActual > CancionesEnCola.Count - 1)
-				{
-					CancionActual = 0;
-				}
-				Reproductor.Stop();
-				InicializarReproduccion();
-			
+			CancionActual++;
+			if (CancionActual > CancionesEnCola.Count - 1)
+			{
+				CancionActual = 0;
+			}
+			Reproductor.Stop();
+			InicializarReproduccion();
 		}
 
 		public void Anterior()
 		{
 
-				CancionActual--;
-				if (CancionActual < 0)
-				{
-					CancionActual = CancionesEnCola.Count - 1;
-				}
-				Reproductor.Stop();
+			CancionActual--;
+			if (CancionActual < 0)
+			{
+				CancionActual = CancionesEnCola.Count - 1;
+			}
+			Reproductor.Stop();
 			InicializarReproduccion();
-			
+
 		}
 
 		public TimeSpan ObtenerTiempoActual()
@@ -146,7 +163,8 @@ namespace Logica
 
 		public void CambiarVolumen(float volumen)
 		{
-			Reproductor.Volume = volumen;
+			Volumen = volumen;
+			Reproductor.Volume = Volumen;
 		}
 
 		public void AgregarCancionAlFinal(Cancion cancion)

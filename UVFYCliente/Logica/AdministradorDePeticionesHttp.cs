@@ -14,16 +14,20 @@ namespace Logica
 {
 	public class AdministradorDePeticionesHttp
 	{
-		static HttpClient Cliente = new HttpClient();
-		static string Direccion;
+		private readonly HttpClient Cliente = new HttpClient();
+		private string Direccion { get; set; }
 
 		public AdministradorDePeticionesHttp(string extensionDeDireccion)
 		{
 			Direccion = ConfigurationManager.AppSettings["DireccionBase"] + extensionDeDireccion;
-			HttpClientHandler manejadorDeCliente = new HttpClientHandler();
-			manejadorDeCliente.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-			Cliente = new HttpClient(manejadorDeCliente);
-			Cliente.BaseAddress = new Uri(ConfigurationManager.AppSettings["DireccionBase"] + extensionDeDireccion);
+			HttpClientHandler manejadorDeCliente = new HttpClientHandler
+			{
+				ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
+			};
+			Cliente = new HttpClient(manejadorDeCliente)
+			{
+				BaseAddress = new Uri(ConfigurationManager.AppSettings["DireccionBase"] + extensionDeDireccion)
+			};
 		}
 
 		public async Task<HttpResponseMessage> Get(string peticion)
@@ -42,20 +46,20 @@ namespace Logica
 			{
 				if (respuesta.StatusCode == (System.Net.HttpStatusCode) 404)
 				{
-					throw new RecursoNoExisteException(peticion);
+					throw new RecursoNoExisteException(Cliente.BaseAddress + peticion);
 				}
 				else if (respuesta.StatusCode == (System.Net.HttpStatusCode) 403)
 				{
-					throw new TokenInvalidoException(peticion);
+					throw new TokenInvalidoException(Cliente.BaseAddress + peticion);
 				} 
 				else if (respuesta.StatusCode == (System.Net.HttpStatusCode) 500)
 				{
-					throw new ErrorInternoDeServicioException(peticion);
+					throw new ErrorInternoDeServicioException(Cliente.BaseAddress + peticion);
 				}
 				
 				else 
 				{
-					throw new Exception("Se recibio un codigo de error inesperado: " + respuesta.StatusCode.ToString() + " " + peticion);
+					throw new Exception("Se recibio un codigo de error inesperado: " + respuesta.StatusCode.ToString() + " " +Cliente.BaseAddress+ peticion);
 				}
 			}
 

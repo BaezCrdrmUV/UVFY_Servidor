@@ -4,6 +4,7 @@ using Logica.DAO;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using Logica;
 using static UVFYCliente.UtileriasGráficas;
 
 namespace UVFYCliente.Paginas

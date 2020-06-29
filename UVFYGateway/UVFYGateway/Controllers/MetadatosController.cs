@@ -34,7 +34,7 @@ namespace UVFYGateway.Controllers
 		#region Cancion
 		[HttpGet]
 		[Route("Canciones/Todas")]
-		public IActionResult CancionesTodas([FromQuery] string tokenDeAcceso)
+		public Task<IActionResult> CancionesTodas([FromQuery] string tokenDeAcceso)
 		{
 			IActionResult actionResult = BadRequest();
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -51,7 +51,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -64,12 +64,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Canciones/PorID")]
-		public IActionResult CargarCancionPorId([FromQuery]string tokenDeAcceso, int idCancion)
+		public Task<IActionResult> CargarCancionPorId([FromQuery]string tokenDeAcceso, int idCancion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -91,7 +91,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -104,12 +104,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Canciones/PorArtista")]
-		public IActionResult CargarCancionesPorIdArtista([FromQuery]string tokenDeAcceso, int idArtista)
+		public Task<IActionResult> CargarCancionesPorIdArtista([FromQuery]string tokenDeAcceso, int idArtista)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -131,7 +131,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -144,12 +144,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Canciones/PorAlbum")]
-		public IActionResult CargarCancionesPorIdAlbum([FromQuery]string tokenDeAcceso, int idAlbum)
+		public Task<IActionResult> CargarCancionesPorIdAlbum([FromQuery]string tokenDeAcceso, int idAlbum)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -171,7 +171,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -184,12 +184,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Canciones/PorPlaylist")]
-		public IActionResult CargarCancionesPorIdPlaylist([FromQuery]string tokenDeAcceso, int idPlaylist)
+		public Task<IActionResult> CargarCancionesPorIdPlaylist([FromQuery]string tokenDeAcceso, int idPlaylist)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -211,7 +211,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -224,12 +224,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Canciones/PrivadasPorArtista")]
-		public IActionResult CargarCancionesPrivadasPorIdArtista([FromQuery]string tokenDeAcceso, int idArtista)
+		public Task<IActionResult> CargarCancionesPrivadasPorIdArtista([FromQuery]string tokenDeAcceso, int idArtista)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -251,7 +251,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -264,12 +264,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Canciones/PrivadasPorConsumidor")]
-		public IActionResult CargarCancionesPrivadasPorIdConsumidor([FromQuery]string tokenDeAcceso, int idConsumidor)
+		public Task<IActionResult> CargarCancionesPrivadasPorIdConsumidor([FromQuery]string tokenDeAcceso, int idConsumidor)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -291,7 +291,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -304,12 +304,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Canciones/PorGenero")]
-		public IActionResult CargarCancionesPorIdGenero([FromQuery]string tokenDeAcceso, int idGenero)
+		public Task<IActionResult> CargarCancionesPorIdGenero([FromQuery]string tokenDeAcceso, int idGenero)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -331,7 +331,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -344,12 +344,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpPost]
 		[Route("Canciones/RegistrarDeArtista")]
-		public IActionResult RegistrarCancionDeArtista([FromBody]Peticiones.SolicitudDeRegistrarCancion peticion)
+		public Task<IActionResult> RegistrarCancionDeArtista([FromBody]Peticiones.SolicitudDeRegistrarCancion peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -379,7 +379,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -392,12 +392,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpPost]
 		[Route("Canciones/RegistrarDeConsumidor")]
-		public IActionResult RegistrarCancionDeConsumidor([FromBody]Peticiones.SolicitudDeRegistrarCancion peticion)
+		public Task<IActionResult> RegistrarCancionDeConsumidor([FromBody]Peticiones.SolicitudDeRegistrarCancion peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -427,7 +427,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -440,12 +440,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpDelete]
 		[Route("Canciones/Eliminar")]
-		public IActionResult EliminarCancion([FromQuery] string tokenDeAcceso, int idCancion)
+		public Task<IActionResult> EliminarCancion([FromQuery] string tokenDeAcceso, int idCancion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -466,7 +466,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Exitosa)
@@ -478,7 +478,7 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		#endregion Cancion 
@@ -486,7 +486,7 @@ namespace UVFYGateway.Controllers
 		#region Artista
 		[HttpGet]
 		[Route("Artistas/Todos")]
-		public IActionResult ArtistasTodos([FromQuery] string tokenDeAcceso)
+		public Task<IActionResult> ArtistasTodos([FromQuery] string tokenDeAcceso)
 		{
 			IActionResult actionResult = BadRequest();
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -503,7 +503,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -516,12 +516,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Artistas/PorID")]
-		public IActionResult CargarArtistaPorId([FromQuery]string tokenDeAcceso, int idArtista)
+		public Task<IActionResult> CargarArtistaPorId([FromQuery]string tokenDeAcceso, int idArtista)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -543,7 +543,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -556,12 +556,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Artistas/PorCancion")]
-		public IActionResult CargarArtistaPorIdCancion([FromQuery]string tokenDeAcceso, int idCancion)
+		public Task<IActionResult> CargarArtistaPorIdCancion([FromQuery]string tokenDeAcceso, int idCancion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -583,7 +583,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -596,12 +596,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Artistas/PorAlbum")]
-		public IActionResult CargarArtistaPorIdAlbum([FromQuery]string tokenDeAcceso, int idAlbum)
+		public Task<IActionResult> CargarArtistaPorIdAlbum([FromQuery]string tokenDeAcceso, int idAlbum)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -623,7 +623,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -636,14 +636,14 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 		#endregion Artista
 
 		#region Album 
 		[HttpGet]
 		[Route("Albumes/PorID")]
-		public IActionResult CargarAlbumPorId([FromQuery]string tokenDeAcceso, int idAlbum)
+		public Task<IActionResult> CargarAlbumPorId([FromQuery]string tokenDeAcceso, int idAlbum)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -665,7 +665,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -678,12 +678,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Albumes/PorCancion")]
-		public IActionResult CargarAlbumPorIdCancion([FromQuery]string tokenDeAcceso, int idCancion)
+		public Task<IActionResult> CargarAlbumPorIdCancion([FromQuery]string tokenDeAcceso, int idCancion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -705,7 +705,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -718,12 +718,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Albumes/PorArtista")]
-		public IActionResult CargarAlbumPorIdArtista([FromQuery]string tokenDeAcceso, int idArtista)
+		public Task<IActionResult> CargarAlbumPorIdArtista([FromQuery]string tokenDeAcceso, int idArtista)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -745,7 +745,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -758,12 +758,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Albumes/PorGenero")]
-		public IActionResult CargarAlbumPorIdGenero([FromQuery]string tokenDeAcceso, int idGenero)
+		public Task<IActionResult> CargarAlbumPorIdGenero([FromQuery]string tokenDeAcceso, int idGenero)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -785,7 +785,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -798,12 +798,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpPost]
 		[Route("Albumes/Registrar")]
-		public IActionResult RegistrarAlbum([FromBody] Peticiones.SolicitudDeRegistrarAlbum peticion)
+		public Task<IActionResult> RegistrarAlbum([FromBody] Peticiones.SolicitudDeRegistrarAlbum peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -833,7 +833,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -846,12 +846,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpPost]
 		[Route("Albumes/AgregarCancion")] 
-		public IActionResult AgregarCancionAAlbum([FromBody] Peticiones.SolicitudDeAgregarCancionAPlaylist peticion)
+		public Task<IActionResult> AgregarCancionAAlbum([FromBody] Peticiones.SolicitudDeAgregarCancionAPlaylist peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -875,7 +875,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Exitosa)
@@ -887,12 +887,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpPost]
 		[Route("Albumes/EliminarCancion")]
-		public IActionResult EliminarCancionDeAlbum([FromBody] Peticiones.SolicitudDeEliminarCancionDePlaylist peticion)
+		public Task<IActionResult> EliminarCancionDeAlbum([FromBody] Peticiones.SolicitudDeEliminarCancionDePlaylist peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -916,7 +916,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Exitosa)
@@ -928,12 +928,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpDelete]
 		[Route("Albumes/Eliminar")]
-		public IActionResult EliminarAlbum([FromQuery]string tokenDeAcceso, int idAlbum )
+		public Task<IActionResult> EliminarAlbum([FromQuery]string tokenDeAcceso, int idAlbum )
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -954,7 +954,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Exitosa)
@@ -966,14 +966,14 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 		#endregion Album
 
 		#region Playlist 
 		[HttpGet]
 		[Route("Playlists/PorID")]
-		public IActionResult CargarPlaylistPorId([FromQuery]string tokenDeAcceso, int idPlaylist)
+		public Task<IActionResult> CargarPlaylistPorId([FromQuery]string tokenDeAcceso, int idPlaylist)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -995,7 +995,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -1008,12 +1008,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Playlists/PorConsumidor")]
-		public IActionResult CargarPlaylistsPorIdConsumidor([FromQuery]string tokenDeAcceso, int idConsumidor)
+		public Task<IActionResult> CargarPlaylistsPorIdConsumidor([FromQuery]string tokenDeAcceso, int idConsumidor)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -1035,7 +1035,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -1048,12 +1048,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpPost]
 		[Route("Playlists/Crear")]
-		public IActionResult CrearPlaylist([FromBody]Peticiones.SolicitudDeAgregarPlaylist peticion)
+		public Task<IActionResult> CrearPlaylist([FromBody]Peticiones.SolicitudDeAgregarPlaylist peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -1075,7 +1075,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -1088,12 +1088,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpPost]
 		[Route("Playlists/AgregarCancion")]
-		public IActionResult AgregarCancionAPlaylist([FromBody]Peticiones.SolicitudDeAgregarCancionAPlaylist peticion)
+		public Task<IActionResult> AgregarCancionAPlaylist([FromBody]Peticiones.SolicitudDeAgregarCancionAPlaylist peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -1116,7 +1116,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Exitosa)
@@ -1128,12 +1128,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpPost]
 		[Route("Playlists/EliminarCancion")]
-		public IActionResult EliminarCancionDePlaylist([FromBody]Peticiones.SolicitudDeEliminarCancionDePlaylist peticion)
+		public Task<IActionResult> EliminarCancionDePlaylist([FromBody]Peticiones.SolicitudDeEliminarCancionDePlaylist peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -1157,7 +1157,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Exitosa)
@@ -1169,12 +1169,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpPost]
 		[Route("Playlists/Renombrar")]
-		public IActionResult RenombrarPlaylist([FromBody]SolicitudDeRenombrarPlaylist peticion)
+		public Task<IActionResult> RenombrarPlaylist([FromBody]SolicitudDeRenombrarPlaylist peticion)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -1188,7 +1188,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Exitosa)
@@ -1200,12 +1200,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpDelete]
 		[Route("Playlists/Eliminar")]
-		public IActionResult EliminarPlaylist([FromQuery]string tokenDeAcceso, int idPlaylist)
+		public Task<IActionResult> EliminarPlaylist([FromQuery]string tokenDeAcceso, int idPlaylist)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -1226,7 +1226,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Exitosa)
@@ -1238,7 +1238,7 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 		#endregion Playlist
 
@@ -1246,7 +1246,7 @@ namespace UVFYGateway.Controllers
 
 		[HttpGet]
 		[Route("Generos/Todos")]
-		public IActionResult CargarGenerosTodos([FromQuery] string tokenDeAcceso)
+		public Task<IActionResult> CargarGenerosTodos([FromQuery] string tokenDeAcceso)
 		{
 			IActionResult actionResult = BadRequest();
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -1263,7 +1263,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -1276,12 +1276,12 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 
 		[HttpGet]
 		[Route("Generos/PorID")]
-		public IActionResult CargarGenerosPorId([FromQuery]string tokenDeAcceso, int idGenero)
+		public Task<IActionResult> CargarGenerosPorId([FromQuery]string tokenDeAcceso, int idGenero)
 		{
 			IActionResult actionResult;
 			var clienteDeMetadatos = new UVFYMetadatos.Metadata.MetadataClient(ServicioDeMetadatos);
@@ -1303,7 +1303,7 @@ namespace UVFYGateway.Controllers
 			catch (System.Net.Http.HttpRequestException)
 			{
 				actionResult = StatusCode(500);
-				return actionResult;
+				return Task.FromResult(actionResult);
 			}
 
 			if (respuesta.Respuesta.Exitosa)
@@ -1316,7 +1316,7 @@ namespace UVFYGateway.Controllers
 				actionResult = StatusCode(respuesta.Respuesta.Motivo);
 			}
 
-			return actionResult;
+			return Task.FromResult(actionResult);
 		}
 		#endregion Genero
 	}

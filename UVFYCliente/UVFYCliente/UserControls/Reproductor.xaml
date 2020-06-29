@@ -14,7 +14,7 @@
 			</StackPanel>
 		</StackPanel>
 		<StackPanel DockPanel.Dock="Right" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-			<Button x:Name="ButtonColaDeReproduccion" Content="Cola de reproduccion"></Button>
+			<Button x:Name="ButtonColaDeReproduccion" Content="Cola de reproduccion" Click="ButtonColaDeReproduccion_Click"></Button>
 			<StackPanel Orientation="Horizontal" Margin="10">
 				<Image x:Name="ImageVolumen" Source="pack://application:,,,/Recursos/volumen.png" MaxHeight="20"></Image>
 				<Slider x:Name="ProgressBarVolumen" HorizontalAlignment="Stretch" MinWidth="100" ValueChanged="ProgressBarVolumen_ValueChanged" Maximum="1" Margin="5"></Slider>

@@ -38,6 +38,7 @@ namespace UVFYCliente.Paginas.Consumidor
 			await CargarAlbumDeCanciones(respuesta);
 			ListaDeCanciones.AsignarCanciones(respuesta);
 			ControladorDeReproduccion.AsignarCanciones(respuesta);
+			ControladorDeReproduccion.Pausar();
 		}
 
 		private async Task<bool> CargarArtistasDeCanciones(List<Cancion> canciones)
@@ -45,8 +46,11 @@ namespace UVFYCliente.Paginas.Consumidor
 			ArtistaDAO artistaDAO = new ArtistaDAO(UsuarioActual.Token);
 			foreach (Cancion cancion in canciones)
 			{
-				var respuesta = await artistaDAO.CargarPorId(cancion.Artista.Id);
-				cancion.Artista = respuesta;
+				if (cancion.Artista != null)
+				{
+					var respuesta = await artistaDAO.CargarPorId(cancion.Artista.Id);
+					cancion.Artista = respuesta;
+				}
 			}
 			return true;
 		}
@@ -56,8 +60,11 @@ namespace UVFYCliente.Paginas.Consumidor
 			AlbumDAO albumDAO = new AlbumDAO(UsuarioActual.Token);
 			foreach (Cancion cancion in canciones)
 			{
-				var respuesta = await albumDAO.CargarPorId(cancion.Album.Id);
-				cancion.Album = respuesta;
+				if (cancion.Album != null)
+				{
+					var respuesta = await albumDAO.CargarPorId(cancion.Album.Id);
+					cancion.Album = respuesta;
+				}
 			}
 			return true;
 		}
@@ -87,6 +94,8 @@ namespace UVFYCliente.Paginas.Consumidor
 		private void Inicializar()
 		{
 			Reproductor.AsignarControlador(ControladorDeReproduccion);
+			ControladorDeReproduccion.AsignarInterfaz(Reproductor);
+			ServiciosDeIO.AsignarIdUsuarioActual(UsuarioActual.Id.ToString());
 			AsignarDisparadores();
 			PropagarTokens();
 			PropagarControladorDeReproduccion();
@@ -190,6 +199,10 @@ namespace UVFYCliente.Paginas.Consumidor
 			CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
 			var respuesta = await cancionDAO.CargarPorIdPlaylist(playlist.Id);
 			ListaDeCancionesDePlaylist.AsignarCanciones(respuesta);
+			await CargarArtistasDeCanciones(respuesta);
+			ListaDeCancionesDePlaylist.AsignarCanciones(respuesta);
+			await CargarAlbumDeCanciones(respuesta);
+			ListaDeCancionesDePlaylist.AsignarCanciones(respuesta);
 		}
 
 		private void DataGridGeneros_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -218,6 +231,10 @@ namespace UVFYCliente.Paginas.Consumidor
 				cancionesDescargadas.Add(await cancionDAO.CargarPorId(idCancion));
 			}
 			ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
+			await CargarArtistasDeCanciones(cancionesDescargadas);
+			ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
+			await CargarAlbumDeCanciones(cancionesDescargadas);
+			ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
 		}
 
 		private void DataGridAlbumesDeArtista_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -229,6 +246,10 @@ namespace UVFYCliente.Paginas.Consumidor
 		{
 			CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
 			var respuesta = await cancionDAO.CargarPorIdAlbum(album.Id);
+			ListaDeCancionesDeArtista.AsignarCanciones(respuesta);
+			await CargarArtistasDeCanciones(respuesta);
+			ListaDeCancionesDeArtista.AsignarCanciones(respuesta);
+			await CargarAlbumDeCanciones(respuesta);
 			ListaDeCancionesDeArtista.AsignarCanciones(respuesta);
 		}
 

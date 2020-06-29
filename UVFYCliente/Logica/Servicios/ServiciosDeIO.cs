@@ -14,7 +14,8 @@ namespace Logica.Servicios
 {
 	public class ServiciosDeIO
 	{
-		private static string DireccionUVFY = "\\UVFY";
+		private static string idUsuarioActual = "0";
+		private static string DireccionUVFY = "\\UVFY\\";
 		public static bool ExisteDirectorioDeAplicacion()
 		{
 			bool resultado;
@@ -32,10 +33,32 @@ namespace Logica.Servicios
 			return resultado;
 		}
 
+		public static void AsignarIdUsuarioActual(string id)
+		{
+			idUsuarioActual = id;
+		}
+
+		public static bool ExisteDirectorioDeUsuario()
+		{
+			bool resultado;
+			string pathLocal = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY + idUsuarioActual;
+			if (Directory.Exists(pathLocal))
+			{
+				resultado = true;
+			}
+			else
+			{
+				Directory.CreateDirectory(pathLocal);
+				resultado = true;
+			}
+
+			return resultado;
+		}
+
 		public static bool CancionEstaGuardada(int idCancion)
 		{
 			bool resultado = false;
-			if (ExisteDirectorioDeAplicacion())
+			if (ExisteDirectorioDeAplicacion() && ExisteDirectorioDeUsuario())
 			{
 				if (File.Exists(ConstruirDireccionDeCancion(idCancion)))
 				{
@@ -47,7 +70,7 @@ namespace Logica.Servicios
 
 		public static void EliminarCancion(int idCancion)
 		{
-			if (ExisteDirectorioDeAplicacion())
+			if (ExisteDirectorioDeAplicacion() && ExisteDirectorioDeUsuario())
 			{
 				string direccionDeCancion = ConstruirDireccionDeCancion(idCancion);
 				if (File.Exists(direccionDeCancion))
@@ -59,7 +82,7 @@ namespace Logica.Servicios
 
 		public static void EliminarCaratula(int idCancion)
 		{
-			if (ExisteDirectorioDeAplicacion())
+			if (ExisteDirectorioDeAplicacion() && ExisteDirectorioDeUsuario())
 			{
 				string direccionDeCaratula = ConstruirDireccionDeCaratula(idCancion);
 				if (File.Exists(direccionDeCaratula))
@@ -71,7 +94,7 @@ namespace Logica.Servicios
 		
 		public static List<int> ListarCancionesDescargadas()
 		{
-			string pathLocal = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY;
+			string pathLocal = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY + idUsuarioActual;
 
 			List<int> cancionesEncontradas = new List<int>();
 			List<string> archivosEncontrados = new List<string>();
@@ -102,7 +125,7 @@ namespace Logica.Servicios
 
 		internal static void GuardarCaratula(byte[] imagen, int idCancion)
 		{
-			if (ExisteDirectorioDeAplicacion())
+			if (ExisteDirectorioDeAplicacion() && ExisteDirectorioDeUsuario())
 			{
 				if (!CancionEstaGuardada(idCancion))
 				{
@@ -114,7 +137,7 @@ namespace Logica.Servicios
 		public static bool CaratulaEstaGuardada(int idCancion)
 		{
 			bool resultado = false;
-			if (ExisteDirectorioDeAplicacion())
+			if (ExisteDirectorioDeAplicacion() && ExisteDirectorioDeUsuario())
 			{
 				if (File.Exists(ConstruirDireccionDeCaratula(idCancion)))
 				{
@@ -126,19 +149,19 @@ namespace Logica.Servicios
 
 		public static string ConstruirDireccionDeCancion(int idCancion)
 		{
-			string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY + "\\" + idCancion;
+			string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY + idUsuarioActual + "\\" + idCancion;
 			return path;
 		}
 
 		public static string ConstruirDireccionDeCaratula(int idCancion)
 		{
-			string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY + "\\" + idCancion + "png";
+			string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY + idUsuarioActual + "\\" + idCancion + "png";
 			return path;
 		}
 
 		public static void GuardarCancion(byte[] audio, int idCancion)
 		{
-			if (ExisteDirectorioDeAplicacion())
+			if (ExisteDirectorioDeAplicacion() && ExisteDirectorioDeUsuario())
 			{
 				if (!CancionEstaGuardada(idCancion))
 				{

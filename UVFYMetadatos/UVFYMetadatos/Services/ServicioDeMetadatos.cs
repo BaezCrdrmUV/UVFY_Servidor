@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using UVFYMetadatos.DAO;
 using UVFYMetadatos.Enumeradores;
@@ -155,13 +156,19 @@ namespace UVFYMetadatos
 				Canciones cancion;
 				ArtistaDAO artistaDAO = new ArtistaDAO();
 				AlbumDAO albumDAO = new AlbumDAO();
-				Albumes album;
-				UsuariosArtista artista;
+				Albumes album = new Albumes();
+				UsuariosArtista artista = new UsuariosArtista();
 				try
 				{
 					cancion = cancionDAO.CargarPorId(request.IdPeticion);
-					album = albumDAO.CargarPorIdCancion(cancion.Id);
-					artista = artistaDAO.CargarPorIdCancion(cancion.Id);
+					if (cancion.AlbumsId.HasValue)
+					{
+						album = albumDAO.CargarPorIdCancion(cancion.Id);
+					}
+					if (cancion.ArtistaId.HasValue)
+					{
+						artista = artistaDAO.CargarPorIdCancion(cancion.Id);
+					}
 				}
 				catch (AccesoADatosException e)
 				{
@@ -199,15 +206,19 @@ namespace UVFYMetadatos
 						Nombre = cancion.Nombre,
 						Duracion = cancion.Duracion,
 						FechaDeLanzamiento = cancion.FechaDeLanzamiento.ToString(),
-						Album = new Album()
+					});
+
+					if(cancion.Estado == (short)EstadoDeCancion.Publica)
+					{
+						respuesta.Canciones[0].Album = new Album()
 						{
 							Id = album.Id
-						},
-						Artista = new Artista()
+						};
+						respuesta.Canciones[0].Artista = new Artista()
 						{
 							Id = artista.Id
-						},
-					});
+						};
+					}
 				}
 				else
 				{

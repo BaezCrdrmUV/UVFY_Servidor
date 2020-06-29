@@ -87,6 +87,7 @@
     <Compile Include="Excepciones\ErrorInternoDeServicioException.cs" />
     <Compile Include="Excepciones\RecursoNoExisteException.cs" />
     <Compile Include="Excepciones\TokenInvalidoException.cs" />
+    <Compile Include="IReproductor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Excepciones\RecursoYaExisteException.cs" />
     <Compile Include="Servicios\ServicioDeConversionDeJson.cs" />
