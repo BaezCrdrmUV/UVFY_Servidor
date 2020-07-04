@@ -18,7 +18,7 @@ namespace UVFYSesion
 		{
 			SesionPeticion respuesta = new SesionPeticion();
 			respuesta.IdSesion = new Guid().ToString();
-			respuesta.IdSesion = ControladorDeSesiones.AñadirSesion(request.IdUsuario);
+			respuesta.IdSesion = ControladorDeSesiones.Agregar(request.IdUsuario);
 			return Task.FromResult(respuesta);
 		}
 

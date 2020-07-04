@@ -66,7 +66,7 @@ namespace UVFYAuth.ExposedServices
 			{
 				CorreoElectronico = request.Email,
 				NombreDeUsuario = request.Name,
-				Contraseña = ServiciosDeCifrado.EncriptarCadena(request.Password)
+				Contrasena = ServiciosDeCifrado.EncriptarCadena(request.Password)
 			};
 			if (request.UserType == TipoDeUsuario.Artista.ToString())
 			{

@@ -30,7 +30,7 @@ namespace UVFYSesion
 			}
 		}
 
-		public string AñadirSesion(int IdUsuario)
+		public string Agregar(int IdUsuario)
 		{
 			Sesion sesion;
 			if (!UsuarioYaTieneSesion(IdUsuario))

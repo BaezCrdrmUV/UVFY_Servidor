@@ -36,7 +36,7 @@ namespace UVFYCliente.Paginas
 			Usuario usuario = new Usuario()
 			{
 				CorreoElectronico = "Pachy@correo.com",
-				Contraseña = "perros"
+				Contrasena = "perros"
 			};
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			RespuestaDeAutenticacion respuesta = new RespuestaDeAutenticacion();

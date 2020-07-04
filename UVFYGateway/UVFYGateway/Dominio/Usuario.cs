@@ -10,7 +10,7 @@ namespace UVFYGateway
 	{
 		public string NombreDeusuario { get; set; }
 		public string CorreoElectronico{ get; set; }
-		public string Contraseña { get; set; }
+		public string Contrasena { get; set; }
 		public TipoDeUsuario TipoDeUsuario{ get; set; }
 	}
 }

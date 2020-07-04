@@ -39,6 +39,11 @@ namespace UVFYCliente.UserControls
 			Contador = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
 			{
 				AumentarTiempo();
+				if(SliderProgresoDeCancion.Value >= SliderProgresoDeCancion.Maximum)
+				{
+					ControladorDeReproduccion.Siguiente();
+					Contador.Stop();
+				}
 			}, this.Dispatcher);
 		}
 
@@ -89,7 +94,6 @@ namespace UVFYCliente.UserControls
 			ControladorDeReproduccion.Anterior();
 			TiempoContado = TimeSpan.FromSeconds(0);
 			LabelTiempoTranscurrido.Content = "0:00";
-			CargarDatosDeCancionActual();
 		}
 
 		private void ButtonSiguiente_Click(object sender, RoutedEventArgs e)
@@ -97,7 +101,6 @@ namespace UVFYCliente.UserControls
 			ControladorDeReproduccion.Siguiente();
 			TiempoContado = TimeSpan.FromSeconds(0);
 			LabelTiempoTranscurrido.Content = "0:00";
-			CargarDatosDeCancionActual();
 		}
 
 		public void CargarDatosDeCancionActual()
@@ -125,7 +128,17 @@ namespace UVFYCliente.UserControls
 
 		private async void AsignarImagenDeCancionActual(int idCancion)
 		{
-			byte[] imagen = await ServiciosDeIO.CargarCaratulaDeCancionPorId(idCancion, Token);
+			byte[] imagen;
+			try
+			{
+				imagen = await ServiciosDeIO.CargarCaratulaDeCancionPorId(idCancion, Token);
+			}
+			catch (Exception ex)
+			{
+				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+				return;
+			}
 			ImageCaratulaDeAlbum.Source = CargarImagen(imagen);
 		}
 
@@ -170,6 +183,25 @@ namespace UVFYCliente.UserControls
 		{
 			Paginas.PaginasDeConsumidor.ListaDeReproduccion listaDeReproduccion = new Paginas.PaginasDeConsumidor.ListaDeReproduccion(ControladorDeReproduccion, this, Token);
 			listaDeReproduccion.Show();
+		}
+
+		public void Bloquear()
+		{
+			ButtonAnterior.IsEnabled = false;
+			ButtonSiguiente.IsEnabled = false;
+			ButtonReproducir.IsEnabled = false;
+			SliderProgresoDeCancion.IsEnabled = false;
+		}
+
+		public void Desbloquear()
+		{
+			ButtonAnterior.IsEnabled = true;
+			ButtonSiguiente.IsEnabled = true;
+			ButtonReproducir.IsEnabled = true;
+			SliderProgresoDeCancion.IsEnabled = true;
+			TiempoContado = TimeSpan.FromSeconds(0);
+			LabelTiempoTranscurrido.Content = "0:00";
+			Contador.Start();
 		}
 	}
 }

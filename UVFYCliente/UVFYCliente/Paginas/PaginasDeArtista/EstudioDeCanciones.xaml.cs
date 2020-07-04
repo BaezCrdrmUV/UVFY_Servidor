@@ -30,9 +30,9 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 			try
 			{
 				CancionDAO cancionDAO = new CancionDAO(Artista.Token);
-				CancionesPrivadas = await cancionDAO.CargarPrivadasPorIdArtista(Artista.Id);
 				AlbumDAO albumDAO = new AlbumDAO(Artista.Token);
 				AlbumesCargados = await albumDAO.CargarPorIdArtista(Artista.Id);
+				CancionesPrivadas = await cancionDAO.CargarPrivadasPorIdArtista(Artista.Id);
 			}
 			catch (Exception ex)
 			{

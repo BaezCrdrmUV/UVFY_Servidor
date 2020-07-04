@@ -1,20 +1,12 @@
 ﻿using Logica.Clases;
 using Logica.DAO;
+using Logica.Servicios;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using static UVFYCliente.UtileriasGráficas;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Logica.Servicios;
+using static UVFYCliente.UtileriasGráficas;
 
 namespace UVFYCliente.Paginas.PaginasDeArtista
 {
@@ -23,7 +15,7 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 	/// </summary>
 	public partial class RegistroDeAlbum : Window
 	{
-		
+
 
 		private const string ARCHIVO_SELECCIONADO = "Archivo no seleccionado";
 
@@ -43,8 +35,9 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 		private async void CargarGeneros()
 		{
 			GeneroDAO generoDAO = new GeneroDAO(UsuarioActual.Token);
-			try { 
-			GenerosCargados = await generoDAO.CargarTodos();
+			try
+			{
+				GenerosCargados = await generoDAO.CargarTodos();
 			}
 			catch (Exception ex)
 			{

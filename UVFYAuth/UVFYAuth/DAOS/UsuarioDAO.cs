@@ -25,13 +25,13 @@ namespace UVFYAuth.DAOS
             return resultadoDeExistencia;
         }
 
-        public static bool ValidarExistenciaDeCorreoYContraseña(string correo, string contraseña)
+        public static bool ValidarExistenciaDeCorreoYContrasena(string correo, string contraseña)
         {
             bool resultadoDeExistencia = false;
             Usuario usuarioLocalizado;
             using (UVFYContext context = new UVFYContext())
             {
-                usuarioLocalizado = context.Usuarios.FirstOrDefault(usuario => usuario.CorreoElectronico == correo && usuario.Contraseña == contraseña);
+                usuarioLocalizado = context.Usuarios.FirstOrDefault(usuario => usuario.CorreoElectronico == correo && usuario.Contrasena == contraseña);
             }
             if (usuarioLocalizado != null)
             {

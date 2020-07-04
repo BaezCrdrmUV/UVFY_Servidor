@@ -9,5 +9,7 @@ namespace Logica
 	public interface IReproductor
 	{
 		void CargarDatosDeCancionActual();
+		void Bloquear();
+		void Desbloquear();
 	}
 }

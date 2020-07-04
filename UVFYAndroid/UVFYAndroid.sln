@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logica", "Logica\Logica.csproj", "{3DF599D8-E2CE-4934-BE52-95EDA571FB56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UVFYAndroid", "UVFYAndroid\UVFYAndroid.csproj", "{0F527F90-7C39-444C-AA0C-6D4C901C6046}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3DF599D8-E2CE-4934-BE52-95EDA571FB56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DF599D8-E2CE-4934-BE52-95EDA571FB56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DF599D8-E2CE-4934-BE52-95EDA571FB56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DF599D8-E2CE-4934-BE52-95EDA571FB56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F527F90-7C39-444C-AA0C-6D4C901C6046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F527F90-7C39-444C-AA0C-6D4C901C6046}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F527F90-7C39-444C-AA0C-6D4C901C6046}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{0F527F90-7C39-444C-AA0C-6D4C901C6046}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F527F90-7C39-444C-AA0C-6D4C901C6046}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F527F90-7C39-444C-AA0C-6D4C901C6046}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F3772BD7-02DC-4586-A772-CFD02A196EBC}
+	EndGlobalSection
+EndGlobal

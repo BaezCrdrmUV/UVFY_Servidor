@@ -32,7 +32,7 @@ namespace UVFYCliente.Paginas
 						{
 							NombreDeusuario = TextBoxNombreDeUsuario.Text,
 							CorreoElectronico = TextBoxCorreo.Text,
-							Contraseña = PasswordBoxContraseña.Password,
+							Contrasena = PasswordBoxContraseña.Password,
 							TipoDeUsuario = TipoDeUsuario.Consumidor,
 							Nombre = string.Empty,
 							Descripcion = string.Empty
@@ -63,7 +63,7 @@ namespace UVFYCliente.Paginas
 						{
 							NombreDeusuario = TextBoxNombreDeUsuario.Text,
 							CorreoElectronico = TextBoxCorreo.Text,
-							Contraseña = PasswordBoxContraseña.Password,
+							Contrasena = PasswordBoxContraseña.Password,
 							TipoDeUsuario = TipoDeUsuario.Artista,
 							Nombre = TextBoxNombreArtista.Text,
 							Descripcion = TextBlockDescripcionArtista.Text

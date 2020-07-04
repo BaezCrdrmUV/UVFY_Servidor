@@ -44,7 +44,16 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 		private async void CargarGeneros()
 		{
 			GeneroDAO generoDAO = new GeneroDAO(UsuarioActual.Token);
-			GenerosCargados = await generoDAO.CargarTodos();
+			try
+			{
+				GenerosCargados = await generoDAO.CargarTodos();
+			}
+			catch (Exception ex)
+			{
+				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+				return;
+			}
 			DataGridGeneros.ItemsSource = GenerosCargados;
 		}
 
@@ -114,8 +123,6 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 				{
 					if (TipoDeUsuario == TipoDeUsuario.Artista)
 					{
-
-
 						bool resultado = await cancionDAO.RegistrarCancionDeArtista(TextBoxNombreDeCancion.Text, GenerosSeleccionados, datosDeAudio, datosDeCaratula, duracionDeAudio);
 					}
 					else if (TipoDeUsuario == TipoDeUsuario.Consumidor)

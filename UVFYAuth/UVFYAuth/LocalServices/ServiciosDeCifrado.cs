@@ -13,15 +13,15 @@ namespace UVFYAuth.LocalServices
         /// <summary>
         /// Encripta con hash 256 la contraseña del usuario.
         /// </summary>
-        /// <param name="contraseña">Contraseña en cadena de carácteres.</param>
+        /// <param name="contrasena">Contraseña en cadena de carácteres.</param>
         /// <returns>Cadena con la contraseña en SHA256.</returns>
-        public static string EncriptarCadena(string contraseña)
+        public static string EncriptarCadena(string contrasena)
         {
             StringBuilder cadenaFinal = new StringBuilder();
 
             using (SHA256 hash = SHA256.Create())
             {
-                byte[] ContrasenaEncriptada = hash.ComputeHash(Encoding.UTF8.GetBytes(contraseña));
+                byte[] ContrasenaEncriptada = hash.ComputeHash(Encoding.UTF8.GetBytes(contrasena));
 
                 try
                 {

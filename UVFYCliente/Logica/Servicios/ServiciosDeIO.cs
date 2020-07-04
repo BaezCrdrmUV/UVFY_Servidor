@@ -68,6 +68,21 @@ namespace Logica.Servicios
 			return resultado;
 		}
 
+		internal static void EliminarArchivosTemporales()
+		{
+			string pathTemporal = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY + "temp";
+			List<string> archivosEncontrados = new List<string>();
+
+			if (Directory.Exists(pathTemporal))
+			{
+				archivosEncontrados = Directory.GetFiles(pathTemporal).ToList();
+				foreach(string archivo in archivosEncontrados)
+				{
+					File.Delete(archivo);
+				}
+			}
+		}
+
 		public static void EliminarCancion(int idCancion)
 		{
 			if (ExisteDirectorioDeAplicacion() && ExisteDirectorioDeUsuario())
@@ -168,6 +183,37 @@ namespace Logica.Servicios
 					File.WriteAllBytes(ConstruirDireccionDeCancion(idCancion), audio);
 				}
 			}
+		}
+
+		public static void GuardarCancionTemporal(byte[] audio, int idCancion)
+		{
+			if (ExisteDirectorioTemporal())
+			{
+				File.WriteAllBytes(ConstruirDireccionTemporalDeCancion(idCancion), audio);
+			}
+		}
+
+		public static string ConstruirDireccionTemporalDeCancion(int idCancion)
+		{
+			string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY + "temp\\" + idCancion;
+			return path;
+		}
+
+		private static bool ExisteDirectorioTemporal()
+		{
+			bool resultado;
+			string pathTemporal = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY + "temp";
+			if (Directory.Exists(pathTemporal))
+			{
+				resultado = true;
+			}
+			else
+			{
+				Directory.CreateDirectory(pathTemporal);
+				resultado = true;
+			}
+
+			return resultado;
 		}
 
 		public async static Task<byte[]> CargarCaratulaDeCancionPorId(int idCancion, string token)

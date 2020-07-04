@@ -1,8 +1,11 @@
 ﻿using Logica.Clases;
+using Logica.ClasesDeComunicacion;
 using NAudio.Utils;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
+using System.Web.UI;
 
 namespace Logica
 {
@@ -14,7 +17,12 @@ namespace Logica
 		public Mp3FileReader Lector { get; set; }
 		private IReproductor IReproductor { get; set; }
 		private float Volumen { get; set; } = 0.1f;
+		private string Token { get; set; }
 
+		public void AsignarToken(string token)
+		{
+			Token = token;
+		}
 
 		public void Reproducir()
 		{
@@ -69,22 +77,37 @@ namespace Logica
 			}
 		}
 
-
-		private void InicializarReproduccion()
+		private void Reproductor_PlaybackStopped(object sender, StoppedEventArgs e)
 		{
+			Siguiente();
+		}
+
+		private async void InicializarReproduccion()
+		{
+			IReproductor.Bloquear();
+			if(Lector != null)
+			{
+				Lector.Close();
+			}
+			Reproductor.Stop();
+			Servicios.ServiciosDeDescarga serviciosDeDescarga = new Servicios.ServiciosDeDescarga();
+			serviciosDeDescarga.EliminarArchivosTemporales();
 			if (CancionesEnCola.Count > CancionActual)
 			{
-				if (CancionesEnCola[CancionActual].CancionEstaDescargada())
+				CancionesEnCola[CancionActual].CargarDireccionDeCancion();
+				bool resultado;
+				if (!CancionesEnCola[CancionActual].CancionEstaDescargada())
 				{
-					CancionesEnCola[CancionActual].CargarDireccionDeCancion();
-					Lector = new Mp3FileReader(CancionesEnCola[CancionActual].DireccionDeCancion);
-					Reproductor.DeviceNumber = 0;
-					Reproductor.Init(Lector);
-					Reproductor.Play();
-					Reproductor.Volume = Volumen;
-					IReproductor.CargarDatosDeCancionActual();
+					resultado = await serviciosDeDescarga.DescargarAudioTemporalDeCancion(CancionesEnCola[CancionActual].Id, Token);
 				}
+				Lector = new Mp3FileReader(CancionesEnCola[CancionActual].DireccionDeCancion);
+				Reproductor.DeviceNumber = 0;
+				Reproductor.Init(Lector);
+				Reproductor.Play();
+				Reproductor.Volume = Volumen;
+				IReproductor.CargarDatosDeCancionActual();
 			}
+			IReproductor.Desbloquear();
 		}
 
 		public bool EstaReproduciendo()
@@ -158,7 +181,10 @@ namespace Logica
 
 		public void Buscar(int posicion)
 		{
-			Lector.Seek(Lector.WaveFormat.AverageBytesPerSecond * posicion, System.IO.SeekOrigin.Begin);
+			if (Lector != null)
+			{
+				Lector.Seek(Lector.WaveFormat.AverageBytesPerSecond * posicion, System.IO.SeekOrigin.Begin);
+			}
 		}
 
 		public void CambiarVolumen(float volumen)

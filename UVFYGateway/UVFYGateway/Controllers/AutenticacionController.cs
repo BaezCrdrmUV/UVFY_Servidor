@@ -43,7 +43,7 @@ namespace UVFYGateway.Controllers
 					RegistrationRequest registrationRequest = new RegistrationRequest
 					{
 						Name = usuario.NombreDeusuario,
-						Password = usuario.Contraseña,
+						Password = usuario.Contrasena,
 						Email = usuario.CorreoElectronico,
 						UserType = usuario.TipoDeUsuario.ToString(),
 						NombreDeArtista = usuario.Nombre, 
@@ -64,7 +64,7 @@ namespace UVFYGateway.Controllers
 					RegistrationRequest registrationRequest = new RegistrationRequest
 					{
 						Name = usuario.NombreDeusuario,
-						Password = usuario.Contraseña,
+						Password = usuario.Contrasena,
 						Email = usuario.CorreoElectronico,
 						UserType = usuario.TipoDeUsuario.ToString()
 					};
@@ -102,7 +102,7 @@ namespace UVFYGateway.Controllers
 			AuthRequest authRequest = new AuthRequest()
 			{
 				Name = usuario.CorreoElectronico,
-				Password = usuario.Contraseña
+				Password = usuario.Contrasena
 			};
 			var clienteDeAutenticacion = new Authenticator.AuthenticatorClient(ServicioDeAutenticacion);
 			Authreply authreply = clienteDeAutenticacion.Authenticate(authRequest);

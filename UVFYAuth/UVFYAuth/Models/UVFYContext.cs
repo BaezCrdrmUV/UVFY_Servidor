@@ -182,7 +182,7 @@ namespace UVFYAuth.Models
 
             modelBuilder.Entity<Usuario>(entity =>
             {
-                entity.Property(e => e.Contraseña).IsRequired();
+                entity.Property(e => e.Contrasena).IsRequired();
 
                 entity.Property(e => e.CorreoElectronico).IsRequired();
 

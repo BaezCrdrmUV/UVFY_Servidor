@@ -20,7 +20,7 @@ namespace UVFYAuth.LocalServices
 			{
 				if (UsuarioDAO.ValidarExistenciaDeUsuarioCorreo(email))
 				{
-					if (UsuarioDAO.ValidarExistenciaDeCorreoYContraseña(email, ServiciosDeCifrado.EncriptarCadena(password)))
+					if (UsuarioDAO.ValidarExistenciaDeCorreoYContrasena(email, ServiciosDeCifrado.EncriptarCadena(password)))
 					{
 						result = true;
 					}

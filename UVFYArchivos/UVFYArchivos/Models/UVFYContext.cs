@@ -190,7 +190,7 @@ namespace UVFYArchivos.Models
 
             modelBuilder.Entity<Usuarios>(entity =>
             {
-                entity.Property(e => e.Contraseña).IsRequired();
+                entity.Property(e => e.Contrasena).IsRequired();
 
                 entity.Property(e => e.CorreoElectronico).IsRequired();
 

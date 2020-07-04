@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using UVFYAuth.LocalServices;
 
 namespace UVFYAuth.Models
@@ -9,7 +10,8 @@ namespace UVFYAuth.Models
         public int Id { get; set; }
         public string NombreDeUsuario { get; set; }
         public string CorreoElectronico { get; set; }
-        public string Contraseña { get; set; }
+        [Column("Contraseña")]
+        public string Contrasena { get; set; }
 
         public virtual UsuarioArtista UsuariosArtista { get; set; }
         public virtual UsuarioConsumidor UsuariosConsumidor { get; set; }
@@ -17,7 +19,7 @@ namespace UVFYAuth.Models
         public bool Validar()
         {
             bool resultado = false;
-            if(VerificationServices.VerifyEmail(CorreoElectronico) && VerificationServices.VerifyString(NombreDeUsuario) && VerificationServices.VerifyPassword(Contraseña))
+            if(VerificationServices.VerifyEmail(CorreoElectronico) && VerificationServices.VerifyString(NombreDeUsuario) && VerificationServices.VerifyPassword(Contrasena))
             {
                 if(UsuariosArtista != null)
                 {

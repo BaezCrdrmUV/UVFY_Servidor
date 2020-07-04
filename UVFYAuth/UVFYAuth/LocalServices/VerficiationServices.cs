@@ -21,7 +21,7 @@ namespace UVFYAuth.LocalServices
         /// Expresión regular que valida que la cadena no tenga espacios en blanco y sea de 6 a 255 de longitud.
         /// </summary>
         private static readonly Regex PasswordRegex = new Regex(@"^\S{6,255}$");
-        public const int TAMAÑO_MAXIMO_VARCHAR = 255;
+        public const int TAMANO_MAXIMO_VARCHAR = 255;
         public const int VALOR_ENTERO_MINIMO_PERMITIDO = 0;
         private const int VALOR_ENTERO_MAXIMO_PERMITIDO = 255;
 
@@ -34,7 +34,7 @@ namespace UVFYAuth.LocalServices
         {
             bool resultadoDeValidacion = false;
 
-            if (email.Length <= TAMAÑO_MAXIMO_VARCHAR)
+            if (email.Length <= TAMANO_MAXIMO_VARCHAR)
             {
                 if (EmailRegex.IsMatch(email))
                 {
@@ -54,7 +54,7 @@ namespace UVFYAuth.LocalServices
         {
             bool resultadoDeValidacion = false;
 
-            if (name.Length <= TAMAÑO_MAXIMO_VARCHAR)
+            if (name.Length <= TAMANO_MAXIMO_VARCHAR)
             {
                 if (NameRegex.IsMatch(name))
                 {
@@ -91,7 +91,7 @@ namespace UVFYAuth.LocalServices
         {
             bool resultadoDeValidacion = false;
 
-            if (!string.IsNullOrEmpty(@string) && @string.Length <= TAMAÑO_MAXIMO_VARCHAR)
+            if (!string.IsNullOrEmpty(@string) && @string.Length <= TAMANO_MAXIMO_VARCHAR)
             {
                 resultadoDeValidacion = true;
             }

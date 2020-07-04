@@ -34,5 +34,18 @@ namespace Logica.Servicios
 		{
 			ServiciosDeIO.EliminarCancion(idCancion);
 		}
+
+		public async Task<bool> DescargarAudioTemporalDeCancion(int idCancion, string token)
+		{
+			ArchivosDAO archivosDAO = new ArchivosDAO(token);
+			byte[] audio = await archivosDAO.CargarAudioDeCancionPorId(idCancion);
+			ServiciosDeIO.GuardarCancionTemporal(audio, idCancion);
+			return true;
+		}
+
+		public void EliminarArchivosTemporales()
+		{
+			ServiciosDeIO.EliminarArchivosTemporales();
+		}
 	}
 }

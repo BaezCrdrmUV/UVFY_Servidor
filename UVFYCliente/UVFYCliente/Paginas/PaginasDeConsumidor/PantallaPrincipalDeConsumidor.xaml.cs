@@ -5,6 +5,7 @@ using Logica.Servicios;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using UVFYCliente.Paginas.PaginasDeArtista;
 using UVFYCliente.Paginas.PaginasDeConsumidor;
@@ -21,6 +22,12 @@ namespace UVFYCliente.Paginas.Consumidor
 		private Usuario UsuarioActual { get; set; }
 		private ControladorDeReproduccion ControladorDeReproduccion { get; set; } = new ControladorDeReproduccion();
 		private List<Playlist> PlaylistsDeUsuarioActual { get; set; } = new List<Playlist>();
+		private bool CargarCancionesLibre { get; set; } = true;
+		private bool CargarArtistasLibre { get; set; } = true;
+		private bool CargarGenerosLibre { get; set; } = true;
+		private bool CargarCancionesDescargadasLibre { get; set; } = true;
+		private bool CargarPlaylistsLibre { get; set; } = true;
+		private bool CargarPrivadasLibre { get; set; } = true;
 		public PantallaPrincipalDeConsumidor(Usuario usuario, IControladorDeCambioDePantalla controlador)
 		{
 			InitializeComponent();
@@ -31,14 +38,19 @@ namespace UVFYCliente.Paginas.Consumidor
 
 		private async void CargarCanciones()
 		{
-			CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
-			var respuesta = await cancionDAO.CargarTodas();
-			await CargarArtistasDeCanciones(respuesta);
-			ListaDeCanciones.AsignarCanciones(respuesta);
-			await CargarAlbumDeCanciones(respuesta);
-			ListaDeCanciones.AsignarCanciones(respuesta);
-			ControladorDeReproduccion.AsignarCanciones(respuesta);
-			ControladorDeReproduccion.Pausar();
+			if (CargarCancionesLibre)
+			{
+				CargarCancionesLibre = false;
+				CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
+				var respuesta = await cancionDAO.CargarTodas();
+				await CargarArtistasDeCanciones(respuesta);
+				ListaDeCanciones.AsignarCanciones(respuesta);
+				await CargarAlbumDeCanciones(respuesta);
+				ListaDeCanciones.AsignarCanciones(respuesta);
+				ControladorDeReproduccion.AsignarCanciones(respuesta);
+				ControladorDeReproduccion.Pausar();
+				CargarCancionesLibre = true;
+			}
 		}
 
 		private async Task<bool> CargarArtistasDeCanciones(List<Cancion> canciones)
@@ -48,7 +60,18 @@ namespace UVFYCliente.Paginas.Consumidor
 			{
 				if (cancion.Artista != null)
 				{
-					var respuesta = await artistaDAO.CargarPorId(cancion.Artista.Id);
+					Artista respuesta;
+					try
+					{
+						respuesta = await artistaDAO.CargarPorId(cancion.Artista.Id);
+					}
+					catch (Exception ex)
+					{
+						MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+						MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+						return false;
+					}
+
 					cancion.Artista = respuesta;
 				}
 			}
@@ -62,7 +85,18 @@ namespace UVFYCliente.Paginas.Consumidor
 			{
 				if (cancion.Album != null)
 				{
-					var respuesta = await albumDAO.CargarPorId(cancion.Album.Id);
+					Album respuesta;
+					try
+					{
+						respuesta = await albumDAO.CargarPorId(cancion.Album.Id);
+					}
+					catch (Exception ex)
+					{
+						MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+						MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+						return false;
+					}
+
 					cancion.Album = respuesta;
 				}
 			}
@@ -71,24 +105,68 @@ namespace UVFYCliente.Paginas.Consumidor
 
 		private async void CargarArtistas()
 		{
-			ArtistaDAO artistaDAO = new ArtistaDAO(UsuarioActual.Token);
-			var respuesta = await artistaDAO.CargarTodos();
-			ListaDeArtistas.AsignarArtistas(respuesta);
+			if (CargarArtistasLibre)
+			{
+				CargarArtistasLibre = false;
+				ArtistaDAO artistaDAO = new ArtistaDAO(UsuarioActual.Token);
+				List<Artista> respuesta;
+				try
+				{
+					respuesta = await artistaDAO.CargarTodos();
+				}
+				catch (Exception ex)
+				{
+					MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+					return;
+				}
+				ListaDeArtistas.AsignarArtistas(respuesta);
+				CargarArtistasLibre = true;
+			}
 		}
 
 		private async void CargarGeneros()
 		{
-			GeneroDAO generoDAO = new GeneroDAO(UsuarioActual.Token);
-			var respuesta = await generoDAO.CargarTodos();
-			ListaDeGeneros.AsignarGeneros(respuesta);
+			if (CargarGenerosLibre)
+			{
+				CargarGenerosLibre = false;
+				GeneroDAO generoDAO = new GeneroDAO(UsuarioActual.Token);
+				List<Genero> respuesta;
+				try
+				{
+					respuesta = await generoDAO.CargarTodos();
+				}
+				catch (Exception ex)
+				{
+					MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+					return;
+				}
+				ListaDeGeneros.AsignarGeneros(respuesta);
+				CargarGenerosLibre = true;
+			}
 		}
 
 		private async void CargarPlaylists()
 		{
-			PlaylistDAO playlistDAO = new PlaylistDAO(UsuarioActual.Token);
-			PlaylistsDeUsuarioActual = await playlistDAO.CargarPorIdConsumidor(UsuarioActual.Id);
-			ListaDePlaylists.AsignarPlaylists(PlaylistsDeUsuarioActual);
-			PropagarPlaylists();
+			if (CargarPlaylistsLibre)
+			{
+				CargarPlaylistsLibre = false;
+				PlaylistDAO playlistDAO = new PlaylistDAO(UsuarioActual.Token);
+				try
+				{
+					PlaylistsDeUsuarioActual = await playlistDAO.CargarPorIdConsumidor(UsuarioActual.Id);
+				}
+				catch (Exception ex)
+				{
+					MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+					return;
+				}
+				ListaDePlaylists.AsignarPlaylists(PlaylistsDeUsuarioActual);
+				PropagarPlaylists();
+				CargarPlaylistsLibre = true;
+			}
 		}
 
 		private void Inicializar()
@@ -123,6 +201,7 @@ namespace UVFYCliente.Paginas.Consumidor
 			ListaDeAlbumesDeArtista.AsignarToken(tokenActual);
 			ListaDePlaylists.AsignarToken(tokenActual);
 			Reproductor.AsignarToken(tokenActual);
+			ControladorDeReproduccion.AsignarToken(tokenActual);
 		}
 
 		private void PropagarPlaylists()
@@ -157,7 +236,7 @@ namespace UVFYCliente.Paginas.Consumidor
 			TabControl controlDePestañas = sender as TabControl;
 			if (controlDePestañas.SelectedIndex == 0)
 			{
-
+				CargarCanciones();
 			}
 			else if (controlDePestañas.SelectedIndex == 1)
 			{
@@ -183,9 +262,24 @@ namespace UVFYCliente.Paginas.Consumidor
 
 		private async void CargarPrivadas()
 		{
-			CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
-			var respuesta = await cancionDAO.CargarPrivadasPorIdConsumidor(UsuarioActual.Id);
-			ListaDeCancionesPrivadas.AsignarCanciones(respuesta);
+			if (CargarPrivadasLibre)
+			{
+				CargarPrivadasLibre = false;
+				CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
+				List<Cancion> respuesta;
+				try
+				{
+					respuesta = await cancionDAO.CargarPrivadasPorIdConsumidor(UsuarioActual.Id);
+				}
+				catch (Exception ex)
+				{
+					MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+					return;
+				}
+				ListaDeCancionesPrivadas.AsignarCanciones(respuesta);
+				CargarPrivadasLibre = true;
+			}
 		}
 
 		#region Eventos
@@ -197,7 +291,17 @@ namespace UVFYCliente.Paginas.Consumidor
 		private async void MostrarCancionesDePlaylist(Playlist playlist)
 		{
 			CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
-			var respuesta = await cancionDAO.CargarPorIdPlaylist(playlist.Id);
+			List<Cancion> respuesta;
+			try
+			{
+				respuesta = await cancionDAO.CargarPorIdPlaylist(playlist.Id);
+			}
+			catch (Exception ex)
+			{
+				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+				return;
+			}
 			ListaDeCancionesDePlaylist.AsignarCanciones(respuesta);
 			await CargarArtistasDeCanciones(respuesta);
 			ListaDeCancionesDePlaylist.AsignarCanciones(respuesta);
@@ -213,7 +317,17 @@ namespace UVFYCliente.Paginas.Consumidor
 		private async void MostrarCancionesDeGenero(Genero genero)
 		{
 			CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
-			var respuesta = await cancionDAO.CargarPorIdGenero(genero.Id);
+			List<Cancion> respuesta;
+			try
+			{
+				respuesta = await cancionDAO.CargarPorIdGenero(genero.Id);
+			}
+			catch (Exception ex)
+			{
+				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+				return;
+			}
 			ListaDeCancionesDeAlbum.AsignarCanciones(respuesta);
 			await CargarArtistasDeCanciones(respuesta);
 			ListaDeCancionesDeAlbum.AsignarCanciones(respuesta);
@@ -223,18 +337,33 @@ namespace UVFYCliente.Paginas.Consumidor
 
 		private async void CargarCancionesDescargadas()
 		{
-			List<int> idsCancionesDescargadas = ServiciosDeIO.ListarCancionesDescargadas();
-			List<Cancion> cancionesDescargadas = new List<Cancion>();
-			foreach (int idCancion in idsCancionesDescargadas)
+			if (CargarCancionesDescargadasLibre)
 			{
-				CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
-				cancionesDescargadas.Add(await cancionDAO.CargarPorId(idCancion));
+				CargarCancionesDescargadasLibre = false;
+				List<int> idsCancionesDescargadas = ServiciosDeIO.ListarCancionesDescargadas();
+				List<Cancion> cancionesDescargadas = new List<Cancion>();
+				foreach (int idCancion in idsCancionesDescargadas)
+				{
+					CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
+					try
+					{
+						cancionesDescargadas.Add(await cancionDAO.CargarPorId(idCancion));
+					}
+					catch (Exception ex)
+					{
+						MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+						MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+						return;
+					}
+
+				}
+				ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
+				await CargarArtistasDeCanciones(cancionesDescargadas);
+				ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
+				await CargarAlbumDeCanciones(cancionesDescargadas);
+				ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
+				CargarCancionesDescargadasLibre = true;
 			}
-			ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
-			await CargarArtistasDeCanciones(cancionesDescargadas);
-			ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
-			await CargarAlbumDeCanciones(cancionesDescargadas);
-			ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
 		}
 
 		private void DataGridAlbumesDeArtista_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -245,7 +374,18 @@ namespace UVFYCliente.Paginas.Consumidor
 		private async void MostrarCancionesDeAlbumDeArtista(Album album)
 		{
 			CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
-			var respuesta = await cancionDAO.CargarPorIdAlbum(album.Id);
+			List<Cancion> respuesta;
+			try
+			{
+				respuesta = await cancionDAO.CargarPorIdAlbum(album.Id);
+
+			}
+			catch (Exception ex)
+			{
+				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+				return;
+			}
 			ListaDeCancionesDeArtista.AsignarCanciones(respuesta);
 			await CargarArtistasDeCanciones(respuesta);
 			ListaDeCancionesDeArtista.AsignarCanciones(respuesta);
@@ -263,7 +403,17 @@ namespace UVFYCliente.Paginas.Consumidor
 		private async void MostrarAlbumesDeArtista(Artista artista)
 		{
 			AlbumDAO albumDAO = new AlbumDAO(UsuarioActual.Token);
-			var respuesta = await albumDAO.CargarPorIdArtista(artista.Id);
+			List<Album> respuesta;
+			try
+			{
+				respuesta = await albumDAO.CargarPorIdArtista(artista.Id);
+			}
+			catch (Exception ex)
+			{
+				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+				return;
+			}
 			ListaDeAlbumesDeArtista.AsignarAlbumes(respuesta);
 		}
 
