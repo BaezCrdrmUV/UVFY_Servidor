@@ -10,7 +10,7 @@ namespace Logica.Clases
 		public string NombreDeusuario { get; set; }
         [JsonProperty("contrasena")]
 		public string Contrasena { get; set; }
-        [JsonProperty("correoElectronico")]
+		[JsonProperty("correoElectronico")]
 		public string CorreoElectronico { get; set; }
         [JsonProperty("tipoDeUsuario")]
 		public TipoDeUsuario TipoDeUsuario { get; set; }

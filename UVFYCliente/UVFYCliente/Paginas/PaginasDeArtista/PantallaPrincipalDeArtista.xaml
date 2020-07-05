@@ -22,20 +22,26 @@
 		</StackPanel>
 		<TabControl Margin="20">
 			<TabItem Header="Mis canciones">
-				<DataGrid x:Name="DataGridListaDeCanciones" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow">
-					<DataGrid.Columns>
-						<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
-						<DataGridTextColumn Header="Duracion" Binding="{Binding Duracion, Converter={StaticResource ConvertidorDeSegundosAMinutosYSegundos}}"></DataGridTextColumn>
-					</DataGrid.Columns>
-				</DataGrid>
+				<DockPanel>
+					<DataGrid x:Name="DataGridListaDeCanciones" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow">
+						<DataGrid.Columns>
+							<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
+							<DataGridTextColumn Header="Duracion" Binding="{Binding Duracion, Converter={StaticResource ConvertidorDeSegundosAMinutosYSegundos}}"></DataGridTextColumn>
+						</DataGrid.Columns>
+					</DataGrid>
+					<Label x:Name="LabelNoHayCanciones" Content="No tienes canciones todavia. Da clic al botón Estudio de canciones para comenzar." Visibility="Collapsed"></Label>
+				</DockPanel>
 			</TabItem>
 
 			<TabItem Header="Mis albumes">
+				<DockPanel>
 				<DataGrid x:Name="DataGridListaDeAlbumes" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow">
 					<DataGrid.Columns>
 						<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
 					</DataGrid.Columns>
 				</DataGrid>
+					<Label x:Name="LabelNoHayAlbumes" Content="No tienes albumes todavia. Da clic al botón Estudio de canciones para comenezar." Visibility="Collapsed"></Label>
+				</DockPanel>
 			</TabItem>
 		</TabControl>
     </DockPanel>

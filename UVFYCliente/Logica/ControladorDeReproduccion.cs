@@ -18,6 +18,7 @@ namespace Logica
 		private IReproductor IReproductor { get; set; }
 		private float Volumen { get; set; } = 0.1f;
 		private string Token { get; set; }
+		private bool ModoConectado { get; set; } = true;
 
 		public void AsignarToken(string token)
 		{
@@ -98,7 +99,15 @@ namespace Logica
 				bool resultado;
 				if (!CancionesEnCola[CancionActual].CancionEstaDescargada())
 				{
-					resultado = await serviciosDeDescarga.DescargarAudioTemporalDeCancion(CancionesEnCola[CancionActual].Id, Token);
+					if (ModoConectado)
+					{
+						resultado = await serviciosDeDescarga.DescargarAudioTemporalDeCancion(CancionesEnCola[CancionActual].Id, Token);
+					}
+					else
+					{
+						IReproductor.Desbloquear();
+						Siguiente();
+					}
 				}
 				Lector = new Mp3FileReader(CancionesEnCola[CancionActual].DireccionDeCancion);
 				Reproductor.DeviceNumber = 0;
@@ -159,6 +168,11 @@ namespace Logica
 			}
 			Reproductor.Stop();
 			InicializarReproduccion();
+		}
+
+		public void AsignarModoConectado(bool modoConectado)
+		{
+			ModoConectado = modoConectado;
 		}
 
 		public void Anterior()

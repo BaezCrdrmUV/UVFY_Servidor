@@ -31,6 +31,7 @@ namespace UVFYGateway.Controllers
 			ServicioDeMetadatos = GrpcChannel.ForAddress("http://172.17.0.7:80", grpcChannelOptions);
 
 		}
+
 		#region Cancion
 		[HttpGet]
 		[Route("Canciones/Todas")]

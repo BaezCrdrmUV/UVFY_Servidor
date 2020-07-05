@@ -28,12 +28,35 @@ namespace UVFYCliente.Paginas.Consumidor
 		private bool CargarCancionesDescargadasLibre { get; set; } = true;
 		private bool CargarPlaylistsLibre { get; set; } = true;
 		private bool CargarPrivadasLibre { get; set; } = true;
-		public PantallaPrincipalDeConsumidor(Usuario usuario, IControladorDeCambioDePantalla controlador)
+		public PantallaPrincipalDeConsumidor(Usuario usuario, IControladorDeCambioDePantalla controlador, bool modoConectado)
 		{
 			InitializeComponent();
 			Controlador = controlador;
 			UsuarioActual = usuario;
-			Inicializar();
+			if (modoConectado)
+			{
+				Inicializar();
+			}
+			else
+			{
+				InicializarSinConexion();
+				
+			}
+		}
+
+		private void InicializarSinConexion()
+		{
+			Reproductor.AsignarControlador(ControladorDeReproduccion);
+			ControladorDeReproduccion.AsignarInterfaz(Reproductor);
+			(TabControlPaneles.Items[0] as TabItem).IsEnabled = false;
+			(TabControlPaneles.Items[1] as TabItem).IsEnabled = false;
+			(TabControlPaneles.Items[2] as TabItem).IsEnabled = false;
+			(TabControlPaneles.Items[4] as TabItem).IsEnabled = false;
+			(TabControlPaneles.Items[5] as TabItem).IsEnabled = false;
+			TabControlPaneles.SelectedIndex = 3;
+			Reproductor.AsignarModoConectado(false);
+			ControladorDeReproduccion.AsignarModoConectado(false);
+			ListaDeCancionesDescargadas.AsignarModoConectado(false);
 		}
 
 		private async void CargarCanciones()
@@ -236,7 +259,6 @@ namespace UVFYCliente.Paginas.Consumidor
 			TabControl controlDePestañas = sender as TabControl;
 			if (controlDePestañas.SelectedIndex == 0)
 			{
-				CargarCanciones();
 			}
 			else if (controlDePestañas.SelectedIndex == 1)
 			{

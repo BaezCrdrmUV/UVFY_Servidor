@@ -23,12 +23,10 @@ namespace UVFYCliente.Paginas.PaginasDeConsumidor
 	public partial class ListaDeReproduccion : Window
 	{
 		private ControladorDeReproduccion Controlador { get; set; }
-		public ListaDeReproduccion(ControladorDeReproduccion controladorDeReproduccion, Reproductor reproductor, string token)
+		public ListaDeReproduccion(ControladorDeReproduccion controladorDeReproduccion)
 		{
 			InitializeComponent();
 			Controlador = controladorDeReproduccion;
-			Reproductor.AsignarControlador(Controlador);
-			Reproductor.CargarDatosDeCancionActual();
 			DataGridListaDeReproduccion.ItemsSource = Controlador.CancionesEnCola;
 		}
 

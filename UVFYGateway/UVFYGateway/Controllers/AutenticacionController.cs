@@ -27,14 +27,14 @@ namespace UVFYGateway.Controllers
 			GrpcChannelOptions grpcChannelOptions = new GrpcChannelOptions();
 			grpcChannelOptions.Credentials = ChannelCredentials.Insecure;
 			AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-			ServicioDeAutenticacion = GrpcChannel.ForAddress("http://172.17.0.3:80", grpcChannelOptions);
+			ServicioDeAutenticacion = GrpcChannel.ForAddress("http://UVFYAuth:80", grpcChannelOptions);
 		}
 
 		[HttpPost]
 		[Route("Registrar")]
 		public IActionResult RegistrarUsuario([FromBody] Artista usuario)
 		{
-			IActionResult result = BadRequest();
+			IActionResult result = ValidationProblem();
 			var clienteDeAutenticacion = new Authenticator.AuthenticatorClient(ServicioDeAutenticacion);
 			try
 			{

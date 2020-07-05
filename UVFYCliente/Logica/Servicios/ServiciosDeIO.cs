@@ -232,6 +232,34 @@ namespace Logica.Servicios
 			return imagen;
 		}
 
+		public static byte[] CargarCaratulaDeCancionPorId(int idCancion)
+		{
+			byte[] imagen;
+			if (CaratulaEstaGuardada(idCancion))
+			{
+				imagen = File.ReadAllBytes(ConstruirDireccionDeCaratula(idCancion));
+			}
+			else
+			{
+				if (File.Exists(ConstruirDireccionDeCaratulaPorDefecto()))
+				{
+					imagen = File.ReadAllBytes(ConstruirDireccionDeCaratulaPorDefecto());
+				}
+				else
+				{
+					imagen = new byte[1]{0};
+				}
+			}
+
+			return imagen;
+		}
+
+		private static string ConstruirDireccionDeCaratulaPorDefecto()
+		{
+			string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY + "default";
+			return path;
+		}
+
 		public static bool ExisteArchivo(string direccionDeArchivo)
 		{
 			bool resultado = false;

@@ -32,6 +32,8 @@ namespace UVFYCliente.UserControls
 		private string Token { get; set; }
 		private ControladorDeReproduccion ControladorDeReproduccion;
 		public  List<Cancion> Canciones { get { return cancionesCargadas; } set { cancionesCargadas = value; ActualizarLista(); } }
+		private bool ModoConectado { get; set; } = true;
+
 
 		private void ActualizarLista()
 		{
@@ -80,22 +82,30 @@ namespace UVFYCliente.UserControls
 			ActualizarLista();
 		}
 
+		internal void AsignarModoConectado(bool modoConectado)
+		{
+			ModoConectado = modoConectado;
+		}
+
 		private void ButtonDescargar_Click(object sender, RoutedEventArgs e)
 		{
-			Cancion cancionSeleccionada = ((FrameworkElement)sender).DataContext as Cancion;
-			ServiciosDeDescarga serviciosDeDescarga = new ServiciosDeDescarga();
-			try
+			if (ModoConectado)
 			{
-				serviciosDeDescarga.DescargarAudioDeCancion(cancionSeleccionada.Id, Token);
-				serviciosDeDescarga.DescargarCaratulaDeCancion(cancionSeleccionada.Id, Token);
+				Cancion cancionSeleccionada = ((FrameworkElement)sender).DataContext as Cancion;
+				ServiciosDeDescarga serviciosDeDescarga = new ServiciosDeDescarga();
+				try
+				{
+					serviciosDeDescarga.DescargarAudioDeCancion(cancionSeleccionada.Id, Token);
+					serviciosDeDescarga.DescargarCaratulaDeCancion(cancionSeleccionada.Id, Token);
+				}
+				catch (Exception ex)
+				{
+					MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+					return;
+				}
+				ActualizarLista();
 			}
-			catch (Exception ex)
-			{
-				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
-				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
-				return;
-			}
-			ActualizarLista();
 		}
 
 		private void ButtonAñadirACola_Click(object sender, RoutedEventArgs e)
@@ -123,16 +133,17 @@ namespace UVFYCliente.UserControls
 				DataGridCanciones.ContextMenu.Items.Add(eliminarCancion);
 			}
 
-				
-			
-			foreach (Playlist playlist in PlaylistsEnMenuDeContexto)
+			if (ModoConectado)
 			{
-				MenuItem opcionDePlaylist = new MenuItem
+				foreach (Playlist playlist in PlaylistsEnMenuDeContexto)
 				{
-					Header = playlist.Nombre,
-				};
-				opcionDePlaylist.Click += OpcionDePlaylists_Click;
-				(DataGridCanciones.ContextMenu.Items[0] as MenuItem).Items.Add(opcionDePlaylist);
+					MenuItem opcionDePlaylist = new MenuItem
+					{
+						Header = playlist.Nombre,
+					};
+					opcionDePlaylist.Click += OpcionDePlaylists_Click;
+					(DataGridCanciones.ContextMenu.Items[0] as MenuItem).Items.Add(opcionDePlaylist);
+				}
 			}
 		}
 

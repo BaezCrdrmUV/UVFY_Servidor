@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UVFYCliente.Paginas.PaginasDeConsumidor"
         mc:Ignorable="d"
-        Title="RegistroDePlaylist" Height="144.375" Width="377.187">
+        Title="Nueva playlist" Height="185" Width="377">
 	<DockPanel>
 		<StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
 			<Button Content=" Cancelar " Margin="20,0,20,10" Click="ButtonCancelar_Click"></Button>
-			<Button Content=" Aceptar " Margin="202,0,20,10" Click="ButtonAceptar_Click"></Button>
+			<Button Content=" Crear " Margin="218,0,20,10" Click="ButtonAceptar_Click"/>
 		</StackPanel>
-		<Label Content="Nombre: " Margin="20,32,15,22" ></Label>
+		<Label Content="Nombre: " Margin="20,57,15,22" ></Label>
 
 		<TextBox x:Name="TextBoxNombreDePlaylist" Margin="20,36,15,21" Height="26"></TextBox>
 	</DockPanel>

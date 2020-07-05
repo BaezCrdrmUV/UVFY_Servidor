@@ -27,8 +27,9 @@ namespace UVFYAndroid
 			SetContentView(Resource.Layout.main_consumer);
 			
 			UsuarioActual = new Usuario();
-			UsuarioActual.Token = Intent.GetStringExtra("token");
-			UsuarioActual.Id = Intent.GetIntExtra("id", 0);
+			UsuarioActual.Token = Intent.Extras.GetString("token");
+			UsuarioActual.Id = Intent.Extras.GetInt("token", -1);
+
 			CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
 			Cancion[] cancions = cancionDAO.CargarTodas().Result.ToArray();
 			RecyclerView recyclerView = FindViewById<RecyclerView>(Resource.Id.cancionesTodas);

@@ -227,6 +227,17 @@
   <ItemGroup>
     <Resource Include="Recursos\playback.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Recursos\backward.png" />
+    <Resource Include="Recursos\download.png" />
+    <Resource Include="Recursos\forward.png" />
+    <Resource Include="Recursos\image.png" />
+    <Resource Include="Recursos\loading.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recursos\down.png" />
+    <Resource Include="Recursos\playlist.png" />
+    <Resource Include="Recursos\up.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

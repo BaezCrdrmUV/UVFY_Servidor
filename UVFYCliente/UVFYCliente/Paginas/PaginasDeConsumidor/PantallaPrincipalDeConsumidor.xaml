@@ -42,8 +42,8 @@
 						<StackPanel Orientation="Horizontal">
 							<Image x:Name="ImageCaratulaDeAlbumSeleccionado" Height="70" Width="70" ></Image>
 							<StackPanel>
-								<Label x:Name="LabelNombreDeAlbum" Content="NombreDeAlbum" FontSize="20"/>
-								<Label x:Name="LabelNombreDeArtistaDeAlbum" Content="NombreDeArtistaDeAlbum"/>
+								<Label x:Name="LabelNombreDeGenero" Content="NombreDeGenero" FontSize="20"/>
+								<Label x:Name="LabelDescripcionDeGenero" Content="DescripcionDeGenero"/>
 							</StackPanel>
 						</StackPanel>
 						<TextBox x:Name="TextBoxBusquedaAlbum" Margin="5"/>

@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Caching;
 using System.Text;
 using System.Net.Mime;
+using System.Net;
 
 namespace Logica
 {

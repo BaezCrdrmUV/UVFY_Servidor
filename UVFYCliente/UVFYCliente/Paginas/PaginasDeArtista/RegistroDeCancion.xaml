@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UVFYCliente.Paginas.PaginasDeArtista"
         mc:Ignorable="d"
-        Title="RegistroDeCancion" Height="450" Width="525">
+        Title="Registro de cancion" Height="450" Width="525">
     <DockPanel>
 		<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
 			<Button x:Name="ButtonCancelar" Content="Cancelar" HorizontalAlignment="Right" Click="ButtonCancelar_Click" Margin="10"></Button>
@@ -19,19 +19,19 @@
 				</StackPanel>
 				<StackPanel>
 					<StackPanel Orientation="Horizontal" Margin="10">
-						<Image x:Name="ImageIconoDeArchivoDeAudio" MinHeight="20" MinWidth="20" Margin="10"></Image>
+						<Image x:Name="ImageIconoDeArchivoDeAudio" MinHeight="20" MinWidth="20" Source="pack://application:,,,/Recursos/download.png" MaxHeight="40"></Image>
 						<Button x:Name="ButtonElegirArchivoDeAudio" Content="Elegir archivo" Margin="10" Click="ButtonElegirArchivoDeAudio_Click"></Button>
 						<Button x:Name="ButtonVistaPreviaDeAudio" Content="Vista previa" Margin="10" Click="ButtonVistaPreviaDeAudio_Click"></Button>
 					</StackPanel>
-					<Label x:Name="LabelDireccionDeArchivoDeAudio" Content="" Margin="10"></Label>
+					<Label x:Name="LabelDireccionDeArchivoDeAudio" Content="Archivo no seleccionado" Margin="10"></Label>
 				</StackPanel>
 				<StackPanel>
 					<StackPanel Orientation="Horizontal" Margin="10">
-						<Image x:Name="ImageIconoDeArchivoDeCaratula" MinHeight="40" MinWidth="40"></Image>
+						<Image x:Name="ImageIconoDeArchivoDeCaratula" MinHeight="40" MinWidth="40" Source="pack://application:,,,/Recursos/image.png" MaxHeight="25"></Image>
 						<Button x:Name="ButtonElegirArchivoDeCaratula" Content="Elegir archivo" Margin="10" Click="ButtonElegirArchivoDeCaratula_Click"></Button>
 						<Image x:Name="ImagenVistaPreviaDeCaratula" MaxHeight="60" MaxWidth="60" MinHeight="40" MinWidth="40"></Image>
 					</StackPanel>
-					<Label x:Name="LabelDireccionDeArchivoDeCaratula" Content="" Margin="10"></Label>
+					<Label x:Name="LabelDireccionDeArchivoDeCaratula" Content="Archivo no seleccionado" Margin="10"></Label>
 				</StackPanel>
 			</StackPanel>
 			<StackPanel Margin="10">

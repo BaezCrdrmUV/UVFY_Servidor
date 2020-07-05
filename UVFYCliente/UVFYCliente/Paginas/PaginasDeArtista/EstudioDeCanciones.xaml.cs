@@ -39,6 +39,28 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
 				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
 			}
+
+			if (AlbumesCargados.Count == 1 && AlbumesCargados[0].Id == 0)
+			{
+				DataGridListaDeAlbumes.Visibility = Visibility.Collapsed;
+				LabelNoHayAlbumes.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				DataGridListaDeAlbumes.Visibility = Visibility.Visible;
+				LabelNoHayAlbumes.Visibility = Visibility.Collapsed;
+			}
+
+			if (CancionesPrivadas.Count == 1 && CancionesPrivadas[0].Id == 0)
+			{
+				DataGridListaDeCancionesSinAlbum.Visibility = Visibility.Collapsed;
+				LabelNoHayCancionesPrivadas.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				DataGridListaDeCancionesSinAlbum.Visibility = Visibility.Visible;
+				LabelNoHayCancionesPrivadas.Visibility = Visibility.Collapsed;
+			}
 			DataGridListaDeAlbumes.ItemsSource = AlbumesCargados;
 			DataGridListaDeCancionesSinAlbum.ItemsSource = CancionesPrivadas;
 			if (DataGridListaDeAlbumes.Items.Count > 0)
@@ -142,6 +164,17 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 					MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
 					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
 				}
+				if (CancionesDeAlbum.Count == 1 && CancionesDeAlbum[0].Id == 0)
+				{
+					DataGridListaDeCancionesEnAlbum.Visibility = Visibility.Collapsed;
+					LabelNoHayCancionesEnAlbum.Visibility = Visibility.Visible;
+				}
+				else
+				{
+					DataGridListaDeCancionesEnAlbum.Visibility = Visibility.Visible;
+					LabelNoHayCancionesEnAlbum.Visibility = Visibility.Collapsed;
+				}
+
 				DataGridListaDeCancionesEnAlbum.ItemsSource = CancionesDeAlbum;
 			}
 		}

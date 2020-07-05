@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Logica;
 using static UVFYCliente.UtileriasGráficas;
+using System.Configuration;
 
 namespace UVFYCliente.Paginas
 {
@@ -35,7 +36,7 @@ namespace UVFYCliente.Paginas
 		{
 			Usuario usuario = new Usuario()
 			{
-				CorreoElectronico = "Pachy@correo.com",
+				CorreoElectronico = "pachy@correo.com",
 				Contrasena = "perros"
 			};
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
@@ -48,7 +49,16 @@ namespace UVFYCliente.Paginas
 			{
 				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
 				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
-				return;
+				usuario.Id = int.Parse(ConfigurationManager.AppSettings["IdUltimoUsuario"]);
+				if ( usuario.Id != 0)
+				{
+					MessageBoxResult resultadoDeMessageBox = MessageBox.Show("Puede inciar sesion como el ultimo usuario que se conecto, sin embargo solo tendra acceso a sus canciones descargadas.\n ¿Desea iniciar sesion de esta forma?", "Aviso", MessageBoxButton.YesNo);
+					if (resultadoDeMessageBox == MessageBoxResult.Yes)
+					{
+						Consumidor.PantallaPrincipalDeConsumidor pantallaPrincipalDeConsumidor = new Consumidor.PantallaPrincipalDeConsumidor(usuario, Controlador, true);
+						Controlador.CambiarANuevaPage(pantallaPrincipalDeConsumidor);
+					}
+				}
 			}
 
 			if (respuesta.Response)
@@ -56,10 +66,11 @@ namespace UVFYCliente.Paginas
 				usuario.Token = respuesta.Token;
 				usuario.TipoDeUsuario = respuesta.TipoDeUsuario;
 				usuario.Id = respuesta.IdUsuario;
+				
 				if (respuesta.TipoDeUsuario == TipoDeUsuario.Consumidor)
 				{
-
-					Consumidor.PantallaPrincipalDeConsumidor pantallaPrincipalDeConsumidor = new Consumidor.PantallaPrincipalDeConsumidor(usuario, Controlador);
+					ConfigurationManager.AppSettings["IdUltimoUsuario"] = usuario.Id.ToString();
+					Consumidor.PantallaPrincipalDeConsumidor pantallaPrincipalDeConsumidor = new Consumidor.PantallaPrincipalDeConsumidor(usuario, Controlador, true);
 					Controlador.CambiarANuevaPage(pantallaPrincipalDeConsumidor);
 				}
 				else if (respuesta.TipoDeUsuario == TipoDeUsuario.Artista)

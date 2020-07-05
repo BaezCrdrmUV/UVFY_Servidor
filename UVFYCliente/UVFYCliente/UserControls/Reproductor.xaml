@@ -14,7 +14,11 @@
 			</StackPanel>
 		</StackPanel>
 		<StackPanel DockPanel.Dock="Right" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-			<Button x:Name="ButtonColaDeReproduccion" Content="Cola de reproduccion" Click="ButtonColaDeReproduccion_Click"></Button>
+			<Button x:Name="ButtonColaDeReproduccion" Click="ButtonColaDeReproduccion_Click" MaxWidth="20" HorizontalAlignment="Right">
+				<DockPanel>
+					<Image Source="pack://application:,,,/Recursos/playlist.png" MaxHeight="20"></Image>
+				</DockPanel>
+			</Button>
 			<StackPanel Orientation="Horizontal" Margin="10">
 				<Image x:Name="ImageVolumen" Source="pack://application:,,,/Recursos/volumen.png" MaxHeight="20"></Image>
 				<Slider x:Name="ProgressBarVolumen" HorizontalAlignment="Stretch" MinWidth="100" ValueChanged="ProgressBarVolumen_ValueChanged" Maximum="1" Margin="5"></Slider>
@@ -22,13 +26,21 @@
 		</StackPanel>
 		<StackPanel Margin="10" VerticalAlignment="Center" HorizontalAlignment="Stretch" >
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-				<Button x:Name="ButtonAnterior" DockPanel.Dock="Left" Click="ButtonAnterior_Click" Width="50"></Button>
+				<Button x:Name="ButtonAnterior" DockPanel.Dock="Left" Click="ButtonAnterior_Click" Width="50">
+					<DockPanel>
+						<Image Source="pack://application:,,,/Recursos/backward.png" MaxHeight="20"></Image>
+					</DockPanel>
+				</Button>
 				<Button x:Name="ButtonReproducir" Click="ButtonReproducir_Click">
 					<DockPanel>
 						<Image Source="pack://application:,,,/Recursos/playback.png" MaxHeight="20"></Image>
 					</DockPanel>
 				</Button>
-				<Button x:Name="ButtonSiguiente" DockPanel.Dock="Right" Click="ButtonSiguiente_Click" Width="50"></Button>
+				<Button x:Name="ButtonSiguiente" DockPanel.Dock="Right" Click="ButtonSiguiente_Click" Width="50">
+					<DockPanel>
+						<Image Source="pack://application:,,,/Recursos/forward.png" MaxHeight="20"></Image>
+					</DockPanel>
+				</Button>
 			</StackPanel>
 			<DockPanel>
 				<Label Name="LabelTiempoTranscurrido" Content="0:00" DockPanel.Dock="Left"></Label>

@@ -54,6 +54,27 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
 				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
 			}
+			if(CancionesCargadas.Count == 1 && CancionesCargadas[0].Id == 0)
+			{
+				DataGridListaDeCanciones.Visibility = Visibility.Collapsed;
+				LabelNoHayCanciones.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				DataGridListaDeCanciones.Visibility = Visibility.Visible;
+				LabelNoHayCanciones.Visibility = Visibility.Collapsed;
+			}
+
+			if (AlbumesCargados.Count == 1 && AlbumesCargados[0].Id == 0)
+			{
+				DataGridListaDeAlbumes.Visibility = Visibility.Collapsed;
+				LabelNoHayAlbumes.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				DataGridListaDeAlbumes.Visibility = Visibility.Visible;
+				LabelNoHayAlbumes.Visibility = Visibility.Collapsed;
+			}
 			DataGridListaDeAlbumes.ItemsSource = AlbumesCargados;
 			DataGridListaDeCanciones.ItemsSource = CancionesCargadas;
 		}

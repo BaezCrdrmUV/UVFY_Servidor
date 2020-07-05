@@ -23,32 +23,38 @@
 			<Button Content="Agregar a album seleccionado" Click="ButtonAgregarCancionAAlbum_Click"></Button>
 		</DataTemplate>
 	</Page.Resources>
-    <DockPanel>
+	<DockPanel>
 		<StackPanel>
 			<Button Content="Regresar" Margin="10" Click="Button_Click"></Button>
 		</StackPanel>
 		<StackPanel>
-			
+
 			<Label Content="Albumes" FontSize="24" Margin="15"></Label>
 			<Button x:Name="ButtonNuevoAlbum" Margin="10" Content="Registrar nuevo album" Click="ButtonNuevoAlbum_Click"></Button>
-			<DataGrid x:Name="DataGridListaDeAlbumes" Margin="10" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow" SelectionChanged="DataGridListaDeAlbumes_SelectionChanged">
-				<DataGrid.Columns>
-					<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
-					<DataGridTemplateColumn CellTemplate="{StaticResource BotonDeEliminarAlbum}" CellEditingTemplate="{StaticResource BotonDeEliminarAlbum}"></DataGridTemplateColumn>
-				</DataGrid.Columns>
-			</DataGrid>
-			<DataGrid x:Name="DataGridListaDeCancionesEnAlbum" Margin="10" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow">
+			<DockPanel>
+				<DataGrid x:Name="DataGridListaDeAlbumes" Margin="10" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow" SelectionChanged="DataGridListaDeAlbumes_SelectionChanged">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
+						<DataGridTemplateColumn CellTemplate="{StaticResource BotonDeEliminarAlbum}" CellEditingTemplate="{StaticResource BotonDeEliminarAlbum}"></DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+				<Label x:Name="LabelNoHayAlbumes" Content="No tienes albumes todavia" Visibility="Collapsed"></Label>
+			</DockPanel>
+			<DockPanel><DataGrid x:Name="DataGridListaDeCancionesEnAlbum" Margin="10" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow">
 				<DataGrid.Columns>
 					<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
 					<DataGridTextColumn Header="Duracion" Binding="{Binding Duracion, Converter={StaticResource ConvertidorDeSegundosAMinutosYSegundos}}"></DataGridTextColumn>
 					<DataGridTemplateColumn CellTemplate="{StaticResource BotonDeEliminarCancionDeAlbum}" CellEditingTemplate="{StaticResource BotonDeEliminarCancionDeAlbum}"></DataGridTemplateColumn>
 				</DataGrid.Columns>
 			</DataGrid>
+				<Label x:Name="LabelNoHayCancionesEnAlbum" Content="Este album aun no tiene canciones, añade una cancion desde el panel de la derecha" Visibility="Collapsed"></Label>
+			</DockPanel>
+			
 		</StackPanel>
 		<StackPanel>
 			<Label Content="Canciones sin album" FontSize="24" Margin="15"></Label>
 			<Button x:Name="ButtonNuevaCancion" Margin="10" Content="Registrar nueva cancion" Click="ButtonNuevaCancion_Click"></Button>
-			<DataGrid x:Name="DataGridListaDeCancionesSinAlbum" Margin="10" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow">
+			<DockPanel><DataGrid x:Name="DataGridListaDeCancionesSinAlbum" Margin="10" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="false" CanUserDeleteRows="False" SelectionUnit="FullRow">
 				<DataGrid.Columns>
 					<DataGridTemplateColumn CellEditingTemplate="{StaticResource BotonDeAgregarCancionAAlbum }" CellTemplate="{StaticResource BotonDeAgregarCancionAAlbum}"></DataGridTemplateColumn>
 					<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
@@ -56,6 +62,9 @@
 					<DataGridTemplateColumn CellTemplate="{StaticResource BotonDeEliminarCancion}" CellEditingTemplate="{StaticResource BotonDeEliminarCancion}"></DataGridTemplateColumn>
 				</DataGrid.Columns>
 			</DataGrid>
+				<Label x:Name="LabelNoHayCancionesPrivadas" Content="No hay nada aqui! Registra una nueva cancion para añadirla a un album" Visibility="Collapsed"></Label>
+			</DockPanel>
+			
 		</StackPanel>
-    </DockPanel>
+	</DockPanel>
 </Page>

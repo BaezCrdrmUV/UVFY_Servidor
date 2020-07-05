@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using UVFYMetadatos.DAO;
 using UVFYMetadatos.Enumeradores;
@@ -113,6 +112,16 @@ namespace UVFYMetadatos
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 403;
 			}
+			if (respuesta.Canciones.Count == 0)
+			{
+				respuesta.Canciones.Add(new Cancion
+				{
+					Id = 0,
+					Duracion = "0",
+					FechaDeLanzamiento = DateTime.Now.ToString()
+				});
+			}
+
 			return Task.FromResult(respuesta);
 		}
 
@@ -194,7 +203,8 @@ namespace UVFYMetadatos
 				else if (cancion.Estado == (short)EstadoDeCancion.Publica)
 				{
 					tokenTienePermisos = true;
-				} else
+				}
+				else
 				{
 					tokenTienePermisos = false;
 				}
@@ -208,7 +218,7 @@ namespace UVFYMetadatos
 						FechaDeLanzamiento = cancion.FechaDeLanzamiento.ToString(),
 					});
 
-					if(cancion.Estado == (short)EstadoDeCancion.Publica)
+					if (cancion.Estado == (short)EstadoDeCancion.Publica)
 					{
 						respuesta.Canciones[0].Album = new Album()
 						{
@@ -322,7 +332,15 @@ namespace UVFYMetadatos
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 403;
 			}
-
+			if (respuesta.Canciones.Count == 0)
+			{
+				respuesta.Canciones.Add(new Cancion
+				{
+					Id = 0,
+					Duracion = "0",
+					FechaDeLanzamiento = DateTime.Now.ToString()
+				});
+			}
 			return Task.FromResult(respuesta);
 		}
 
@@ -410,6 +428,15 @@ namespace UVFYMetadatos
 			{
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 403;
+			}
+			if (respuesta.Canciones.Count == 0)
+			{
+				respuesta.Canciones.Add(new Cancion
+				{
+					Id = 0,
+					Duracion = "0",
+					FechaDeLanzamiento = DateTime.Now.ToString()
+				});
 			}
 			return Task.FromResult(respuesta);
 		}
@@ -502,6 +529,15 @@ namespace UVFYMetadatos
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 403;
 			}
+			if (respuesta.Canciones.Count == 0)
+			{
+				respuesta.Canciones.Add(new Cancion
+				{
+					Id = 0,
+					Duracion = "0",
+					FechaDeLanzamiento = DateTime.Now.ToString()
+				});
+			}
 			return Task.FromResult(respuesta);
 		}
 
@@ -582,6 +618,15 @@ namespace UVFYMetadatos
 			{
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 403;
+			}
+			if (respuesta.Canciones.Count == 0)
+			{
+				respuesta.Canciones.Add(new Cancion
+				{
+					Id = 0,
+					Duracion = "0",
+					FechaDeLanzamiento = DateTime.Now.ToString()
+				});
 			}
 
 			return Task.FromResult(respuesta);
@@ -665,7 +710,15 @@ namespace UVFYMetadatos
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 403;
 			}
-
+			if (respuesta.Canciones.Count == 0)
+			{
+				respuesta.Canciones.Add(new Cancion
+				{
+					Id = 0,
+					Duracion = "0",
+					FechaDeLanzamiento = DateTime.Now.ToString()
+				});
+			}
 			return Task.FromResult(respuesta);
 		}
 
@@ -757,6 +810,15 @@ namespace UVFYMetadatos
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 403;
 			}
+			if (respuesta.Canciones.Count == 0)
+			{
+				respuesta.Canciones.Add(new Cancion
+				{
+					Id = 0,
+					Duracion = "0",
+					FechaDeLanzamiento = DateTime.Now.ToString()
+				});
+			}
 			return Task.FromResult(respuesta);
 		}
 
@@ -796,7 +858,7 @@ namespace UVFYMetadatos
 					Canciones canciones = new Canciones()
 					{
 						Nombre = request.Nombre,
-						ConsumidorId = idUsuario, 
+						ConsumidorId = idUsuario,
 						Duracion = request.Duracion.ToString()
 					};
 					try
@@ -1279,6 +1341,13 @@ namespace UVFYMetadatos
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 403;
 			}
+			if (respuesta.Artista.Count == 0)
+			{
+				respuesta.Artista.Add(new Artista
+				{
+					Id = 0
+				});
+			}
 			return Task.FromResult(respuesta);
 		}
 
@@ -1702,6 +1771,14 @@ namespace UVFYMetadatos
 			{
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 403;
+			}
+
+			if (respuesta.Album.Count == 0)
+			{
+				respuesta.Album.Add(new Album
+				{
+					Id = 0
+				});
 			}
 			return Task.FromResult(respuesta);
 		}
@@ -2267,6 +2344,7 @@ namespace UVFYMetadatos
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 403;
 			}
+
 			return Task.FromResult(respuesta);
 		}
 
@@ -2326,6 +2404,13 @@ namespace UVFYMetadatos
 			{
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 403;
+			}
+			if (respuesta.Playlists.Count == 0)
+			{
+				respuesta.Playlists.Add(new Playlist
+				{
+					Id = 0
+				});
 			}
 			return Task.FromResult(respuesta);
 		}
@@ -2735,6 +2820,13 @@ namespace UVFYMetadatos
 			{
 				respuesta.Respuesta.Exitosa = false;
 				respuesta.Respuesta.Motivo = 403;
+			}
+			if (respuesta.Generos.Count == 0)
+			{
+				respuesta.Generos.Add(new Genero
+				{
+					Id = 0
+				});
 			}
 			return Task.FromResult(respuesta);
 		}

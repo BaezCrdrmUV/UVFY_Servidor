@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:UVFYCliente.Paginas.PaginasDeConsumidor"
 	    xmlns:c="clr-namespace:UVFYCliente.UserControls"
         mc:Ignorable="d"
-        Title="ListaDeReproduccion" Height="450" Width="800">
+        Title="Reproduciendo" Height="450" Width="800">
 	<Window.Resources>
 		<convertidores:ConvertidorDeIdCancionACancionEstaDescargada x:Key="ConvertidorDeIdCancionACancionEstaDescargada"></convertidores:ConvertidorDeIdCancionACancionEstaDescargada>
 		<DataTemplate x:Key="ImageDescargasTemplate">
@@ -28,11 +28,17 @@
 			</Button>
 		</DataTemplate>
 		<DataTemplate x:Key="ButtonSubir">
-			<Button  x:Name="ButtonSubir" Content=" Subir " Click="ButtonSubir_Click">
+			<Button  x:Name="ButtonSubir" Click="ButtonSubir_Click">
+				<DockPanel>
+					<Image Source="pack://application:,,,/Recursos/up.png" MaxHeight="20"></Image>
+				</DockPanel>
 			</Button>
 		</DataTemplate>
 		<DataTemplate x:Key="ButtonBajar">
-			<Button  x:Name="ButtonBajar" Content=" Bajar " Click="ButtonBajar_Click">
+			<Button  x:Name="ButtonBajar" Click="ButtonBajar_Click">
+				<DockPanel>
+					<Image Source="pack://application:,,,/Recursos/down.png" MaxHeight="20"></Image>
+				</DockPanel>
 			</Button>
 		</DataTemplate>
 		<DataTemplate x:Key="ButtonDescargar">
@@ -64,7 +70,6 @@
 		</DataTemplate>
 	</Window.Resources>
 	<DockPanel>
-		<c:Reproductor x:Name="Reproductor" DockPanel.Dock="Bottom"></c:Reproductor>
 		<DataGrid x:Name="DataGridListaDeReproduccion" AutoGenerateColumns="False" CanUserAddRows="false" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False">
 			<DataGrid.Columns>
 				<DataGridTemplateColumn CellTemplate="{StaticResource ButtonReproducir}" MaxWidth="20"></DataGridTemplateColumn>

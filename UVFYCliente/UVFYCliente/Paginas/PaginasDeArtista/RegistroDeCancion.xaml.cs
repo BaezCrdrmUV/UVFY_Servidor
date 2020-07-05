@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using static UVFYCliente.UtileriasGráficas;
 
@@ -105,9 +106,9 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 
 		private async void ButtonGuardar_Click(object sender, RoutedEventArgs e)
 		{
+			Mouse.OverrideCursor = Cursors.Wait;
 			if (ValidarCampos())
 			{
-
 				byte[] datosDeAudio = ServiciosDeIO.CargarBytesDeArchivo(DireccionDeArchivoDeAudio);
 				byte[] datosDeCaratula = ServiciosDeIO.CargarBytesDeArchivo(DireccionDeArchivoDeCaratula);
 				int duracionDeAudio = ServiciosDeIO.ObtenerDuracionDeCancion(DireccionDeArchivoDeAudio);
@@ -119,28 +120,42 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 					}
 				}
 				CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
+				bool resultado = false;
 				try
 				{
 					if (TipoDeUsuario == TipoDeUsuario.Artista)
 					{
-						bool resultado = await cancionDAO.RegistrarCancionDeArtista(TextBoxNombreDeCancion.Text, GenerosSeleccionados, datosDeAudio, datosDeCaratula, duracionDeAudio);
+						resultado = await cancionDAO.RegistrarCancionDeArtista(TextBoxNombreDeCancion.Text, GenerosSeleccionados, datosDeAudio, datosDeCaratula, duracionDeAudio);
 					}
 					else if (TipoDeUsuario == TipoDeUsuario.Consumidor)
 					{
-						bool resultado = await cancionDAO.RegistrarCancionDeConsumidor(TextBoxNombreDeCancion.Text, datosDeAudio, datosDeCaratula, duracionDeAudio);
+						resultado = await cancionDAO.RegistrarCancionDeConsumidor(TextBoxNombreDeCancion.Text, datosDeAudio, datosDeCaratula, duracionDeAudio);
 					}
 				}
 				catch (Exception ex)
 				{
 					MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
 					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+					Mouse.OverrideCursor = null;
 				}
-
+				if (resultado)
+				{
+					MessageBox.Show("Cancion registrada", "¡Exito!");
+				}
+				else
+				{
+					MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(new Exception());
+					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+				}
 			}
 			else
 			{
 				MessageBox.Show("Campos invalidos", "Error");
+				Mouse.OverrideCursor = null;
+				Close();
 			}
+			
+			Mouse.OverrideCursor = null;
 		}
 
 		private bool ValidarCampos()

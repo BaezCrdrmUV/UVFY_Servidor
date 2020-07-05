@@ -32,6 +32,7 @@ namespace UVFYCliente.UserControls
 		private DispatcherTimer Contador { get; set; }
 		private TimeSpan TiempoContado { get; set; }
 		private bool CancionCambiada { get; set; }
+		private bool ModoConectado { get; set; } = true;
 		public Reproductor()
 		{
 			CancionCambiada = true;
@@ -79,6 +80,11 @@ namespace UVFYCliente.UserControls
 			Token = token;
 		}
 
+		public void AsignarModoConectado(bool modoConectado)
+		{
+			ModoConectado = modoConectado;
+		}
+
 		private void ButtonReproducir_Click(object sender, RoutedEventArgs e)
 		{
 			ControladorDeReproduccion.PausarOReproducir();
@@ -122,8 +128,22 @@ namespace UVFYCliente.UserControls
 				SliderProgresoDeCancion.Value = 0;
 				ConvertidorDeSegundosAMinutosYSegundos convertidorDeSegundosAMinutosYSegundos = new ConvertidorDeSegundosAMinutosYSegundos();
 				LabelTiempoTotal.Content = convertidorDeSegundosAMinutosYSegundos.Convert((int)cancionActual.Duracion, typeof(string), null, null);
-				AsignarImagenDeCancionActual(cancionActual.Id);
+				if (ModoConectado)
+				{
+					AsignarImagenDeCancionActual(cancionActual.Id);
+				}
+				else
+				{
+					AsignarImagenLocalDeCancionActual(cancionActual.Id);
+				}
 			}
+		}
+
+		private void AsignarImagenLocalDeCancionActual(int idCancion)
+		{
+			byte[] imagen;
+			imagen = ServiciosDeIO.CargarCaratulaDeCancionPorId(idCancion);
+			ImageCaratulaDeAlbum.Source = CargarImagen(imagen);
 		}
 
 		private async void AsignarImagenDeCancionActual(int idCancion)
@@ -181,7 +201,7 @@ namespace UVFYCliente.UserControls
 
 		private void ButtonColaDeReproduccion_Click(object sender, RoutedEventArgs e)
 		{
-			Paginas.PaginasDeConsumidor.ListaDeReproduccion listaDeReproduccion = new Paginas.PaginasDeConsumidor.ListaDeReproduccion(ControladorDeReproduccion, this, Token);
+			Paginas.PaginasDeConsumidor.ListaDeReproduccion listaDeReproduccion = new Paginas.PaginasDeConsumidor.ListaDeReproduccion(ControladorDeReproduccion);
 			listaDeReproduccion.Show();
 		}
 
