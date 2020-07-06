@@ -1,0 +1,1 @@
+/opt/mssql/bin/permissions_check.sh & /opt/mssql/bin/sqlservr & bash waiter.sh & bash keepalive.sh 

@@ -1,0 +1,8 @@
+FROM mcr.microsoft.com/mssql/server
+COPY script.sql / 
+COPY waiter.sh /
+COPY entrypoint.sh /
+COPY keepalive.sh /
+USER root
+CMD /bin/bash  entrypoint.sh
+
