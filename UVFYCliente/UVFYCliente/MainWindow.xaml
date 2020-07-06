@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:UVFYCliente"
 		SizeToContent="WidthAndHeight"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="UVFY" Height="450" Width="800">
     <Grid>
         
     </Grid>

@@ -201,7 +201,7 @@ namespace UVFYCliente.UserControls
 
 		private void ButtonColaDeReproduccion_Click(object sender, RoutedEventArgs e)
 		{
-			Paginas.PaginasDeConsumidor.ListaDeReproduccion listaDeReproduccion = new Paginas.PaginasDeConsumidor.ListaDeReproduccion(ControladorDeReproduccion);
+			Paginas.PaginasDeConsumidor.ListaDeReproduccion listaDeReproduccion = new Paginas.PaginasDeConsumidor.ListaDeReproduccion(ControladorDeReproduccion, Token, ModoConectado);
 			listaDeReproduccion.Show();
 		}
 

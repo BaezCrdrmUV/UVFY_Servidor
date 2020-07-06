@@ -75,8 +75,8 @@
 			</DataGrid.Columns>
 			<DataGrid.ContextMenu>
 				<ContextMenu>
-					<MenuItem Header="Agregar a playlist..." Click="NuevaPlaylistClick">
-						<MenuItem Header="Nueva playlist..."></MenuItem>
+					<MenuItem Header="Agregar a playlist...">
+						<MenuItem Header="Nueva playlist..." Click="NuevaPlaylistClick"></MenuItem>
 					</MenuItem>
 				</ContextMenu>
 			</DataGrid.ContextMenu>

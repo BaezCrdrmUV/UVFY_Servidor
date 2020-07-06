@@ -9,7 +9,7 @@
       Title="PageInicioDeSesion">
 
 	<StackPanel>
-		<Image Margin="60,20" Height="156"  Width="156"/>
+		<Image Margin="60,20" Height="156"  Width="156" Source="pack://application:,,,/Recursos/uvfy.png"/>
 		<TextBox x:Name="TextBoxNombreDeUsuario" Margin="2.5" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" VerticalAlignment="Top" Width="157"  TabIndex="1" TextChanged="TextBoxNombreDeUsuario_TextChanged"/>
 		<PasswordBox x:Name="PasswordBoxContraseña" Margin="2.5" HorizontalAlignment="Center" VerticalAlignment="Top" Width="157" Height="23" TabIndex="2" PasswordChanged="PasswordBoxContraseña_PasswordChanged"/>
 		<Button x:Name="ButtonIniciarSesion" Margin="2.5" Content=" Iniciar Sesion " HorizontalAlignment="Center" TabIndex="3" Click="ButtonIniciarSesion_Click"/>

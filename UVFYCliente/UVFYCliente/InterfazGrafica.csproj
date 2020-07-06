@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Recursos\image %282%29.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -71,6 +74,9 @@
     </Compile>
     <Compile Include="Paginas\PaginasDeArtista\RegistroDeCancion.xaml.cs">
       <DependentUpon>RegistroDeCancion.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Paginas\PaginasDeConsumidor\Configuracion.xaml.cs">
+      <DependentUpon>Configuracion.xaml</DependentUpon>
     </Compile>
     <Compile Include="Paginas\PaginasDeConsumidor\ListaDeReproduccion.xaml.cs">
       <DependentUpon>ListaDeReproduccion.xaml</DependentUpon>
@@ -129,6 +135,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Paginas\PaginasDeArtista\RegistroDeCancion.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Paginas\PaginasDeConsumidor\Configuracion.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -238,6 +248,15 @@
     <Resource Include="Recursos\down.png" />
     <Resource Include="Recursos\playlist.png" />
     <Resource Include="Recursos\up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recursos\configuration.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recursos\uvfy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recursos\image %282%29.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -49,15 +49,18 @@ namespace UVFYCliente.UserControls
 		}
 		public void Buscar(string busqueda)
 		{
-			if (busqueda != string.Empty)
+			if (Albumes != null)
 			{
-				AlbumesVisibles = Albumes.FindAll(c => c.Nombre.ToLower().Contains(busqueda.ToLower())).ToList();
+				if (busqueda != string.Empty)
+				{
+					AlbumesVisibles = Albumes.FindAll(c => c.Nombre.ToLower().Contains(busqueda.ToLower())).ToList();
+				}
+				else
+				{
+					AlbumesVisibles = albumesCargados;
+				}
+				ActualizarLista();
 			}
-			else
-			{
-				AlbumesVisibles = albumesCargados;
-			}
-			ActualizarLista();
 		}
 
 		private void DataGridAlbumes_SelectionChanged(object sender, SelectionChangedEventArgs e)

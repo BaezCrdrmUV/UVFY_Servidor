@@ -46,15 +46,18 @@ namespace UVFYCliente.UserControls
 
 		public void Buscar(string busqueda)
 		{
-			if (busqueda != string.Empty)
+			if (Generos != null)
 			{
-				GenerosVisibles = Generos.FindAll(c => c.Nombre.ToLower().Contains(busqueda.ToLower())).ToList();
+				if (busqueda != string.Empty)
+				{
+					GenerosVisibles = Generos.FindAll(c => c.Nombre.ToLower().Contains(busqueda.ToLower())).ToList();
+				}
+				else
+				{
+					GenerosVisibles = generosCargados;
+				}
+				ActualizarLista();
 			}
-			else
-			{
-				GenerosVisibles = generosCargados;
-			}
-			ActualizarLista();
 		}
 
 		private void DataGridGeneros_SelectionChanged(object sender, SelectionChangedEventArgs e)

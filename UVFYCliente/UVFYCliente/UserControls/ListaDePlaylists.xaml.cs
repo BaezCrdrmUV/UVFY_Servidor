@@ -48,13 +48,16 @@ namespace UVFYCliente.UserControls
 
 		public void Buscar(string busqueda)
 		{
-			if (busqueda != string.Empty)
+			if (Playlists != null)
 			{
-				PlaylistsVisbles = Playlists.FindAll(c => c.Nombre.ToLower().Contains(busqueda.ToLower())).ToList();
-			}
-			else
-			{
-				PlaylistsVisbles = playlistsCargadas;
+				if (busqueda != string.Empty)
+				{
+					PlaylistsVisbles = Playlists.FindAll(c => c.Nombre.ToLower().Contains(busqueda.ToLower())).ToList();
+				}
+				else
+				{
+					PlaylistsVisbles = playlistsCargadas;
+				}
 			}
 			ActualizarLista();
 		}

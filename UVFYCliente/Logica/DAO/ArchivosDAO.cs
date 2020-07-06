@@ -56,5 +56,23 @@ namespace Logica.DAO
 
 			return audioCargado;
 		}
+
+		public async Task<byte[]> CargarCaratulaDeAlbumPorId(int idAlbum)
+		{
+			CalidadDeAudio calidad = (CalidadDeAudio)int.Parse(ConfigurationManager.AppSettings["CalidadDescarga"]);
+			byte[] caratulaCargada = null;
+			var query = HttpUtility.ParseQueryString(string.Empty);
+			query["tokenDeAcceso"] = TokenDeAcceso;
+			query["idAlbum"] = idAlbum.ToString();
+			HttpResponseMessage respuesta;
+			respuesta = await AdministradorDePeticionesHttp.Get("CaratulaDeAlbum?" + query.ToString());
+
+			if (respuesta.IsSuccessStatusCode)
+			{
+				caratulaCargada = Servicios.ServicioDeConversionDeJson.ConvertJsonToClass<byte[]>(respuesta.Content.ReadAsStringAsync().Result);
+			}
+
+			return caratulaCargada;
+		}
 	}
 }

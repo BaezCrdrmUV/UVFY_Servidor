@@ -1,0 +1,16 @@
+﻿<Window x:Class="UVFYCliente.Paginas.PaginasDeConsumidor.Configuracion"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UVFYCliente.Paginas.PaginasDeConsumidor"
+        mc:Ignorable="d"
+        Title="Configuracion" Height="150" Width="400"
+		ResizeMode="NoResize">
+	<Grid>
+		<Label Content="Calidad de decarga:" Margin="10,26,263,50"></Label>
+		<ComboBox x:Name="ComboBoxCalidadDeDescarga" Margin="129,26,15,60"></ComboBox>
+		<Button x:Name="ButtonAplicar" Content="Aplicar" Margin="270,75,10,10" Click="ButtonAplicar_Click"></Button>
+		<Button x:Name="ButtonCancelar" Content="Cancelar" Margin="10,75,291,10" Click="ButtonCancelar_Click"></Button>
+	</Grid>
+</Window>

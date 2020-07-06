@@ -9,6 +9,7 @@
         mc:Ignorable="d"
         Title="Reproduciendo" Height="450" Width="800">
 	<Window.Resources>
+		<convertidores:ConvertidorDeSegundosAMinutosYSegundos x:Key="convertidorDeSegundosAMinutosYSegundos"></convertidores:ConvertidorDeSegundosAMinutosYSegundos>
 		<convertidores:ConvertidorDeIdCancionACancionEstaDescargada x:Key="ConvertidorDeIdCancionACancionEstaDescargada"></convertidores:ConvertidorDeIdCancionACancionEstaDescargada>
 		<DataTemplate x:Key="ImageDescargasTemplate">
 			<DockPanel>
@@ -76,7 +77,7 @@
 				<DataGridTextColumn Header="Titulo" Binding="{Binding Nombre}"></DataGridTextColumn>
 				<DataGridTextColumn Header="Artista" Binding="{Binding Artista.Nombre}"></DataGridTextColumn>
 				<DataGridTextColumn Header="Album" Binding="{Binding Album.Nombre}"></DataGridTextColumn>
-				<DataGridTextColumn Header="Duración" Binding="{Binding Duracion}"></DataGridTextColumn>
+				<DataGridTextColumn Header="Duración" Binding="{Binding Duracion, Converter={StaticResource convertidorDeSegundosAMinutosYSegundos}}"></DataGridTextColumn>
 				<DataGridTemplateColumn CellTemplate="{StaticResource ButtonSubir}"></DataGridTemplateColumn>
 				<DataGridTemplateColumn CellTemplate="{StaticResource ButtonBajar}"></DataGridTemplateColumn>
 			</DataGrid.Columns>

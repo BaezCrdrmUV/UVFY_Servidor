@@ -45,15 +45,18 @@ namespace UVFYCliente.UserControls
 
 		public void Buscar(string busqueda)
 		{
-			if (busqueda != string.Empty)
+			if (Artistas != null)
 			{
-				ArtistasVisibles = Artistas.FindAll(c => c.Nombre.ToLower().Contains(busqueda.ToLower())).ToList();
+				if (busqueda != string.Empty)
+				{
+					ArtistasVisibles = Artistas.FindAll(c => c.Nombre.ToLower().Contains(busqueda.ToLower())).ToList();
+				}
+				else
+				{
+					ArtistasVisibles = artistasCargados;
+				}
+				ActualizarLista();
 			}
-			else
-			{
-				ArtistasVisibles = artistasCargados;
-			}
-			ActualizarLista();
 		}
 
 		private void DataGridCanciones_SelectionChanged(object sender, SelectionChangedEventArgs e)

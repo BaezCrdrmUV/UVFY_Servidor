@@ -55,9 +55,10 @@ namespace UVFYCliente.Paginas
 					MessageBoxResult resultadoDeMessageBox = MessageBox.Show("Puede inciar sesion como el ultimo usuario que se conecto, sin embargo solo tendra acceso a sus canciones descargadas.\n ¿Desea iniciar sesion de esta forma?", "Aviso", MessageBoxButton.YesNo);
 					if (resultadoDeMessageBox == MessageBoxResult.Yes)
 					{
-						Consumidor.PantallaPrincipalDeConsumidor pantallaPrincipalDeConsumidor = new Consumidor.PantallaPrincipalDeConsumidor(usuario, Controlador, true);
+						Consumidor.PantallaPrincipalDeConsumidor pantallaPrincipalDeConsumidor = new Consumidor.PantallaPrincipalDeConsumidor(usuario, Controlador, false);
 						Controlador.CambiarANuevaPage(pantallaPrincipalDeConsumidor);
 					}
+						return;
 				}
 			}
 
@@ -69,7 +70,9 @@ namespace UVFYCliente.Paginas
 				
 				if (respuesta.TipoDeUsuario == TipoDeUsuario.Consumidor)
 				{
-					ConfigurationManager.AppSettings["IdUltimoUsuario"] = usuario.Id.ToString();
+					Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+					config.AppSettings.Settings["IdUltimoUsuario"].Value = usuario.Id.ToString();
+					config.Save(ConfigurationSaveMode.Modified);
 					Consumidor.PantallaPrincipalDeConsumidor pantallaPrincipalDeConsumidor = new Consumidor.PantallaPrincipalDeConsumidor(usuario, Controlador, true);
 					Controlador.CambiarANuevaPage(pantallaPrincipalDeConsumidor);
 				}

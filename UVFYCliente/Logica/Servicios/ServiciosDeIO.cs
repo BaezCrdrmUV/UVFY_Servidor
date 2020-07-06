@@ -1,6 +1,8 @@
 ﻿using Logica.Clases;
 using Logica.DAO;
 using NAudio.Wave;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
+
 
 namespace Logica.Servicios
 {
@@ -53,6 +56,21 @@ namespace Logica.Servicios
 			}
 
 			return resultado;
+		}
+
+		internal static void GuardarInformacionDeCancion(string cancion, int idCancion)
+		{
+			if (ExisteDirectorioDeAplicacion() && ExisteDirectorioDeUsuario())
+			{
+				string path = ConstruirDireccionDeInformacionDeCancion(idCancion);
+				File.WriteAllText(path, cancion);
+			}
+		}
+
+		private static string ConstruirDireccionDeInformacionDeCancion(int idCancion)
+		{
+			string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + DireccionUVFY + idUsuarioActual + "\\" + idCancion + "meta";
+			return path;
 		}
 
 		public static bool CancionEstaGuardada(int idCancion)
@@ -232,6 +250,13 @@ namespace Logica.Servicios
 			return imagen;
 		}
 
+		public async static Task<byte[]> CargarCaratulaDeAlbumPorId(int idAlbum, string token)
+		{
+			ArchivosDAO archivosDAO = new ArchivosDAO(token);
+			byte[] imagen = await archivosDAO.CargarCaratulaDeAlbumPorId(idAlbum);
+			return imagen;
+		}
+
 		public static byte[] CargarCaratulaDeCancionPorId(int idCancion)
 		{
 			byte[] imagen;
@@ -285,6 +310,22 @@ namespace Logica.Servicios
 			resultado = (int)mp3FileReader.TotalTime.TotalSeconds;
 
 			return resultado;
+		}
+
+		public static Cancion ObtenerCancionLocal(int idCancion)
+		{
+			Cancion cancionRespuesta = new Cancion()
+			{
+				Id = 0
+			};
+			string directorioDeCancion = ConstruirDireccionDeInformacionDeCancion(idCancion);
+			if (File.Exists(directorioDeCancion))
+			{
+				string cancionSerializada = File.ReadAllText(directorioDeCancion);
+				cancionRespuesta = JsonConvert.DeserializeObject<Cancion>(cancionSerializada);
+			}
+
+			return cancionRespuesta;
 		}
 	}
 }

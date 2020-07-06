@@ -71,15 +71,18 @@ namespace UVFYCliente.UserControls
 
 		public void Buscar(string busqueda)
 		{
-			if (busqueda != string.Empty)
+			if (Canciones != null)
 			{
-				CancionesVisibles = Canciones.FindAll(c => c.Nombre.ToLower().Contains(busqueda.ToLower())).ToList();
+				if (busqueda != string.Empty)
+				{
+					CancionesVisibles = Canciones.FindAll(c => c.Nombre.ToLower().Contains(busqueda.ToLower())).ToList();
+				}
+				else
+				{
+					CancionesVisibles = cancionesCargadas;
+				}
+				ActualizarLista();
 			}
-			else
-			{
-				CancionesVisibles = cancionesCargadas;
-			}
-			ActualizarLista();
 		}
 
 		internal void AsignarModoConectado(bool modoConectado)
@@ -97,6 +100,7 @@ namespace UVFYCliente.UserControls
 				{
 					serviciosDeDescarga.DescargarAudioDeCancion(cancionSeleccionada.Id, Token);
 					serviciosDeDescarga.DescargarCaratulaDeCancion(cancionSeleccionada.Id, Token);
+					serviciosDeDescarga.DescargarInformacionDeCancion(cancionSeleccionada.Id, Token);
 				}
 				catch (Exception ex)
 				{
@@ -117,32 +121,37 @@ namespace UVFYCliente.UserControls
 
 		private void DataGridCanciones_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			while ((DataGridCanciones.ContextMenu.Items[0] as MenuItem).Items.Count > 1)
+			if (DataGridCanciones.SelectedItem != null)
 			{
-				(DataGridCanciones.ContextMenu.Items[0] as MenuItem).Items.RemoveAt(1);
-			}
-			if (DataGridCanciones.ContextMenu.Items.Count > 1)
-			{
-				DataGridCanciones.ContextMenu.Items.RemoveAt(1);
-			}
-			if (CancionSeleccionada.CancionEstaDescargada())
-			{
-				MenuItem eliminarCancion = new MenuItem();
-				eliminarCancion.Header = "Eliminar canción";
-				eliminarCancion.Click += EliminarCancion_Click;
-				DataGridCanciones.ContextMenu.Items.Add(eliminarCancion);
-			}
 
-			if (ModoConectado)
-			{
-				foreach (Playlist playlist in PlaylistsEnMenuDeContexto)
+
+				while ((DataGridCanciones.ContextMenu.Items[0] as MenuItem).Items.Count > 1)
 				{
-					MenuItem opcionDePlaylist = new MenuItem
+					(DataGridCanciones.ContextMenu.Items[0] as MenuItem).Items.RemoveAt(1);
+				}
+				if (DataGridCanciones.ContextMenu.Items.Count > 1)
+				{
+					DataGridCanciones.ContextMenu.Items.RemoveAt(1);
+				}
+				if (CancionSeleccionada.CancionEstaDescargada())
+				{
+					MenuItem eliminarCancion = new MenuItem();
+					eliminarCancion.Header = "Eliminar canción";
+					eliminarCancion.Click += EliminarCancion_Click;
+					DataGridCanciones.ContextMenu.Items.Add(eliminarCancion);
+				}
+
+				if (ModoConectado)
+				{
+					foreach (Playlist playlist in PlaylistsEnMenuDeContexto)
 					{
-						Header = playlist.Nombre,
-					};
-					opcionDePlaylist.Click += OpcionDePlaylists_Click;
-					(DataGridCanciones.ContextMenu.Items[0] as MenuItem).Items.Add(opcionDePlaylist);
+						MenuItem opcionDePlaylist = new MenuItem
+						{
+							Header = playlist.Nombre,
+						};
+						opcionDePlaylist.Click += OpcionDePlaylists_Click;
+						(DataGridCanciones.ContextMenu.Items[0] as MenuItem).Items.Add(opcionDePlaylist);
+					}
 				}
 			}
 		}

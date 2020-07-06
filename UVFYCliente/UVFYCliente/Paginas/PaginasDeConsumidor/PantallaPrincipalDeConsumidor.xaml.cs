@@ -4,9 +4,11 @@ using Logica.DAO;
 using Logica.Servicios;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using UVFYCliente.Paginas.PaginasDeArtista;
 using UVFYCliente.Paginas.PaginasDeConsumidor;
 using UVFYCliente.UserControls;
@@ -28,24 +30,27 @@ namespace UVFYCliente.Paginas.Consumidor
 		private bool CargarCancionesDescargadasLibre { get; set; } = true;
 		private bool CargarPlaylistsLibre { get; set; } = true;
 		private bool CargarPrivadasLibre { get; set; } = true;
+		private bool ModoConectado { get; set; } = true;
+		private int IndiceDePestañaSeleccionada { get; set; } = 0;
 		public PantallaPrincipalDeConsumidor(Usuario usuario, IControladorDeCambioDePantalla controlador, bool modoConectado)
 		{
 			InitializeComponent();
 			Controlador = controlador;
 			UsuarioActual = usuario;
-			if (modoConectado)
+			ModoConectado = modoConectado;
+			if (ModoConectado)
 			{
 				Inicializar();
 			}
 			else
 			{
 				InicializarSinConexion();
-				
 			}
 		}
 
 		private void InicializarSinConexion()
 		{
+			ServiciosDeIO.AsignarIdUsuarioActual(UsuarioActual.Id.ToString());
 			Reproductor.AsignarControlador(ControladorDeReproduccion);
 			ControladorDeReproduccion.AsignarInterfaz(Reproductor);
 			(TabControlPaneles.Items[0] as TabItem).IsEnabled = false;
@@ -54,26 +59,38 @@ namespace UVFYCliente.Paginas.Consumidor
 			(TabControlPaneles.Items[4] as TabItem).IsEnabled = false;
 			(TabControlPaneles.Items[5] as TabItem).IsEnabled = false;
 			TabControlPaneles.SelectedIndex = 3;
+			IndiceDePestañaSeleccionada = TabControlPaneles.SelectedIndex;
 			Reproductor.AsignarModoConectado(false);
 			ControladorDeReproduccion.AsignarModoConectado(false);
 			ListaDeCancionesDescargadas.AsignarModoConectado(false);
+			PropagarControladorDeReproduccion();
 		}
 
-		private async void CargarCanciones()
+		private async Task<bool> CargarCanciones()
 		{
 			if (CargarCancionesLibre)
 			{
 				CargarCancionesLibre = false;
 				CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
 				var respuesta = await cancionDAO.CargarTodas();
-				await CargarArtistasDeCanciones(respuesta);
-				ListaDeCanciones.AsignarCanciones(respuesta);
-				await CargarAlbumDeCanciones(respuesta);
-				ListaDeCanciones.AsignarCanciones(respuesta);
-				ControladorDeReproduccion.AsignarCanciones(respuesta);
-				ControladorDeReproduccion.Pausar();
+				if (respuesta.Count == 1 && respuesta[0].Id == 0)
+				{
+					ListaDeCanciones.Visibility = Visibility.Collapsed;
+					LabelNoHayCanciones.Visibility = Visibility.Visible;
+				}
+				else
+				{
+					ListaDeCanciones.Visibility = Visibility.Visible;
+					LabelNoHayCanciones.Visibility = Visibility.Collapsed;
+					ListaDeCanciones.AsignarCanciones(respuesta);
+					await CargarArtistasDeCanciones(respuesta);
+					ListaDeCanciones.AsignarCanciones(respuesta);
+					await CargarAlbumDeCanciones(respuesta);
+					ListaDeCanciones.AsignarCanciones(respuesta);
+				}
 				CargarCancionesLibre = true;
 			}
+			return true;
 		}
 
 		private async Task<bool> CargarArtistasDeCanciones(List<Cancion> canciones)
@@ -143,7 +160,22 @@ namespace UVFYCliente.Paginas.Consumidor
 					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
 					return;
 				}
-				ListaDeArtistas.AsignarArtistas(respuesta);
+				if (respuesta.Count == 1 && respuesta[0].Id == 0)
+				{
+					ListaDeArtistas.Visibility = Visibility.Collapsed;
+					LabelNoHayArtistas.Visibility = Visibility.Visible;
+					ListaDeAlbumesDeArtista.Visibility = Visibility.Collapsed;
+					LabelNoHayCancionesDeAlbum.Visibility = Visibility.Collapsed;
+					ListaDeCancionesDeArtista.Visibility = Visibility.Collapsed;
+					LabelNoHayCancionesDeAlbum.Visibility = Visibility.Collapsed;
+				}
+				else
+				{
+
+					ListaDeArtistas.AsignarArtistas(respuesta);
+					ListaDeArtistas.Visibility = Visibility.Visible;
+					LabelNoHayArtistas.Visibility = Visibility.Collapsed;
+				}
 				CargarArtistasLibre = true;
 			}
 		}
@@ -165,7 +197,18 @@ namespace UVFYCliente.Paginas.Consumidor
 					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
 					return;
 				}
-				ListaDeGeneros.AsignarGeneros(respuesta);
+				if (respuesta.Count == 1 && respuesta[0].Id == 0)
+				{
+					ListaDeGeneros.Visibility = Visibility.Collapsed;
+					LabelNoHayGeneros.Visibility = Visibility.Visible;
+				}
+				else
+				{
+					ListaDeGeneros.AsignarGeneros(respuesta);
+					ListaDeGeneros.Visibility = Visibility.Visible;
+					LabelNoHayGeneros.Visibility = Visibility.Collapsed;
+				}
+
 				CargarGenerosLibre = true;
 			}
 		}
@@ -186,22 +229,39 @@ namespace UVFYCliente.Paginas.Consumidor
 					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
 					return;
 				}
-				ListaDePlaylists.AsignarPlaylists(PlaylistsDeUsuarioActual);
-				PropagarPlaylists();
+				if (PlaylistsDeUsuarioActual.Count == 1 && PlaylistsDeUsuarioActual[0].Id == 0)
+				{
+					ListaDePlaylists.Visibility = Visibility.Collapsed;
+					LabelNoHayPlaylists.Visibility = Visibility.Visible;
+					ListaDeCancionesDePlaylist.Visibility = Visibility.Collapsed;
+					LabelNoHayCancionesDescargadas.Visibility = Visibility.Collapsed;
+				}
+				else
+				{
+					ListaDePlaylists.AsignarPlaylists(PlaylistsDeUsuarioActual);
+					PropagarPlaylists();
+					ListaDePlaylists.Visibility = Visibility.Visible;
+					LabelNoHayPlaylists.Visibility = Visibility.Collapsed;
+				}
+
 				CargarPlaylistsLibre = true;
 			}
 		}
 
-		private void Inicializar()
+		private async void Inicializar()
 		{
 			Reproductor.AsignarControlador(ControladorDeReproduccion);
 			ControladorDeReproduccion.AsignarInterfaz(Reproductor);
+			LabelNombreDeUsuario.Content = UsuarioActual.CorreoElectronico;
+			LabelNombreDeUsuario.Visibility = Visibility.Visible;
 			ServiciosDeIO.AsignarIdUsuarioActual(UsuarioActual.Id.ToString());
 			AsignarDisparadores();
 			PropagarTokens();
 			PropagarControladorDeReproduccion();
-			CargarCanciones();
+			await CargarCanciones();
 			CargarPlaylists();
+			ControladorDeReproduccion.AsignarCanciones(ListaDeCanciones.Canciones);
+			ControladorDeReproduccion.Pausar();
 		}
 
 		private void AsignarDisparadores()
@@ -254,31 +314,36 @@ namespace UVFYCliente.Paginas.Consumidor
 			ListaDeCanciones.Buscar((sender as TextBox).Text);
 		}
 
-		private void TabControlPaneles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private async void TabControlPaneles_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			TabControl controlDePestañas = sender as TabControl;
-			if (controlDePestañas.SelectedIndex == 0)
+			if (controlDePestañas.SelectedIndex != IndiceDePestañaSeleccionada)
 			{
-			}
-			else if (controlDePestañas.SelectedIndex == 1)
-			{
-				CargarArtistas();
-			}
-			else if (controlDePestañas.SelectedIndex == 2)
-			{
-				CargarGeneros();
-			}
-			else if (controlDePestañas.SelectedIndex == 3)
-			{
-				CargarCancionesDescargadas();
-			}
-			else if (controlDePestañas.SelectedIndex == 4)
-			{
-				CargarPlaylists();
-			}
-			else if (controlDePestañas.SelectedIndex == 5)
-			{
-				CargarPrivadas();
+				IndiceDePestañaSeleccionada = controlDePestañas.SelectedIndex;
+				if (controlDePestañas.SelectedIndex == 0)
+				{
+					await CargarCanciones();
+				}
+				else if (controlDePestañas.SelectedIndex == 1)
+				{
+					CargarArtistas();
+				}
+				else if (controlDePestañas.SelectedIndex == 2)
+				{
+					CargarGeneros();
+				}
+				else if (controlDePestañas.SelectedIndex == 3)
+				{
+					CargarCancionesDescargadas();
+				}
+				else if (controlDePestañas.SelectedIndex == 4)
+				{
+					CargarPlaylists();
+				}
+				else if (controlDePestañas.SelectedIndex == 5)
+				{
+					CargarPrivadas();
+				}
 			}
 		}
 
@@ -299,7 +364,18 @@ namespace UVFYCliente.Paginas.Consumidor
 					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
 					return;
 				}
-				ListaDeCancionesPrivadas.AsignarCanciones(respuesta);
+				if (respuesta.Count == 1 && respuesta[0].Id == 0)
+				{
+					ListaDeCancionesPrivadas.Visibility = Visibility.Collapsed;
+					LabelNoHayBiblioteca.Visibility = Visibility.Visible;
+				}
+				else
+				{
+					ListaDeCancionesPrivadas.AsignarCanciones(respuesta);
+					ListaDeCancionesPrivadas.Visibility = Visibility.Visible;
+					LabelNoHayBiblioteca.Visibility = Visibility.Collapsed;
+				}
+				
 				CargarPrivadasLibre = true;
 			}
 		}
@@ -324,16 +400,29 @@ namespace UVFYCliente.Paginas.Consumidor
 				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
 				return;
 			}
-			ListaDeCancionesDePlaylist.AsignarCanciones(respuesta);
-			await CargarArtistasDeCanciones(respuesta);
-			ListaDeCancionesDePlaylist.AsignarCanciones(respuesta);
-			await CargarAlbumDeCanciones(respuesta);
-			ListaDeCancionesDePlaylist.AsignarCanciones(respuesta);
+			if (respuesta.Count == 1 && respuesta[0].Id == 0)
+			{
+				ListaDeCancionesDePlaylist.Visibility = Visibility.Collapsed;
+				LabelNoHayCancionesEnPlaylist.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				ListaDeCancionesDePlaylist.Visibility = Visibility.Visible;
+				LabelNoHayCancionesEnPlaylist.Visibility = Visibility.Collapsed;
+				ListaDeCancionesDePlaylist.AsignarCanciones(respuesta);
+				await CargarArtistasDeCanciones(respuesta);
+				ListaDeCancionesDePlaylist.AsignarCanciones(respuesta);
+				await CargarAlbumDeCanciones(respuesta);
+				ListaDeCancionesDePlaylist.AsignarCanciones(respuesta);
+			}
+
 		}
 
 		private void DataGridGeneros_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			MostrarCancionesDeGenero(ListaDeGeneros.GeneroSeleccionado);
+			LabelNombreDeGenero.Content = ListaDeGeneros.GeneroSeleccionado.Nombre;
+			LabelDescripcionDeGenero.Content = ListaDeGeneros.GeneroSeleccionado.Descripcion;
 		}
 
 		private async void MostrarCancionesDeGenero(Genero genero)
@@ -350,11 +439,21 @@ namespace UVFYCliente.Paginas.Consumidor
 				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
 				return;
 			}
-			ListaDeCancionesDeAlbum.AsignarCanciones(respuesta);
-			await CargarArtistasDeCanciones(respuesta);
-			ListaDeCancionesDeAlbum.AsignarCanciones(respuesta);
-			await CargarAlbumDeCanciones(respuesta);
-			ListaDeCancionesDeAlbum.AsignarCanciones(respuesta);
+			if (respuesta.Count == 1 && respuesta[0].Id == 0)
+			{
+				ListaDeCancionesDeAlbum.Visibility = Visibility.Collapsed;
+				LabelNoHayCancionesDeGenero.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				ListaDeCancionesDeAlbum.Visibility = Visibility.Visible;
+				LabelNoHayCancionesDeGenero.Visibility = Visibility.Collapsed;
+				ListaDeCancionesDeAlbum.AsignarCanciones(respuesta);
+				await CargarArtistasDeCanciones(respuesta);
+				ListaDeCancionesDeAlbum.AsignarCanciones(respuesta);
+				await CargarAlbumDeCanciones(respuesta);
+				ListaDeCancionesDeAlbum.AsignarCanciones(respuesta);
+			}
 		}
 
 		private async void CargarCancionesDescargadas()
@@ -366,24 +465,44 @@ namespace UVFYCliente.Paginas.Consumidor
 				List<Cancion> cancionesDescargadas = new List<Cancion>();
 				foreach (int idCancion in idsCancionesDescargadas)
 				{
-					CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
-					try
+					if (ModoConectado)
 					{
-						cancionesDescargadas.Add(await cancionDAO.CargarPorId(idCancion));
+						CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
+						try
+						{
+							cancionesDescargadas.Add(await cancionDAO.CargarPorId(idCancion));
+						}
+						catch (Exception ex)
+						{
+							MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+							MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+							return;
+						}
 					}
-					catch (Exception ex)
+					else
 					{
-						MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
-						MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
-						return;
+						cancionesDescargadas.Add(ServiciosDeIO.ObtenerCancionLocal(idCancion));
 					}
-
 				}
 				ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
-				await CargarArtistasDeCanciones(cancionesDescargadas);
-				ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
-				await CargarAlbumDeCanciones(cancionesDescargadas);
-				ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
+				if (ModoConectado)
+				{
+					if (cancionesDescargadas.Count == 1 && cancionesDescargadas[0].Id == 0)
+					{
+						ListaDeCancionesDescargadas.Visibility = Visibility.Collapsed;
+						LabelNoHayCancionesDescargadas.Visibility = Visibility.Visible;
+					}
+					else
+					{
+						ListaDeCancionesDescargadas.Visibility = Visibility.Visible;
+						LabelNoHayCancionesDescargadas.Visibility = Visibility.Collapsed;
+						ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
+						await CargarArtistasDeCanciones(cancionesDescargadas);
+						ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
+						await CargarAlbumDeCanciones(cancionesDescargadas);
+						ListaDeCancionesDescargadas.AsignarCanciones(cancionesDescargadas);
+					}
+				}
 				CargarCancionesDescargadasLibre = true;
 			}
 		}
@@ -408,11 +527,40 @@ namespace UVFYCliente.Paginas.Consumidor
 				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
 				return;
 			}
-			ListaDeCancionesDeArtista.AsignarCanciones(respuesta);
-			await CargarArtistasDeCanciones(respuesta);
-			ListaDeCancionesDeArtista.AsignarCanciones(respuesta);
-			await CargarAlbumDeCanciones(respuesta);
-			ListaDeCancionesDeArtista.AsignarCanciones(respuesta);
+			if (respuesta.Count == 1 && respuesta[0].Id == 0)
+			{
+				ListaDeCancionesDeArtista.Visibility = Visibility.Collapsed;
+				LabelNoHayCancionesDeAlbum.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				ListaDeCancionesDeArtista.Visibility = Visibility.Visible;
+				LabelNoHayCancionesDeAlbum.Visibility = Visibility.Collapsed;
+				ListaDeCancionesDeArtista.AsignarCanciones(respuesta);
+				await CargarArtistasDeCanciones(respuesta);
+				ListaDeCancionesDeArtista.AsignarCanciones(respuesta);
+				await CargarAlbumDeCanciones(respuesta);
+				ListaDeCancionesDeArtista.AsignarCanciones(respuesta);
+			}
+			ImageCaratulaDeAlbum.Source = CargarImagen(await ServiciosDeIO.CargarCaratulaDeAlbumPorId(album.Id, UsuarioActual.Token));
+		}
+
+		private static BitmapImage CargarImagen(byte[] bytesDeImagen)
+		{
+			if (bytesDeImagen == null || bytesDeImagen.Length == 0) return null;
+			BitmapImage imagen = new BitmapImage();
+			using (MemoryStream stream = new MemoryStream(bytesDeImagen))
+			{
+				stream.Position = 0;
+				imagen.BeginInit();
+				imagen.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+				imagen.CacheOption = BitmapCacheOption.OnLoad;
+				imagen.UriSource = null;
+				imagen.StreamSource = stream;
+				imagen.EndInit();
+			}
+			imagen.Freeze();
+			return imagen;
 		}
 
 		private void DataGridArtistas_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -436,7 +584,20 @@ namespace UVFYCliente.Paginas.Consumidor
 				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
 				return;
 			}
-			ListaDeAlbumesDeArtista.AsignarAlbumes(respuesta);
+
+			if (respuesta.Count == 1 && respuesta[0].Id == 0)
+			{
+				ListaDeAlbumesDeArtista.Visibility = Visibility.Collapsed;
+				LabelNoHayAlbumesDeArtista.Visibility = Visibility.Visible;
+				ListaDeCancionesDeArtista.Visibility = Visibility.Collapsed;
+				LabelNoHayCancionesDeAlbum.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				ListaDeAlbumesDeArtista.Visibility = Visibility.Visible;
+				LabelNoHayAlbumesDeArtista.Visibility = Visibility.Collapsed;
+				ListaDeAlbumesDeArtista.AsignarAlbumes(respuesta);
+			}
 		}
 
 		#endregion Eventos
@@ -458,6 +619,36 @@ namespace UVFYCliente.Paginas.Consumidor
 			RegistroDeCancion registroDeCancion = new RegistroDeCancion(UsuarioActual, TipoDeUsuario.Consumidor);
 			registroDeCancion.ShowDialog();
 			CargarPrivadas();
+		}
+
+		private void TextBoxBusquedaArtista_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			ListaDeArtistas.Buscar((sender as TextBox).Text);
+			ListaDeAlbumesDeArtista.Buscar((sender as TextBox).Text);
+			ListaDeCancionesDeArtista.Buscar((sender as TextBox).Text);
+		}
+
+		private void TextBoxBusquedaAlbum_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			ListaDeGeneros.Buscar((sender as TextBox).Text);
+			ListaDeCancionesDeAlbum.Buscar((sender as TextBox).Text);
+		}
+
+		private void TextBoxBusquedaDescargas_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			ListaDeCancionesDescargadas.Buscar((sender as TextBox).Text);
+		}
+
+		private void TextBoxBusquedaPlaylists_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			ListaDePlaylists.Buscar((sender as TextBox).Text);
+			ListaDeCancionesDePlaylist.Buscar((sender as TextBox).Text);
+		}
+
+		private void ButtonConfiguracion_Click(object sender, RoutedEventArgs e)
+		{
+			Configuracion configuracion = new Configuracion();
+			configuracion.Show();
 		}
 	}
 }

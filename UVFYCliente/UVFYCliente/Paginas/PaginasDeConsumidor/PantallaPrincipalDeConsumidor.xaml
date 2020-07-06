@@ -8,7 +8,6 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PantallaPrincipalDeConsumidor">
-
 	<DockPanel>
 		<c:Reproductor x:Name="Reproductor" DockPanel.Dock="Bottom" HorizontalAlignment="Stretch"/>
 		<TabControl x:Name="TabControlPaneles" SelectionChanged="TabControlPaneles_SelectionChanged" TabStripPlacement="Left">
@@ -16,22 +15,47 @@
 				<DockPanel>
 					<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
 						<TextBox Width="600" Margin="5" TextChanged="TextBox_TextChanged"></TextBox>
-						<Image x:Name="ImageIconoDeUsuario"></Image>
-						<Label Name="LabelNombreDeUsuario" Content="Usuario"></Label>
+						<Label Name="LabelNombreDeUsuario" Content="Usuario" Visibility="Collapsed"></Label>
+						<Button x:Name="ButtonConfiguracion" Click="ButtonConfiguracion_Click">
+							<DockPanel>
+								<Image Source="pack://application:,,,/Recursos/configuration.png" MaxHeight="20"></Image>
+							</DockPanel>
+						</Button>
 					</StackPanel>
-					<c:ListaDeCanciones x:Name="ListaDeCanciones"></c:ListaDeCanciones>
+					<DockPanel>
+						<c:ListaDeCanciones x:Name="ListaDeCanciones"></c:ListaDeCanciones>
+						<Label x:Name="LabelNoHayCanciones" Content="Parece que aun no hay canciones :(" Visibility="Collapsed"></Label>
+					</DockPanel>
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Artistas">
 				<DockPanel>
-					<StackPanel>
-						<Label Name="LabelNombreDeArtista" Content="NombreDeArtista" FontSize="20"/>
-						<Label Name="LabelDescripcionDeArtista" Content="DescripcionDeArtista"/>
-						<TextBox x:Name="TextBoxBusquedaArtista" Margin="5"/>
+					<StackPanel HorizontalAlignment="Stretch">
+						<StackPanel Orientation="Horizontal">
+							<StackPanel>
+							<Label Name="LabelNombreDeArtista" Content="NombreDeArtista" FontSize="20"/>
+							<Label Name="LabelDescripcionDeArtista" Content="DescripcionDeArtista"/>
+						</StackPanel>
+							<Image x:Name="ImageCaratulaDeAlbum" MaxWidth="70" MaxHeight="70"></Image>
+						</StackPanel>
+						
+						
+						<TextBox x:Name="TextBoxBusquedaArtista" Margin="5" TextChanged="TextBoxBusquedaArtista_TextChanged"/>
 						<DockPanel>
-							<c:ListaDeArtistas x:Name="ListaDeArtistas" DockPanel.Dock="Left"></c:ListaDeArtistas>
-							<c:ListaDeAlbumes x:Name="ListaDeAlbumesDeArtista"></c:ListaDeAlbumes>
-							<c:ListaDeCanciones x:Name="ListaDeCancionesDeArtista" DockPanel.Dock="Right"></c:ListaDeCanciones>
+							<DockPanel HorizontalAlignment="Stretch" >
+								<c:ListaDeArtistas x:Name="ListaDeArtistas" DockPanel.Dock="Left" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"></c:ListaDeArtistas>
+								<Label x:Name="LabelNoHayArtistas" Content="Parece que aun no hay artistas :(" Visibility="Collapsed"></Label>
+							</DockPanel>
+
+							<DockPanel HorizontalAlignment="Stretch">
+								<c:ListaDeAlbumes x:Name="ListaDeAlbumesDeArtista" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"></c:ListaDeAlbumes >
+								<Label x:Name="LabelNoHayAlbumesDeArtista" Content="Parece que este artista aun no tiene albumes :(" Visibility="Collapsed"></Label>
+							</DockPanel>
+							<DockPanel HorizontalAlignment="Stretch">
+								<c:ListaDeCanciones x:Name="ListaDeCancionesDeArtista" DockPanel.Dock="Right" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+								</c:ListaDeCanciones><Label x:Name="LabelNoHayCancionesDeAlbum" Content="Parece que esta album no tiene canciones :(" Visibility="Collapsed"></Label>
+							</DockPanel>
+							
 						</DockPanel>
 					</StackPanel>
 				</DockPanel>
@@ -40,16 +64,21 @@
 				<DockPanel>
 					<StackPanel>
 						<StackPanel Orientation="Horizontal">
-							<Image x:Name="ImageCaratulaDeAlbumSeleccionado" Height="70" Width="70" ></Image>
 							<StackPanel>
 								<Label x:Name="LabelNombreDeGenero" Content="NombreDeGenero" FontSize="20"/>
 								<Label x:Name="LabelDescripcionDeGenero" Content="DescripcionDeGenero"/>
 							</StackPanel>
 						</StackPanel>
-						<TextBox x:Name="TextBoxBusquedaAlbum" Margin="5"/>
+						<TextBox x:Name="TextBoxBusquedaAlbum" Margin="5" TextChanged="TextBoxBusquedaAlbum_TextChanged"/>
 						<DockPanel>
-							<c:ListaDeGeneros x:Name="ListaDeGeneros"></c:ListaDeGeneros>
-							<c:ListaDeCanciones x:Name="ListaDeCancionesDeAlbum" DockPanel.Dock="Right"></c:ListaDeCanciones>
+							<DockPanel>
+								<c:ListaDeGeneros x:Name="ListaDeGeneros"></c:ListaDeGeneros>
+								<Label x:Name="LabelNoHayGeneros" Content="Parece que aun no hay ningun genero registrado :(" Visibility="Collapsed"></Label>
+							</DockPanel>
+							<DockPanel>
+								<c:ListaDeCanciones x:Name="ListaDeCancionesDeAlbum" DockPanel.Dock="Right"></c:ListaDeCanciones>
+								<Label x:Name="LabelNoHayCancionesDeGenero" Content="Parece que aun no hay ninguna cancion de este genero" Visibility="Collapsed"></Label>
+							</DockPanel>
 						</DockPanel>
 					</StackPanel>
 				</DockPanel>
@@ -57,8 +86,12 @@
 			<TabItem Header="Descargas">
 				<DockPanel>
 					<StackPanel>
-						<TextBox x:Name="TextBoxBusquedaDescargas" Margin="5"/>
-						<c:ListaDeCanciones x:Name="ListaDeCancionesDescargadas"></c:ListaDeCanciones>
+						<TextBox x:Name="TextBoxBusquedaDescargas" Margin="5" TextChanged="TextBoxBusquedaDescargas_TextChanged"/>
+						
+						<DockPanel>
+							<c:ListaDeCanciones x:Name="ListaDeCancionesDescargadas"></c:ListaDeCanciones>
+							<Label x:Name="LabelNoHayCancionesDescargadas" Content="Aun no has descargado nada, puedes descargar canciones desde cualquier lista para poder reproducirlas con menor retraso e incluso hacerlo sin conexion" Visibility="Collapsed"></Label>
+						</DockPanel>
 					</StackPanel>
 				</DockPanel>
 			</TabItem>
@@ -67,11 +100,17 @@
 					<StackPanel>
 						<DockPanel>
 							<Button x:Name="ButtonNuevaPlaylist" Content=" Agregar playlist " Margin="5" Click="ButtonNuevaPlaylist_Click"></Button>
-							<TextBox x:Name="TextBoxBusquedaPlaylists" Margin="5" HorizontalAlignment="Stretch"/>
+							<TextBox x:Name="TextBoxBusquedaPlaylists" Margin="5" HorizontalAlignment="Stretch" TextChanged="TextBoxBusquedaPlaylists_TextChanged"/>
 						</DockPanel>
 						<DockPanel>
-							<c:ListaDePlaylists x:Name="ListaDePlaylists"></c:ListaDePlaylists>
-							<c:ListaDeCanciones x:Name="ListaDeCancionesDePlaylist" DockPanel.Dock="Right"></c:ListaDeCanciones>
+							<DockPanel>
+								<c:ListaDePlaylists x:Name="ListaDePlaylists"></c:ListaDePlaylists>
+								<Label x:Name="LabelNoHayPlaylists" Content="Aun no has registrado ninguna playlist, da clic al boton agregar playlist para comenzar a organizar tu libreria musical." Visibility="Collapsed"></Label>
+							</DockPanel>
+							<DockPanel>
+								<c:ListaDeCanciones x:Name="ListaDeCancionesDePlaylist" DockPanel.Dock="Right"></c:ListaDeCanciones>
+								<Label x:Name="LabelNoHayCancionesEnPlaylist" Content="Aun no has agregado ninguna cancion a esta playlist, da clic derecho a cualquier cancion para agregarla a una playlist" Visibility="Collapsed"></Label>
+							</DockPanel>
 						</DockPanel>
 					</StackPanel>
 				</DockPanel>
@@ -82,7 +121,11 @@
 						<Button x:Name="ButtonAgregarCancion" Content=" Agregar cancion " Margin="5" Click="ButtonAgregarCancion_Click"></Button>
 						<TextBox x:Name="TextBoxBusquedaBiblioteca" Width="600" Margin="5" TextChanged="TextBoxBusquedaBiblioteca_TextChanged"></TextBox>
 					</StackPanel>
-					<c:ListaDeCanciones x:Name="ListaDeCancionesPrivadas"></c:ListaDeCanciones>
+					
+					<DockPanel>
+						<c:ListaDeCanciones x:Name="ListaDeCancionesPrivadas"></c:ListaDeCanciones>
+						<Label x:Name="LabelNoHayBiblioteca" Content="Aun no has agregado ninguna cancion a tu biblioteca. En UVFY ouedes agregar tus propios archivos mp3 para descargarlos y esucharlos" Visibility="Collapsed"></Label>
+					</DockPanel>
 				</DockPanel>
 			</TabItem>
 		</TabControl>
