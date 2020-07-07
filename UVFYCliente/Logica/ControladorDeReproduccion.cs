@@ -95,26 +95,29 @@ namespace Logica
 			serviciosDeDescarga.EliminarArchivosTemporales();
 			if (CancionesEnCola.Count > CancionActual)
 			{
-				CancionesEnCola[CancionActual].CargarDireccionDeCancion();
-				bool resultado;
-				if (!CancionesEnCola[CancionActual].CancionEstaDescargada())
+				if (CancionActual >= 0)
 				{
-					if (ModoConectado)
+					CancionesEnCola[CancionActual].CargarDireccionDeCancion();
+					bool resultado;
+					if (!CancionesEnCola[CancionActual].CancionEstaDescargada())
 					{
-						resultado = await serviciosDeDescarga.DescargarAudioTemporalDeCancion(CancionesEnCola[CancionActual].Id, Token);
+						if (ModoConectado)
+						{
+							resultado = await serviciosDeDescarga.DescargarAudioTemporalDeCancion(CancionesEnCola[CancionActual].Id, Token);
+						}
+						else
+						{
+							IReproductor.Desbloquear();
+							Siguiente();
+						}
 					}
-					else
-					{
-						IReproductor.Desbloquear();
-						Siguiente();
-					}
+					Lector = new Mp3FileReader(CancionesEnCola[CancionActual].DireccionDeCancion);
+					Reproductor.DeviceNumber = 0;
+					Reproductor.Init(Lector);
+					Reproductor.Play();
+					Reproductor.Volume = Volumen;
+					IReproductor.CargarDatosDeCancionActual();
 				}
-				Lector = new Mp3FileReader(CancionesEnCola[CancionActual].DireccionDeCancion);
-				Reproductor.DeviceNumber = 0;
-				Reproductor.Init(Lector);
-				Reproductor.Play();
-				Reproductor.Volume = Volumen;
-				IReproductor.CargarDatosDeCancionActual();
 			}
 			IReproductor.Desbloquear();
 		}
@@ -133,10 +136,13 @@ namespace Logica
 
 		public void AsignarCanciones(List<Cancion> canciones)
 		{
-			Reproductor.Stop();
-			CancionesEnCola = canciones;
-			CancionActual = 0;
-			InicializarReproduccion();
+			if (canciones != null)
+			{
+				Reproductor.Stop();
+				CancionesEnCola = canciones;
+				CancionActual = 0;
+				InicializarReproduccion();
+			}
 		}
 
 		public void PausarOReproducir()

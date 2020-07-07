@@ -112,11 +112,14 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 				byte[] datosDeAudio = ServiciosDeIO.CargarBytesDeArchivo(DireccionDeArchivoDeAudio);
 				byte[] datosDeCaratula = ServiciosDeIO.CargarBytesDeArchivo(DireccionDeArchivoDeCaratula);
 				int duracionDeAudio = ServiciosDeIO.ObtenerDuracionDeCancion(DireccionDeArchivoDeAudio);
-				foreach (Genero item in DataGridGeneros.ItemsSource)
+				if (TipoDeUsuario == TipoDeUsuario.Artista)
 				{
-					if (((CheckBox)CheckBoxColumn.GetCellContent(item)).IsChecked == true)
+					foreach (Genero item in DataGridGeneros.ItemsSource)
 					{
-						GenerosSeleccionados.Add(item.Id);
+						if (((CheckBox)CheckBoxColumn.GetCellContent(item)).IsChecked == true)
+						{
+							GenerosSeleccionados.Add(item.Id);
+						}
 					}
 				}
 				CancionDAO cancionDAO = new CancionDAO(UsuarioActual.Token);
@@ -141,6 +144,7 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 				if (resultado)
 				{
 					MessageBox.Show("Cancion registrada", "¡Exito!");
+					Close();
 				}
 				else
 				{
@@ -150,9 +154,8 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 			}
 			else
 			{
-				MessageBox.Show("Campos invalidos", "Error");
+				MessageBox.Show("Campos invalidos. Verifique e intentelo de nuevo", "Error");
 				Mouse.OverrideCursor = null;
-				Close();
 			}
 			
 			Mouse.OverrideCursor = null;

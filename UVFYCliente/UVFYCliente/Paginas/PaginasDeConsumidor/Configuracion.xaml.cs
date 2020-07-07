@@ -28,7 +28,7 @@ namespace UVFYCliente.Paginas.PaginasDeConsumidor
 			ComboBoxCalidadDeDescarga.Items.Add("Media");
 			ComboBoxCalidadDeDescarga.Items.Add("Alta");
 			int calidad;
-			if (int.TryParse(ConfigurationManager.AppSettings["CalidadDescarga"], out calidad))
+			if (int.TryParse(ConfigurationManager.AppSettings["calidadDescarga"], out calidad))
 			{
 				ComboBoxCalidadDeDescarga.SelectedIndex = calidad;	
 			}
@@ -41,6 +41,7 @@ namespace UVFYCliente.Paginas.PaginasDeConsumidor
 			Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 			config.AppSettings.Settings["CalidadDescarga"].Value = ComboBoxCalidadDeDescarga.SelectedIndex.ToString();
 			config.Save(ConfigurationSaveMode.Modified);
+			ConfigurationManager.RefreshSection("appSettings");
 			MessageBox.Show("Configuracion aplicada", "¡Exito!");
 			Close();
 		}

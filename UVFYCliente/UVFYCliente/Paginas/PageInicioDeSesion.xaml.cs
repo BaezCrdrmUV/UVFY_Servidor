@@ -36,8 +36,8 @@ namespace UVFYCliente.Paginas
 		{
 			Usuario usuario = new Usuario()
 			{
-				CorreoElectronico = "pachy@correo.com",
-				Contrasena = "perros"
+				CorreoElectronico = TextBoxNombreDeUsuario.Text,
+				Contrasena = PasswordBoxContraseña.Password
 			};
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			RespuestaDeAutenticacion respuesta = new RespuestaDeAutenticacion();
@@ -73,6 +73,7 @@ namespace UVFYCliente.Paginas
 					Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 					config.AppSettings.Settings["IdUltimoUsuario"].Value = usuario.Id.ToString();
 					config.Save(ConfigurationSaveMode.Modified);
+					ConfigurationManager.RefreshSection("appSettings");
 					Consumidor.PantallaPrincipalDeConsumidor pantallaPrincipalDeConsumidor = new Consumidor.PantallaPrincipalDeConsumidor(usuario, Controlador, true);
 					Controlador.CambiarANuevaPage(pantallaPrincipalDeConsumidor);
 				}

@@ -34,8 +34,14 @@ namespace Logica.Servicios
 			ArtistaDAO artistaDAO = new ArtistaDAO(token);
 			AlbumDAO albumDAO = new AlbumDAO(token);
 			Cancion cancion = await cancionDAO.CargarPorId(idCancion);
-			cancion.Artista = await artistaDAO.CargarPorId(cancion.Artista.Id);
-			cancion.Album = await albumDAO.CargarPorId(cancion.Album.Id);
+			if (cancion.Artista != null)
+			{
+				cancion.Artista = await artistaDAO.CargarPorId(cancion.Artista.Id);
+			}
+			if (cancion.Album != null)
+			{
+				cancion.Album = await albumDAO.CargarPorId(cancion.Album.Id);
+			}
 			ServiciosDeIO.GuardarInformacionDeCancion(JsonConvert.SerializeObject(cancion), cancion.Id);
 		}
 

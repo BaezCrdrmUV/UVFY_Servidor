@@ -71,17 +71,24 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 
 		private async void ButtonEliminarAlbum_Click(object sender, RoutedEventArgs e)
 		{
-			Album albumSeleccionado = ((FrameworkElement)sender).DataContext as Album;
-			AlbumDAO albumDAO = new AlbumDAO(Artista.Token);
-			try
+			if ((DataGridListaDeCancionesEnAlbum.Items[0] as Cancion).Id == 0 && DataGridListaDeCancionesEnAlbum.Items.Count == 1)
 			{
-				bool resultado = await albumDAO.Eliminar(albumSeleccionado.Id);
-				CargarDatos();
+				Album albumSeleccionado = ((FrameworkElement)sender).DataContext as Album;
+				AlbumDAO albumDAO = new AlbumDAO(Artista.Token);
+				try
+				{
+					bool resultado = await albumDAO.Eliminar(albumSeleccionado.Id);
+					CargarDatos();
+				}
+				catch (Exception ex)
+				{
+					MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
+					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+				}
 			}
-			catch (Exception ex)
+			else
 			{
-				MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
-				MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
+				MessageBox.Show("Vacie el album de canciones e intentelo nuevamente", "No puede eliminar un álbum vacio");
 			}
 		}
 
@@ -90,6 +97,7 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 			Album albumSeleccionado = (Album)DataGridListaDeAlbumes.SelectedItem;
 			if (albumSeleccionado != null)
 			{
+
 				Cancion cancionSeleccionada = ((FrameworkElement)sender).DataContext as Cancion;
 				AlbumDAO albumDAO = new AlbumDAO(Artista.Token);
 				try
@@ -102,6 +110,7 @@ namespace UVFYCliente.Paginas.PaginasDeArtista
 					MensajeDeErrorParaMessageBox mensaje = EncadenadorDeExcepciones.ManejarExcepcion(ex);
 					MessageBox.Show(mensaje.Mensaje, mensaje.Titulo);
 				}
+
 			}
 			else
 			{
